@@ -13,7 +13,7 @@
 // マクロ定義
 //*****************************************************************************
 // 読み込むテクスチャファイル名
-#define	WING_FEATHER_TEXTURE			("data/TEXTURE/Feather.png")
+#define	WING_FEATHER_TEXTURE			("data/texture/Feather.png")
 
 // テクスチャ内分割数
 #define WING_FEATHER_TEXTURE_DIVIDE_X	(4)

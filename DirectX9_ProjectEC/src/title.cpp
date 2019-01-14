@@ -88,24 +88,11 @@ void TitleScene::Draw(void)
 //=============================================================================
 TitleScene::TitleScene(void)
 {
-	//new Copyright;
-	//new AirWaterFream;
 	ObjectManager::CreateObject<DebugObject>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
-	//ObjectManager::CreateObject<Skydome>();
 	ObjectManager::CreateObject<Cube>();
 	ObjectManager::CreateObject<EffectManager>();
-
-	//new Player;
-	//new Skydome;
-	//new Cube;
-	//new Stencil;
-
-
-	//// 指定オブジェクト取得テスト
-	//Object *pTest1 = Object::GetObjectPointer(Object::PLAYER);
-	//Object *pTest2 = Object::GetObjectPointer(Object::COPYRIGHT);
 }
 
 //=============================================================================

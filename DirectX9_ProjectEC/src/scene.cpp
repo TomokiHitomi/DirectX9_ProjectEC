@@ -75,15 +75,15 @@ void SceneManager::ChangeScene(SCENE scene)
 	switch (scene)
 	{	//引数のシーン
 	case SCENE::TITLE:
-		SetSoundBgm(SOUND_BGM_NON);
+		SetSoundBgm(SOUND_BGM_TITLE);
 		m_pScene = new TitleScene();	// タイトルシーンを現在のシーンにする
 		break;
 	case SCENE::GAME:
-		SetSoundBgm(SOUND_BGM_NON);
+		SetSoundBgm(SOUND_BGM_GAME);
 		m_pScene = new GameScene();		// ゲームシーンを現在のシーンにする
 		break;
 	case SCENE::RESULT:
-		SetSoundBgm(SOUND_BGM_NON);
+		SetSoundBgm(SOUND_BGM_RESULT);
 		m_pScene = new ResultScene();	// リザルトシーンを現在のシーンにする
 		break;
 	default:
@@ -97,7 +97,7 @@ void SceneManager::ChangeScene(SCENE scene)
 void SceneManager::Init(HINSTANCE hInst, HWND hWnd)
 {
 	// 初期のシーンをTITLEに設定
-	m_eScene = TITLE;
+	m_eScene = GAME;
 
 	LightManager::Init();	// ライト（シェーダ用）
 	InitLight();			// ライト

@@ -12,16 +12,16 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define SHADER_FILE_BILLBOARD		("data/SHADER/billboard.fx")
-#define SHADER_FILE_XMODEL			("data/SHADER/xmodel.fx")
-#define SHADER_FILE_SKINPMX			("data/SHADER/skinpmx.fx")
-#define SHADER_FILE_SKINASSIMP		("data/SHADER/skinassimp.fx")
-#define SHADER_FILE_SKINMESH		("data/SHADER/skinmesh.fx")
-#define SHADER_FILE_PLANE			("data/SHADER/plane.fx")
-#define SHADER_FILE_BOX				("data/SHADER/box.fx")
-#define SHADER_FILE_WING_FEATHER	("data/SHADER/wing_feather.fx")
-#define SHADER_FILE_CLOUD			("data/SHADER/cloud.fx")
-#define SHADER_FILE_DEBUGSPHERE		("data/SHADER/debugsphere.fx")
+#define SHADER_FILE_BILLBOARD		("data/shader/billboard.fx")
+#define SHADER_FILE_XMODEL			("data/shader/xmodel.fx")
+#define SHADER_FILE_SKINPMX			("data/shader/skinpmx.fx")
+#define SHADER_FILE_SKINASSIMP		("data/shader/skinassimp.fx")
+#define SHADER_FILE_SKINMESH		("data/shader/skinmesh.fx")
+#define SHADER_FILE_PLANE			("data/shader/plane.fx")
+#define SHADER_FILE_BOX				("data/shader/box.fx")
+#define SHADER_FILE_WING_FEATHER	("data/shader/wing_feather.fx")
+#define SHADER_FILE_CLOUD			("data/shader/cloud.fx")
+#define SHADER_FILE_DEBUGSPHERE		("data/shader/debugsphere.fx")
 
 #define SHR(p,n) { if(FAILED(p)) { MessageBox(NULL, "シェーダへのデータ転送に失敗", n , MB_OK); } }
 

@@ -45,7 +45,7 @@ Cube::Cube(void)
 	m_tagProp.bUse = true;
 
 	// ƒ‚ƒfƒ‹‚Ì‰Šú‰»
-	//m_CSkinMesh->Init(pDevice, "data/MODEL/Yuko.x");
+	//m_CSkinMesh->Init(pDevice, "data/model/Yuko.x");
 	m_tagProp.CXModel = new CXModel;
 	m_tagProp.CXModel->Init(pDevice, (LPSTR)CUBE_MODEL, NULL);
 

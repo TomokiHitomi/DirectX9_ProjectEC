@@ -48,7 +48,7 @@ HRESULT CXTexture::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPass)
 
 	if (FAILED(D3DXCreateTextureFromFile(
 		pDevice,				// デバイス
-		"data/TEXTURE/カービー.bmp",				// ファイル名
+		"data/texture/カービー.bmp",				// ファイル名
 		&m_pD3DTexture)))		// 読み込むメモリ（複数なら配列に）
 	{
 		return E_FAIL;
@@ -58,7 +58,7 @@ HRESULT CXTexture::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPass)
 	// テクスチャの読み込み
 	if (FAILED(D3DXCreateTextureFromFile(
 		pDevice,				// デバイス
-		"data/TEXTURE/すたふぃー.bmp",				// ファイル名
+		"data/texture/すたふぃー.bmp",				// ファイル名
 		&m_pD3DTexture2)))		// 読み込むメモリ（複数なら配列に）
 	{
 		return E_FAIL;

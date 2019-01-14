@@ -38,6 +38,8 @@ public:
 	void	Draw(void);
 
 	static DebugSphere* pSphere;
+	static bool s_bUse;
+	static void SetUse(bool bUse) { s_bUse = bUse; }
 };
 
 class DebugObjectData

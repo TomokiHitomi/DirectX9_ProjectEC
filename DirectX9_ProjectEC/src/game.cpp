@@ -13,11 +13,15 @@
 
 /* ゲームで必要なインクルード */
 #include "fade.h"
-#include "skydome.h"
+#include "player.h"
+#include "stage.h"
+#include "cube.h"
+#include "effect.h"
 
 /* デバッグ */
 #ifdef _DEBUG
 #include "debugproc.h"
+#include "debugobject.h"
 #endif
 
 //*****************************************************************************
@@ -54,9 +58,11 @@ void GameScene::Draw(void)
 //=============================================================================
 GameScene::GameScene(void)
 {
-	new Skydome;
-	m_nStopCount = 0;
-	m_bGameStart = false;
+	ObjectManager::CreateObject<DebugObject>();
+	ObjectManager::CreateObject<PlayerManager>();
+	ObjectManager::CreateObject<Stage>();
+	ObjectManager::CreateObject<Cube>();
+	ObjectManager::CreateObject<EffectManager>();
 }
 
 //=============================================================================

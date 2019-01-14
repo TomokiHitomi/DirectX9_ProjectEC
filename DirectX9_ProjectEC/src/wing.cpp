@@ -51,7 +51,7 @@ Wing::Wing(void)
 	// スキンメッシュの初期化
 	m_CSkinMesh = new CSkinMesh;
 	// スキンメッシュにモデルを設定
-	m_CSkinMesh->Init(pDevice, (LPSTR)WING_MODEL, (LPSTR)WING_MODEL_DIR);
+	m_CSkinMesh->Init(pDevice, (LPSTR)WING_MODEL);
 	ChangeAnimSpeed(WING_ANIM_SPEED_DEF);
 	// ウィング設置用のマトリクスを初期化
 	m_pSetMtx = NULL;

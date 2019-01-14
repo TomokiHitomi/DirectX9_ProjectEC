@@ -58,14 +58,15 @@ Player::Player(void)
 	// モデルの初期化
 	m_CSkinMesh = NULL;
 	m_CSkinMesh = new CSkinMesh;
-	m_CSkinMesh->Init(pDevice, (LPSTR)PLAYER_MODEL, (LPSTR)PLAYER_MODEL_DIR);
+	m_CSkinMesh->Init(pDevice, (LPSTR)PLAYER_MODEL);
 	ChangeAnimSpeed(PLAYER_ANIM_SPEED_DEF);
 
 	// ウィングの初期化
 	m_cWing = NULL;
 	m_cWing = new Wing;
 	// キャラクターのボーンマトリクスのアドレスを取得
-	m_cWing->SetMtx(m_CSkinMesh->GetBoneMatrixAdr((LPSTR)PLAYER_MODEL_BONE_WING));
+	m_pMtxTorso = m_CSkinMesh->GetBoneMatrixAdr((LPSTR)PLAYER_MODEL_BONE_WING);
+	m_cWing->SetMtx(m_pMtxTorso);
 
 	// ソードの初期化
 	m_cSword = NULL;
@@ -221,6 +222,7 @@ void Player::Update(void)
 
 		// スキンメッシュの更新処理
 		m_CSkinMesh->Update();
+
 
 		// ウィングの更新処理
 		SAFE_UPDATE(m_cWing);
@@ -777,6 +779,10 @@ void Player::Change(void)
 //=============================================================================
 void Player::Move(void)
 {
+#ifdef _DEBUG
+	D3DXVECTOR3 vTemp = D3DXVECTOR3(m_pMtxTorso->_41, m_pMtxTorso->_42, m_pMtxTorso->_43);
+	DebugObject::pSphere->SetPos(m_cDebug.nIdx, vTemp + m_vMove);
+#endif
 	if (GetKeyboardPress(DIK_Q) && GetKeyboardPress(DIK_E))
 	{
 		//if (m_fMoveSpeed > 0.0f)
@@ -805,9 +811,7 @@ void Player::Move(void)
 
 	// 移動制限処理
 	m_vPos.y = SetLimit(m_vPos.y, PLAYER_HEIGHT_MAX, PLAYER_HEIGHT_MIN);
-#ifdef _DEBUG
-	DebugObject::pSphere->SetPos(m_cDebug.nIdx, m_vPos);
-#endif
+
 	// 移動量に慣性をかける
 	m_vMove.x += (0.0f - m_vMove.x) * PLAYER_MOVE_INERTIA;
 	m_vMove.y += (0.0f - m_vMove.y) * PLAYER_MOVE_INERTIA;

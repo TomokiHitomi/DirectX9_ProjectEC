@@ -41,8 +41,8 @@ DebugSphere::DebugSphere(void)
 	// 管理用データの初期化
 	for (UINT i = 0; i < DEBUGSPHERE_MAX; i++)
 	{
-		m_tData[i].vPos = D3DXVECTOR3(i*50.0f, 0.0f, 0.0f);
-		m_tData[i].fSize = 50.0f;
+		m_tData[i].vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_tData[i].fSize = 0.0f;
 		m_tData[i].fUse = 0.0f;
 		m_tData[i].bUse = false;
 	}

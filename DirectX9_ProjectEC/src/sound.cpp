@@ -44,42 +44,42 @@ LPDWORD pdwCurrentWriteCursorSE[SOUND_SE_MAX];
 // サウンドファイルのパス（sound.hの通しナンバーと順番を合わせること）
 const TCHAR* c_soundFilename[] = {
 	// BGM
-	_T("data/SOUND/BGM/WhiteLily_WithoutV.wav"),
-	_T("data/SOUND/BGM/WhiteLily_Violin.wav"),
-	_T("data/SOUND/BGM/ED.wav"),
-	_T("data/SOUND/BGM/select.wav"),
-	_T("data/SOUND/BGM/result_BGM.wav"),
+	_T("data/sound/bgm/PerituneMaterial_Augury_loop.wav"),
+	_T("data/sound/bgm/WhiteLily_Violin.wav"),
+	_T("data/sound/bgm/ED.wav"),
+	_T("data/sound/bgm/select.wav"),
+	_T("data/sound/bgm/result_BGM.wav"),
 	// SE
-	_T("data/SOUND/SE/decision26.wav"),
-	_T("data/SOUND/SE/decision15.wav"),
-	_T("data/SOUND/SE/punch-swing1.wav"),
-	_T("data/SOUND/SE/bomb2.wav"),
-	_T("data/SOUND/SE/nyu3.wav"),
-	_T("data/SOUND/SE/robot-footstep2.wav"),
-	_T("data/SOUND/SE/ホイッスル・単発.wav"),
-	_T("data/SOUND/SE/ホイッスル・単発02.wav"),
-	_T("data/SOUND/SE/ホイッスル・連続.wav"),
-	_T("data/SOUND/SE/fire.wav"),
-	_T("data/SOUND/SE/fire1.wav"),
-	_T("data/SOUND/SE/water_suck.wav"),
-	_T("data/SOUND/SE/water1.wav"),
-	_T("data/SOUND/SE/water2.wav"),
-	_T("data/SOUND/SE/wind_suck.wav"),
-	_T("data/SOUND/SE/wind1.wav"),
-	_T("data/SOUND/SE/darararara_daaan.wav"),
-	_T("data/SOUND/SE/shizen_tinka.wav"),
-	_T("data/SOUND/SE/mizu_tinka.wav"),
-	_T("data/SOUND/SE/geme_start.wav"),
-	_T("data/SOUND/SE/geme_select.wav"),
-	_T("data/SOUND/SE/game_kettei.wav"),
-	_T("data/SOUND/SE/result_select.wav"),
-	_T("data/SOUND/SE/result_kettei.wav"),
-	_T("data/SOUND/SE/select_bubu.wav"),
+	_T("data/sound/se/decision26.wav"),
+	_T("data/sound/se/decision15.wav"),
+	_T("data/sound/se/punch-swing1.wav"),
+	_T("data/sound/se/bomb2.wav"),
+	_T("data/sound/se/nyu3.wav"),
+	_T("data/sound/se/robot-footstep2.wav"),
+	_T("data/sound/se/ホイッスル・単発.wav"),
+	_T("data/sound/se/ホイッスル・単発02.wav"),
+	_T("data/sound/se/ホイッスル・連続.wav"),
+	_T("data/sound/se/fire.wav"),
+	_T("data/sound/se/fire1.wav"),
+	_T("data/sound/se/water_suck.wav"),
+	_T("data/sound/se/water1.wav"),
+	_T("data/sound/se/water2.wav"),
+	_T("data/sound/se/wind_suck.wav"),
+	_T("data/sound/se/wind1.wav"),
+	_T("data/sound/se/darararara_daaan.wav"),
+	_T("data/sound/se/shizen_tinka.wav"),
+	_T("data/sound/se/mizu_tinka.wav"),
+	_T("data/sound/se/geme_start.wav"),
+	_T("data/sound/se/geme_select.wav"),
+	_T("data/sound/se/game_kettei.wav"),
+	_T("data/sound/se/result_select.wav"),
+	_T("data/sound/se/result_kettei.wav"),
+	_T("data/sound/se/select_bubu.wav"),
 	// VOICE
-	_T("data/SOUND/VOICE/start_voice.wav"),
-	_T("data/SOUND/VOICE/1_voice.wav"),
-	_T("data/SOUND/VOICE/2_voice.wav"),
-	_T("data/SOUND/VOICE/3_voice.wav")
+	_T("data/sound/voice/start_voice.wav"),
+	_T("data/sound/voice/1_voice.wav"),
+	_T("data/sound/voice/2_voice.wav"),
+	_T("data/sound/voice/3_voice.wav")
 };
 
 // グローバル変数
@@ -258,27 +258,25 @@ void UpdateSoundBgm(void)
 	switch (g_nBgmFlag)
 	{
 	case SOUND_BGM_NON:
-		SetBgmVol(BGM_WHITELILY_V_NON, false);
-		SetBgmVol(BGM_WHITELILY_V, false);
+
 		break;
 	case SOUND_BGM_TITLE:
-
+		SetBgmVol(BGM_GAME, true);
 		break;
 	case SOUND_BGM_SELECT:
 
 		break;
 	case SOUND_BGM_GAME:
+		SetBgmVol(BGM_GAME, true);
 		break;
 	case SOUND_BGM_RESULT:
 
 		break;
 	case SOUND_BGM_TEST1:
-		SetBgmVol(BGM_WHITELILY_V_NON, true);
-		SetBgmVol(BGM_WHITELILY_V, false);
+		SetBgmVol(BGM_GAME, true);
 		break;
 	case SOUND_BGM_TEST2:
-		SetBgmVol(BGM_WHITELILY_V_NON, true);
-		SetBgmVol(BGM_WHITELILY_V, true);
+		SetBgmVol(BGM_GAME, true);
 		break;
 	}
 }

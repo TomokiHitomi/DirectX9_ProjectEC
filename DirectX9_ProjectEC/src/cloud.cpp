@@ -104,7 +104,7 @@ HRESULT Cloud::Init(void)
 	if (FAILED(D3DXCreateTextureFromFile(pDevice,
 		CLOUD_TEXTURE,
 		&m_pTexture)))
-	{
+	{	
 		// エラー
 		MessageBox(NULL, "テクスチャの読み込みに失敗しました", CLOUD_TEXTURE, MB_OK);
 		return S_FALSE;

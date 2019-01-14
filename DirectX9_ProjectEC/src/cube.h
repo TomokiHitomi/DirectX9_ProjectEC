@@ -17,8 +17,8 @@
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define	CUBE_MODEL			"data/MODEL/cube.x"	// 読み込むモデル名
-#define	CUBE_TEXTURE		"data/MODEL/"	// 読み込むモデル名
+#define	CUBE_MODEL			"data/model/cube.x"	// 読み込むモデル名
+#define	CUBE_TEXTURE		"data/model/"	// 読み込むモデル名
 
 // モデルの最大数
 #define MODEL_CUBE_MAX			(1)

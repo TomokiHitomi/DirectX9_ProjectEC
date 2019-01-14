@@ -14,7 +14,7 @@
 // マクロ定義
 //*****************************************************************************
 // 読み込むテクスチャファイル名
-#define	CLOUD_TEXTURE			("data/TEXTURE/cloud2.png")
+#define	CLOUD_TEXTURE			("data/texture/cloud2.png")
 
 // テクスチャ内分割数
 #define CLOUD_TEXTURE_DIVIDE_X	(2)
@@ -24,17 +24,17 @@
 #define CLOUD_TEXTURE_NUM		(CLOUD_TEXTURE_DIVIDE_X * CLOUD_TEXTURE_DIVIDE_Y)
 
 // サイズ
-#define	CLOUD_SIZE					(150.0f)
-#define	CLOUD_SIZE_X				(CLOUD_SIZE)
-#define	CLOUD_SIZE_Y				(CLOUD_SIZE)
+#define	CLOUD_SIZE				(300.0f)
+#define	CLOUD_SIZE_X			(CLOUD_SIZE)
+#define	CLOUD_SIZE_Y			(CLOUD_SIZE)
 
 // 最大数
-#define CLOUD_MAX_X				(100)
-#define CLOUD_MAX_Y				(3)
-#define CLOUD_MAX_Z				(100)
+#define CLOUD_MAX_X				(70)
+#define CLOUD_MAX_Y				(2)
+#define CLOUD_MAX_Z				(70)
 #define CLOUD_MAX				(CLOUD_MAX_X * CLOUD_MAX_Y * CLOUD_MAX_Z)
 
-#define CLOUD_POS_MARGIN		(100.0f)
+#define CLOUD_POS_MARGIN		(150.0f)
 #define CLOUD_POS_MARGIN_Y		(30.0f)
 
 #define CLOUD_POS_RANDOM_VECTOR	(10.0f)

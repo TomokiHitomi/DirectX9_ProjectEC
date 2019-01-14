@@ -21,8 +21,8 @@
 
 // 球体のスライス・スタック数
 #define DEBUGSPHERE_RADIUS	(0.5f)
-#define DEBUGSPHERE_SLICE	(6)
-#define DEBUGSPHERE_STACK	(6)
+#define DEBUGSPHERE_SLICE	(10)
+#define DEBUGSPHERE_STACK	(10)
 
 //*****************************************************************************
 // 構造体定義

@@ -17,8 +17,8 @@
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define	STENCIL_TEXTURE		"data/TEXTURE/condition.png"	// 読み込むモデル名
-#define	STENCIL_TEXTURE2	"data/TEXTURE/sky1.jpg"	// 読み込むモデル名
+#define	STENCIL_TEXTURE		"data/texture/condition.png"	// 読み込むモデル名
+#define	STENCIL_TEXTURE2	"data/texture/sky1.jpg"	// 読み込むモデル名
 
 
 // モデルの最大数

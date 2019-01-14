@@ -17,7 +17,7 @@
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define SWORD_MODEL					("Espada.x")
+#define SWORD_MODEL					("data/model/sword/Espada.x")
 #define SWORD_MODEL_TEX				("Espada_AlbedoTransparency.png")
 
 #define SWORD_MAX					(50)

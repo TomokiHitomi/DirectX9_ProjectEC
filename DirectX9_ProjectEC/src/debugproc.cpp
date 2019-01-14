@@ -9,6 +9,7 @@
 #include "input.h"
 #include "scene.h"
 #include "calculate.h"
+#include "debugobject.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -78,6 +79,7 @@ void UpdateDebugProc(void)
 	if (GetKeyboardTrigger(DIK_F1))
 	{// デバッグ表示ON/OFF
 		g_bDispDebug = g_bDispDebug ? false : true;
+		DebugObject::SetUse(g_bDispDebug);
 	}
 	if (GetKeyboardPress(DIK_LSHIFT))
 	{

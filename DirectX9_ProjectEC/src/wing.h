@@ -17,8 +17,7 @@
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define WING_MODEL_DIR			("data/MODEL/wing")
-#define WING_MODEL				("data/MODEL/wing/wing.X")
+#define WING_MODEL				("data/model/wing/wing.X")
 
 #define WING_POS				(D3DXVECTOR3(0.0f, 0.0f, 2.0f))
 #define WING_ROT				(D3DXVECTOR3(2.1f, 0.0f, 0.0f))

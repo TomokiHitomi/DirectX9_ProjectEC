@@ -39,6 +39,8 @@ UINT                        g_NumBoneMatricesMax = 0;
 D3DXMATRIXA16*              g_pBoneMatrices = NULL;
 DWORD                       g_dwBehaviorFlags;      // Behavior flags of the 3D device
 
+CHAR						g_cDirPassSkin[256];
+
 
 bool		g_bUseSoftwareVP;	// Flag to indicate whether software vp is
 
@@ -249,10 +251,13 @@ HRESULT MY_HIERARCHY::CreateMeshContainer(
 				TCHAR strTexturePath[MAX_PATH];
 				//テクスチャのファイルパスを保存(再読み込み時に必要)
 				strcpy_s(strTexturePath, lstrlen(pMeshContainer->pMaterials[iMaterial].pTextureFilename) + 1, pMeshContainer->pMaterials[iMaterial].pTextureFilename);
+				CHAR TexMeshPass[255];
+				strcpy_s(TexMeshPass, sizeof(TexMeshPass), g_cDirPassSkin);
+				strcat_s(TexMeshPass, sizeof(TexMeshPass) - strlen(TexMeshPass) - strlen(strTexturePath) - 1, strTexturePath);
 				//テクスチャ情報の読み込み
 				if (FAILED(hr = D3DXCreateTextureFromFile(
 					pDevice,
-					strTexturePath,
+					TexMeshPass,
 					&pMeshContainer->ppTextures[iMaterial])))
 				{
 					////失敗時の処理
@@ -903,10 +908,25 @@ VOID CSkinMesh::FreeAnim(LPD3DXFRAME pFrame)
 //=============================================================================
 // 初期化関数
 //=============================================================================
-HRESULT CSkinMesh::Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass, LPSTR pDirPass) {
-	CHAR TmpMeshPass[255];
+HRESULT CSkinMesh::Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass) {
+	CHAR TmpMeshPass[256];
 	strcpy_s(TmpMeshPass, sizeof(TmpMeshPass) - 1, pMeshPass);
-	m_pDirPass = pDirPass;
+
+	int nSearch = 0;
+	for (int i = 256 - 1; i > 0; i--)
+	{
+		if (TmpMeshPass[i] == '/')
+		{
+			nSearch = i;
+			for (i = 0; i < nSearch + 1; i++)
+			{
+				g_cDirPassSkin[i] = TmpMeshPass[i];
+			}
+			g_cDirPassSkin[nSearch + 1] = NULL;
+			break;
+		}
+	}
+
 	// Xファイルからアニメーションメッシュを読み込み作成する
 	if (FAILED(
 		D3DXLoadMeshHierarchyFromX(
@@ -921,6 +941,8 @@ HRESULT CSkinMesh::Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass, LPSTR pD
 		MessageBox(NULL, "アニメーションXファイルの読み込みに失敗しました", TmpMeshPass, MB_OK);
 		return E_FAIL;
 	}
+
+	strcpy_s(g_cDirPassSkin, sizeof(g_cDirPassSkin) - 1, "\0");
 
 	// シェーダのアドレスを取得
 	pEffect = ShaderManager::GetEffect(ShaderManager::SKINMESH);

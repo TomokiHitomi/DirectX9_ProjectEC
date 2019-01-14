@@ -129,7 +129,7 @@ public:
 		Release();
 	}
 	//スキンメッシュ内部処理
-	HRESULT Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass, LPSTR pDirPass);
+	HRESULT Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass);
 	HRESULT AllocateBoneMatrix(LPD3DXFRAME pFrameRoot, LPD3DXMESHCONTAINER pMeshContainerBase);
 	HRESULT AllocateAllBoneMatrices(LPD3DXFRAME pFrameRoot, LPD3DXFRAME pFrameBase);
 	VOID RenderMeshContainer(LPDIRECT3DDEVICE9 lpD3DDevice, D3DXMESHCONTAINER_DERIVED*, D3DXFRAME_DERIVED*);
@@ -216,8 +216,5 @@ private:
 	FLOAT	m_fShiftTime;			// シフトするのにかかる時間
 	FLOAT	m_fCurWeight;			// 現在のウェイト時間
 	DWORD	m_OldTrack;				// 変更前アニメーショントラック
-
-	// 格納パス
-	LPSTR	m_pDirPass;
 };
 #endif

@@ -26,15 +26,16 @@
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define PLAYER_MODEL_DIR			("data/MODEL/haku")
-#define PLAYER_MODEL				("data/MODEL/haku/haku.X")
+#define PLAYER_MODEL				("data/model/haku/haku.X")
 
 #define PLAYER_POS					(D3DXVECTOR3(0.0f,250.0f,500.0f))
 #define PLAYER_ROT					(D3DXVECTOR3(D3DX_PI / 2, 0.0f, 0.0f))
 #define PLAYER_SCL					(20.0f)
 
 #define PLAYER_HEIGHT				(30.0f)
-#define PLAYER_COLLISION_HEIGHT		(20.0f)
+
+#define PLAYER_COLLISION_Y			(20.0f)
+#define PLAYER_COLLISION_POS		(D3DXVECTOR3(0.0f, PLAYER_COLLISION_Y, 0.0f))
 #define PLAYER_COLLISION_SIZE		(30.0f)
 
 // モデルのボーン名
@@ -159,7 +160,7 @@ private:
 	D3DXVECTOR3		m_vZ;
 
 	D3DXMATRIX		m_mtxWorld;				// ワールドマトリクス
-	D3DXMATRIX		m_mtxWorldWing;			// ワールドマトリクス
+	D3DXMATRIX*		m_pMtxTorso;			// ワールドマトリクス
 
 	MODE			m_eMode;
 	MODE			m_eModeNext;

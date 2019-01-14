@@ -18,6 +18,8 @@
 #include "debugproc.h"
 #endif
 
+CHAR						g_cDirPassX[256];
+
 //=============================================================================
 // コンストラクタ（初期化処理）
 //=============================================================================
@@ -57,6 +59,20 @@ HRESULT CXModel::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pMeshPass, LPSTR pTexPass
 
 	if (pTexPass == NULL)
 	{
+		int nSearch = 0;
+		for (int i = 256 - 1; i > 0; i--)
+		{
+			if (pMeshPass[i] == '/')
+			{
+				nSearch = i;
+				for (i = 0; i < nSearch + 1; i++)
+				{
+					g_cDirPassX[i] = pMeshPass[i];
+				}
+				g_cDirPassX[nSearch + 1] = NULL;
+				break;
+			}
+		}
 		// マテリアル情報を取り出す
 		D3DXMATERIAL*	d3Mat = (D3DXMATERIAL*)pBuffMat->GetBufferPointer();
 		//ppMat = new D3DMATERIAL9[dwNumMat];				// メッシュ情報を確保
@@ -71,10 +87,13 @@ HRESULT CXModel::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pMeshPass, LPSTR pTexPass
 			if (d3Mat[i].pTextureFilename != NULL &&
 				lstrlen(d3Mat[i].pTextureFilename) > 0)
 			{
+				CHAR TexMeshPass[255];
+				strcpy_s(TexMeshPass, sizeof(TexMeshPass), g_cDirPassX);
+				strcat_s(TexMeshPass, sizeof(TexMeshPass) - strlen(TexMeshPass) - strlen(d3Mat[i].pTextureFilename) - 1, d3Mat[i].pTextureFilename);
 				// テクスチャ読み込み
 				if (FAILED(D3DXCreateTextureFromFile(
 					pDevice,
-					d3Mat[i].pTextureFilename,
+					TexMeshPass,
 					&ppTexture[i])))
 				{
 					MessageBox(NULL, "Xファイルのテクスチャ読み込みに失敗しました", pTexPass, MB_OK);
@@ -82,6 +101,7 @@ HRESULT CXModel::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pMeshPass, LPSTR pTexPass
 				}
 			}
 		}
+		strcpy_s(g_cDirPassX, sizeof(g_cDirPassX) - 1, "\0");
 	}
 	else
 	{
