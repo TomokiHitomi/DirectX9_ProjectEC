@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\camera.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\effect.h">
+      <Filter>effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\joycon.h">
+      <Filter>input\joycon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\calculate.h">
+      <Filter>tool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debugobject.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debugproc.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debugsphere.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\result.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\title.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shader.h">
+      <Filter>shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\light.h">
+      <Filter>light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkinMeshX.h">
+      <Filter>tool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XModel.h">
+      <Filter>tool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XTexture.h">
+      <Filter>tool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\player.h">
+      <Filter>object\player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sword.h">
+      <Filter>object\player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wing.h">
+      <Filter>object\player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wing_feather.h">
+      <Filter>object\player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stage.h">
+      <Filter>object\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\skydome.h">
+      <Filter>object\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cloud.h">
+      <Filter>object\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cube.h">
+      <Filter>object\test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sound.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fade.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stencil.h">
+      <Filter>object\test</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\camera.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect.cpp">
+      <Filter>effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\joycon.cpp">
+      <Filter>input\joycon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\calculate.cpp">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugobject.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugproc.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugsphere.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\result.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\title.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.cpp">
+      <Filter>shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\light.cpp">
+      <Filter>light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkinMeshX.cpp">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XModel.cpp">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XTexture.cpp">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\player.cpp">
+      <Filter>object\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sword.cpp">
+      <Filter>object\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wing.cpp">
+      <Filter>object\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wing_feather.cpp">
+      <Filter>object\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stage.cpp">
+      <Filter>object\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\skydome.cpp">
+      <Filter>object\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cloud.cpp">
+      <Filter>object\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cube.cpp">
+      <Filter>object\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sound.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fade.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stencil.cpp">
+      <Filter>object\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="camera">
+      <UniqueIdentifier>{b43d8b49-03f7-4051-8469-eb1733e1e408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="effect">
+      <UniqueIdentifier>{e30f2ef8-141f-4bbc-bbcf-e79f872545ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{95ec55e9-554f-4038-87c5-6abcb7c47fec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joycon">
+      <UniqueIdentifier>{0cca60d1-2430-4e94-b614-09a7f57680a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tool">
+      <UniqueIdentifier>{3a074a0d-ae3d-4e4a-b4a4-2b4015072707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debug">
+      <UniqueIdentifier>{524c422a-6cbb-41a0-bb27-a51a939735a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object">
+      <UniqueIdentifier>{f694f4da-bc17-4224-865c-d3187aac4fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{bf96b060-6551-4d91-a243-9d85698785da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{8192202d-4da9-4513-bdbb-0eb69693fee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="light">
+      <UniqueIdentifier>{ca1d7382-38c4-4082-bb09-8607cd59c6ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{c5d3a202-d16b-4ed9-9cc8-165e873ccd96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\player">
+      <UniqueIdentifier>{86ac861f-25cf-4d8d-94d9-8fbb290eb53c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\stage">
+      <UniqueIdentifier>{f87c463f-9ef5-4c24-a06f-be1ed3af4a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\test">
+      <UniqueIdentifier>{bdc4995a-9ac3-44dd-b918-570df3b7d36f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{7d9efcfe-60cc-4626-9d67-e6ccd313203a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\fx">
+      <UniqueIdentifier>{a7f7d7ea-9e5b-4c2a-8e99-948054777d4f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\SHADER\plane.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\billboard.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\box.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\cloud.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\debugsphere.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\skinassimp.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\skinmesh.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\skinpmx.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\sprite.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\wing_feather.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\SHADER\xmodel.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
