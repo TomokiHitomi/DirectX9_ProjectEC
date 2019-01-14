@@ -19,7 +19,7 @@
 // モデル
 #define	SKYDOME_MODEL		"data/model/skydome/skydome.x"	// 読み込むモデル名
 //#define	SKYDOME_TEXTURE		"data/model/Skydome/incskies_014_8k.png"	// 読み込むモデル名
-#define	SKYDOME_TEXTURE		"data/model/skydome/MM901.jpg"	// 読み込むモデル名
+#define	SKYDOME_TEXTURE		"data/model/skydome/MM901.png"	// 読み込むモデル名
 
 // モデルの最大数
 #define MODEL_SKYDOME_MAX			(1)
