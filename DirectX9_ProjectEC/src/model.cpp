@@ -1,27 +1,15 @@
 //=============================================================================
 //
-// ゲーム処理 [game.cpp]
+// モデル処理 [model.cpp]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#include "game.h"
+#include "main.h"
+#include "model.h"
 
-/* 全体で必要なインクルード */
-#include "input.h"
-#include "camera.h"
-#include "sound.h"
-
-/* ゲームで必要なインクルード */
-#include "fade.h"
-#include "player.h"
-#include "stage.h"
-#include "cube.h"
-#include "effect.h"
-
-/* デバッグ */
+// デバッグ用
 #ifdef _DEBUG
 #include "debugproc.h"
-#include "debugobject.h"
 #endif
 
 //*****************************************************************************
@@ -35,50 +23,56 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-extern SceneManager		g_cScene;				// Sceneマネージャ
+bool ModelManager::m_bUse = true;
 
 //=============================================================================
-// 更新処理
+// コンストラクタ（初期化処理）
 //=============================================================================
-void GameScene::Update(void)
+ModelManager::ModelManager(void)
 {
-	ObjectManager::UpdateAll();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	for (unsigned int i = 0; i < MODEL_MAX; i++)
+	{
+		m_CSkinMesh[i] = NULL;
+		if (ModelManager::m_bUse)
+		{
+			m_CSkinMesh[i] = new CSkinMesh;
+		}
+	}
+
+	if (ModelManager::m_bUse)
+	{
+		m_CSkinMesh[PLAYER]->Init(pDevice, (LPSTR)MODEL_PLAYER);
+		m_CSkinMesh[WING]->Init(pDevice, (LPSTR)MODEL_WING);
+	}
 }
 
 //=============================================================================
-// 描画処理
+// デストラクタ（終了処理）
 //=============================================================================
-void GameScene::Draw(void)
+ModelManager::~ModelManager(void)
 {
-	ObjectManager::DrawAll();
+	for (unsigned int i = 0; i < MODEL_MAX; i++)
+	{
+		SAFE_DELETE(m_CSkinMesh[i]);
+		//if(!m_CSkinMesh[i])
+		//delete m_CSkinMesh[i];
+		//m_CSkinMesh[i] = NULL;
+	}
 }
 
 //=============================================================================
-// コンストラクタ処理（初期化）
+// キャラクターデータの取得処理
 //=============================================================================
-GameScene::GameScene(void)
+CSkinMesh *ModelManager::GetCharData(ModelManager::MODEL eModel)
 {
-#ifdef _DEBUG
-	ObjectManager::CreateObject<DebugObject>();
-#endif
-	ObjectManager::CreateObject<PlayerManager>();
-	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<Cube>();
-	ObjectManager::CreateObject<EffectManager>();
-}
-
-//=============================================================================
-// デストラクタ処理（終了）
-//=============================================================================
-GameScene::~GameScene(void)
-{
-	ObjectManager::ReleaseAll();
-}
-
-//=============================================================================
-// ゲーム停止メソッド
-//=============================================================================
-bool GameScene::GameStop(void)
-{
-	return 0;
+	if (ModelManager::m_bUse)
+	{
+		return m_CSkinMesh[eModel];
+	}
+	else
+	{
+		return NULL;
+	}
 }

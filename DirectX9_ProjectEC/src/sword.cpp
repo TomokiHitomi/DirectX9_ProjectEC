@@ -50,6 +50,7 @@ Sword::Sword(void)
 	m_fRot = 0.01f;
 	m_fRotSpeed = SWORD_ROT_SPEED_MAX;
 	m_fMorph = 0.0f;
+	m_bUse = true;
 
 	for (unsigned int i = 0; i < SWORD_MAX + 1; i++)
 	{
@@ -86,10 +87,6 @@ Sword::Sword(void)
 	WorldConvert(&m_mtxSword, pos, rot, m_vScl);
 
 	m_nCntMax = m_nCnt;
-
-
-
-
 }
 
 //=============================================================================
@@ -123,7 +120,6 @@ void Sword::Update(void)
 		// ソードの更新処理
 		D3DXVECTOR3 temp,posTemp, posTarget,vUp;
 		D3DXMATRIX mtxTemp;
-
 
 		// テスト用：プレイヤーのポインタを取得して、上半身２のマトリクスを取得
 		//Player *pPlayer = ObjectManager::GetObjectPointer<Player>(ObjectManager::PLAYER);

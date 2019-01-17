@@ -41,19 +41,9 @@
 BaseScene *SceneManager::m_pScene = NULL;
 ShaderManager		*SceneManager::ShaderMgr = NULL;
 CameraManager		*SceneManager::CameraMgr = NULL;
-
+ModelManager		*SceneManager::ModelMgr = NULL;
 
 SceneManager::SCENE	SceneManager::m_eScene;
-float				SceneManager::m_fRate;
-float				SceneManager::m_fRateInBonus;
-int					SceneManager::m_nWin;
-int					SceneManager::m_nAiLevel;
-int					SceneManager::m_nPlayerNum;
-int					SceneManager::m_nPlayerType;
-
-int					SceneManager::m_nTotalBurnBonus;
-int					SceneManager::m_nTotalWetBonus;
-int					SceneManager::m_nTotalBurnChain;
 
 //=============================================================================
 // シーン管理処理
@@ -111,6 +101,9 @@ void SceneManager::Init(HINSTANCE hInst, HWND hWnd)
 	// シェーダマネージャを実体化
 	ShaderMgr = new ShaderManager;
 
+	// モデルマネージャを実体化
+	ModelMgr = new ModelManager;
+
 	ChangeScene(m_eScene);	// 初期シーン設定
 
 #ifdef _DEBUG
@@ -133,6 +126,7 @@ void SceneManager::Uninit(void)
 #endif
 	SAFE_DELETE(CameraMgr);
 	SAFE_DELETE(ShaderMgr);
+	SAFE_DELETE(ModelMgr);
 }
 
 //=============================================================================
@@ -175,15 +169,8 @@ void SceneManager::Draw(void)
 //=============================================================================
 SceneManager::SceneManager(void)
 {
-
-
 	// 各変数を初期化
-	m_nWin = 0;				// 勝利プレイヤー
-	m_nAiLevel = 0;			// AIの強さ
-	m_fRate = 0.0f;			// 残存割合
-	m_fRateInBonus = 0.0f;	// 残存割合（ボーナス込み）
-	m_nPlayerNum = 0;		// プレイヤー人数
-	m_nPlayerType = 0;		// プレイヤータイプ
+
 }
 
 //=============================================================================
@@ -256,10 +243,6 @@ void SceneManager::DebugScene(void)
 		break;
 	}
 
-
-	// プレイヤー人数、コントローラー番号、残存割合を表示
-	PrintDebugProc("Rate[%f]  1P:Num[%d]  Type[%d]\n",
-		m_fRate, m_nPlayerNum, m_nPlayerType);
 
 	//PrintDebugProc("【 Result 】\n");
 	//PrintDebugProc("Rate [%f]  ", GetStageRate());

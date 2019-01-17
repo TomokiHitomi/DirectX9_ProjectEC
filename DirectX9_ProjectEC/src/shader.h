@@ -12,13 +12,8 @@
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
-#define SHADER_FILE_BILLBOARD		("data/shader/billboard.fx")
 #define SHADER_FILE_XMODEL			("data/shader/xmodel.fx")
-#define SHADER_FILE_SKINPMX			("data/shader/skinpmx.fx")
-#define SHADER_FILE_SKINASSIMP		("data/shader/skinassimp.fx")
 #define SHADER_FILE_SKINMESH		("data/shader/skinmesh.fx")
-#define SHADER_FILE_PLANE			("data/shader/plane.fx")
-#define SHADER_FILE_BOX				("data/shader/box.fx")
 #define SHADER_FILE_WING_FEATHER	("data/shader/wing_feather.fx")
 #define SHADER_FILE_CLOUD			("data/shader/cloud.fx")
 #define SHADER_FILE_DEBUGSPHERE		("data/shader/debugsphere.fx")
@@ -50,13 +45,8 @@ class ShaderManager
 public:
 	enum FILE
 	{
-		BILLBOARD,
 		XMODEL,
-		SKINASSIMP,
-		SKINPMX,
 		SKINMESH,
-		PLANE,
-		BOX,
 		WING_FEATHER,
 		CLOUD,
 		DEBUGSPHERE,

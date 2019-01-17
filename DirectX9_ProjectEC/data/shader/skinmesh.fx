@@ -270,22 +270,27 @@ technique t0
 
 	pass p0
 	{
-		// 両面描画
-		//CullMode = None;
-		BLENDOPALPHA = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = INVSRCALPHA;			// DESTをそのまま描画
-		ZWRITEENABLE = TRUE;		// 深度バッファへの書き込みを無効
+		// カリングモード = NONE（両面描画）
+		//CULLMODE = NONE;
 
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
-		FILLMODE = SOLID;		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		// アルファブレンド = 無効（標準
+		ALPHABLENDENABLE = FALSE;
+		//// アルファブレンドオプション = 転送元 + 転送先（標準）
+		//BLENDOPALPHA = ADD;
+
+		// 新規ブレンド = 係数(1, 1, 1, 1)（標準）
+		SRCBLEND = ONE;
+		// 既存ブレンド = 係数(0, 0, 0, 0)（標準）
+		DESTBLEND = ZERO;
+
+		// 深度バッファへの書き込み = 有効（標準）
+		ZWRITEENABLE = TRUE;
 
 		VertexShader = (vsArray[CurNumBones]);
 		PixelShader = compile ps_3_0 ps_nomal();
-		// 裏面カリング
-		//CullMode = CCW;
-
-
 	}
 }
 

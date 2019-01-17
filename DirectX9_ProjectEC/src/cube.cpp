@@ -39,7 +39,7 @@ Cube::Cube(void)
 	SetIdAndPriority(ObjectID::CUBE, Priority::Low, Priority::Middle);
 
 	// 各プロパティの初期化
-	m_tagProp.vPos = D3DXVECTOR3(0.0f, 250.0f, 0.0f);
+	m_tagProp.vPos = D3DXVECTOR3(0.0f, 350.0f, 0.0f);
 	m_tagProp.vRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_tagProp.vScl = D3DXVECTOR3(MODEL_CUBE_SCL, MODEL_CUBE_SCL, MODEL_CUBE_SCL);
 	m_tagProp.bUse = true;

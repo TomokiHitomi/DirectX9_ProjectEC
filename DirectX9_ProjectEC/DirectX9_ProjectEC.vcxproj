@@ -35,6 +35,7 @@
     <ClInclude Include="src\debugproc.h" />
     <ClInclude Include="src\debugsphere.h" />
     <ClInclude Include="src\effect.h" />
+    <ClInclude Include="src\enemy.h" />
     <ClInclude Include="src\fade.h" />
     <ClInclude Include="src\file.h" />
     <ClInclude Include="src\game.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="src\joycon.h" />
     <ClInclude Include="src\light.h" />
     <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\model.h" />
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\result.h" />
@@ -52,7 +54,6 @@
     <ClInclude Include="src\skydome.h" />
     <ClInclude Include="src\sound.h" />
     <ClInclude Include="src\stage.h" />
-    <ClInclude Include="src\stencil.h" />
     <ClInclude Include="src\sword.h" />
     <ClInclude Include="src\title.h" />
     <ClInclude Include="src\wing.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="src\debugproc.cpp" />
     <ClCompile Include="src\debugsphere.cpp" />
     <ClCompile Include="src\effect.cpp" />
+    <ClCompile Include="src\enemy.cpp" />
     <ClCompile Include="src\fade.cpp" />
     <ClCompile Include="src\file.cpp" />
     <ClCompile Include="src\game.cpp" />
@@ -82,6 +84,7 @@
     <ClCompile Include="src\joycon.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\result.cpp" />
@@ -91,7 +94,6 @@
     <ClCompile Include="src\skydome.cpp" />
     <ClCompile Include="src\sound.cpp" />
     <ClCompile Include="src\stage.cpp" />
-    <ClCompile Include="src\stencil.cpp" />
     <ClCompile Include="src\sword.cpp" />
     <ClCompile Include="src\title.cpp" />
     <ClCompile Include="src\wing.cpp" />
@@ -100,18 +102,6 @@
     <ClCompile Include="src\XTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="data\SHADER\billboard.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\box.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="data\SHADER\cloud.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -124,31 +114,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="data\SHADER\plane.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\skinassimp.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="data\SHADER\skinmesh.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\skinpmx.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\sprite.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>

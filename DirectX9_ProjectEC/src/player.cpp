@@ -12,6 +12,7 @@
 #include "cube.h"
 #include "sound.h"
 #include "file.h"
+#include "scene.h"
 
 
 // デバッグ用
@@ -58,8 +59,9 @@ Player::Player(void)
 
 	// モデルの初期化
 	m_CSkinMesh = NULL;
-	m_CSkinMesh = new CSkinMesh;
-	m_CSkinMesh->Init(pDevice, (LPSTR)PLAYER_MODEL);
+	m_CSkinMesh = SceneManager::ModelMgr->GetCharData(ModelManager::PLAYER);
+	//m_CSkinMesh = new CSkinMesh;
+	//m_CSkinMesh->Init(pDevice, (LPSTR)PLAYER_MODEL);
 	ChangeAnimSpeed(PLAYER_ANIM_SPEED_DEF);
 
 	// ウィングの初期化
@@ -174,8 +176,8 @@ void Player::WriteFile(void)
 Player::~Player(void)
 {
 	// スキンメッシュの解放
-	SAFE_RELEASE(m_CSkinMesh);
-	SAFE_DELETE(m_CSkinMesh);
+	//SAFE_RELEASE(m_CSkinMesh);
+	//SAFE_DELETE(m_CSkinMesh);
 
 	// ウィングの解放
 	SAFE_DELETE(m_cWing);
@@ -442,24 +444,6 @@ void Player::Float(void)
 	m_vRot.x = m_vRot.x + ((m_vRotIner.x - m_vRot.x) * 0.05f);
 	m_vRot.y = m_vRot.y + ((m_vRotIner.y - m_vRot.y) * 0.05f);
 
-
-
-	if (GetKeyboardPress(DIK_SPACE) && GetKeyboardPress(DIK_LSHIFT))
-	{
-		m_fRiseSpeed = max(m_fRiseSpeed - 0.5f, -10.0f);
-	}
-	else if (GetKeyboardPress(DIK_SPACE))
-	{
-		m_fRiseSpeed = min(m_fRiseSpeed + 0.5f, PLAYER_MOVE_SPEED_MAX);
-	}
-	else
-	{
-		if (m_fRiseSpeed > 0.0f)
-			m_fRiseSpeed = max(m_fRiseSpeed - 0.2f, 0.0f);
-		else if (m_fRiseSpeed < 0.0f)
-			m_fRiseSpeed = min(m_fRiseSpeed + 0.2f, 0.0f);
-	}
-
 	D3DXVECTOR3 vTa = D3DXVECTOR3(0.0f,1.0f,0.0f);
 	D3DXVECTOR3 vAxis =
 		D3DXVECTOR3(cosf(m_vRot.y), 0.0f, sinf(m_vRot.y));
@@ -526,6 +510,23 @@ void Player::Float(void)
 	else if (InputPress(INPUT_DOWN))
 	{// 後移動
 		m_vMove = m_vZ * m_fMoveSpeed;
+	}
+
+	// 上昇・下降処理
+	if (GetKeyboardPress(DIK_SPACE) && GetKeyboardPress(DIK_LSHIFT))
+	{
+		m_fRiseSpeed = max(m_fRiseSpeed - 0.5f, -10.0f);
+	}
+	else if (GetKeyboardPress(DIK_SPACE))
+	{
+		m_fRiseSpeed = min(m_fRiseSpeed + 0.5f, PLAYER_MOVE_SPEED_MAX);
+	}
+	else
+	{
+		if (m_fRiseSpeed > 0.0f)
+			m_fRiseSpeed = max(m_fRiseSpeed - 0.2f, 0.0f);
+		else if (m_fRiseSpeed < 0.0f)
+			m_fRiseSpeed = min(m_fRiseSpeed + 0.2f, 0.0f);
 	}
 
 	m_vMove.y = m_fRiseSpeed;
@@ -628,24 +629,6 @@ void Player::Lockon(void)
 	// ウィングのアニメーションをセット
 	m_cWing->SetAnim(WING_ANIM_CLOSE);
 
-	if (GetKeyboardPress(DIK_SPACE) && GetKeyboardPress(DIK_LSHIFT))
-	{
-		m_fRiseSpeed = max(m_fRiseSpeed - 0.5f, -10.0f);
-	}
-	else if (GetKeyboardPress(DIK_SPACE))
-	{
-		m_fRiseSpeed = min(m_fRiseSpeed + 0.5f, PLAYER_MOVE_SPEED_MAX);
-	}
-	else
-	{
-		if (m_fRiseSpeed > 0.0f)
-			m_fRiseSpeed = max(m_fRiseSpeed - 0.2f, 0.0f);
-		else if (m_fRiseSpeed < 0.0f)
-			m_fRiseSpeed = min(m_fRiseSpeed + 0.2f, 0.0f);
-	}
-
-	m_vPos.y += m_fRiseSpeed;
-
 	// Ｙベクトルを上に向ける
 	m_vY = m_vY + (D3DXVECTOR3(0.0f, 1.0f, 0.0f) - m_vY) * 0.1f;
 
@@ -654,8 +637,6 @@ void Player::Lockon(void)
 	vLook *= -1.0f;
 
 	D3DXVec3Normalize(&vLook, &vLook);
-
-
 	m_vZ = m_vZ + (vLook - m_vZ) * 0.1f;
 
 
@@ -728,6 +709,25 @@ void Player::Lockon(void)
 		//m_vPos += m_vZ * m_fMoveSpeed;
 		m_vMove = m_vZ * m_fMoveSpeed;
 	}
+
+	// 上昇・下降処理
+	if (GetKeyboardPress(DIK_SPACE) && GetKeyboardPress(DIK_LSHIFT))
+	{
+		m_fRiseSpeed = max(m_fRiseSpeed - 0.5f, -10.0f);
+	}
+	else if (GetKeyboardPress(DIK_SPACE))
+	{
+		m_fRiseSpeed = min(m_fRiseSpeed + 0.5f, PLAYER_MOVE_SPEED_MAX);
+	}
+	else
+	{
+		if (m_fRiseSpeed > 0.0f)
+			m_fRiseSpeed = max(m_fRiseSpeed - 0.2f, 0.0f);
+		else if (m_fRiseSpeed < 0.0f)
+			m_fRiseSpeed = min(m_fRiseSpeed + 0.2f, 0.0f);
+	}
+
+	m_vMove.y += m_fRiseSpeed;
 
 
 	// 移動を適用

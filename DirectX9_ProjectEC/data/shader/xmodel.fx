@@ -177,7 +177,6 @@ float4 ps_light_off(VS_OUT In) : COLOR0
 	return In.col;
 }
 
-
 //=============================================================================
 // テクニック
 //=============================================================================
@@ -185,11 +184,21 @@ technique LIGHT_ON_TEX
 {
 	pass p0
 	{
-		BLENDOPALPHA = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = INVSRCALPHA;			// DESTをそのまま描画
-		ZWRITEENABLE = TRUE;		// 深度バッファへの書き込みを無効
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
+		// アルファブレンド = 無効（標準
+		ALPHABLENDENABLE = FALSE;
+		//// アルファブレンドオプション = 転送元 + 転送先（標準）
+		//BLENDOPALPHA = ADD;
+
+		// 新規ブレンド = 係数(1, 1, 1, 1)（標準）
+		SRCBLEND = ONE;
+		// 既存ブレンド = 係数(0, 0, 0, 0)（標準）
+		DESTBLEND = ZERO;
+
+		// 深度バッファへの書き込み = 有効（標準）
+		ZWRITEENABLE = TRUE;
 		VertexShader = compile vs_3_0 vs_light_on();
 		PixelShader = compile ps_3_0 ps_light_on_tex();
 	}
@@ -199,11 +208,21 @@ technique LIGHT_OFF_TEX
 {
 	pass p0
 	{
-		BLENDOPALPHA = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = INVSRCALPHA;			// DESTをそのまま描画
-		ZWRITEENABLE = TRUE;		// 深度バッファへの書き込みを無効
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
+		// アルファブレンド = 無効（標準
+		ALPHABLENDENABLE = FALSE;
+		//// アルファブレンドオプション = 転送元 + 転送先（標準）
+		//BLENDOPALPHA = ADD;
+
+		// 新規ブレンド = 係数(1, 1, 1, 1)（標準）
+		SRCBLEND = ONE;
+		// 既存ブレンド = 係数(0, 0, 0, 0)（標準）
+		DESTBLEND = ZERO;
+
+		// 深度バッファへの書き込み = 有効（標準）
+		ZWRITEENABLE = TRUE;
 		VertexShader = compile vs_3_0 vs_light_off();
 		PixelShader = compile ps_3_0 ps_light_off_tex();
 	}
@@ -213,11 +232,21 @@ technique LIGHT_ON
 {
 	pass p0
 	{
-		BLENDOPALPHA = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = INVSRCALPHA;			// DESTをそのまま描画
-		ZWRITEENABLE = TRUE;		// 深度バッファへの書き込みを無効
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
+		// アルファブレンド = 無効（標準
+		ALPHABLENDENABLE = FALSE;
+		//// アルファブレンドオプション = 転送元 + 転送先（標準）
+		//BLENDOPALPHA = ADD;
+
+		// 新規ブレンド = 係数(1, 1, 1, 1)（標準）
+		SRCBLEND = ONE;
+		// 既存ブレンド = 係数(0, 0, 0, 0)（標準）
+		DESTBLEND = ZERO;
+
+		// 深度バッファへの書き込み = 有効（標準）
+		ZWRITEENABLE = TRUE;
 		VertexShader = compile vs_3_0 vs_light_on();
 		PixelShader = compile ps_3_0 ps_light_on();
 	}
@@ -227,11 +256,21 @@ technique LIGHT_OFF
 {
 	pass p0
 	{
-		BLENDOPALPHA = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = INVSRCALPHA;			// DESTをそのまま描画
-		ZWRITEENABLE = TRUE;		// 深度バッファへの書き込みを無効
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
+		// アルファブレンド = 無効（標準
+		ALPHABLENDENABLE = FALSE;
+		//// アルファブレンドオプション = 転送元 + 転送先（標準）
+		//BLENDOPALPHA = ADD;
+
+		// 新規ブレンド = 係数(1, 1, 1, 1)（標準）
+		SRCBLEND = ONE;
+		// 既存ブレンド = 係数(0, 0, 0, 0)（標準）
+		DESTBLEND = ZERO;
+
+		// 深度バッファへの書き込み = 有効（標準）
+		ZWRITEENABLE = TRUE;
 		VertexShader = compile vs_3_0 vs_light_off();
 		PixelShader = compile ps_3_0 ps_light_off();
 	}

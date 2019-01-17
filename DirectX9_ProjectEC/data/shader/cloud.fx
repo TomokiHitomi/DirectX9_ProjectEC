@@ -113,43 +113,23 @@ technique Tec01		// テクスチャ描画
 {
 	pass p0
 	{
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
-		//Blendop = ADD;			// SRC(これから描画する側) + DEST(既に描画されてる側)
-		//SrcBlend = SRCALPHA;
-		//DestBlend = ONE;			// DESTをそのまま描画
-		//ZWriteEnable = FALSE;		// 深度バッファへの書き込みを無効
-		//ZWRITEENABLE = FALSE;
+		// アルファブレンド = 有効
+		ALPHABLENDENABLE = TRUE;
+		// アルファブレンドオプション = MAX(転送元, 転送先)
+		BLENDOP = MAX;
 
-		//// αブレンドの有効
-		//AlphaBlendEnable = true;	// α合成を使用
+		// 新規ブレンド = 係数(As, As, As, As)
+		SRCBLEND = SRCALPHA;
+		// 既存ブレンド = 係数(1, 1, 1, 1)
+		DESTBLEND = ONE;
 
-
-		//// αテスト
-		//AlphaTestEnable = true;
-		//AlphaFunc = Greater;
-		//AlphaRef = <alphaRef>;
-
-
-		//BLENDOP = MAX;
-		BLENDOPALPHA = MAX;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = ONE;			// DESTをそのまま描画
-		ZWRITEENABLE = FALSE;		// 深度バッファへの書き込みを無効
-		//AlphaBlendEnable = true;	// α合成を使用
+		// 深度バッファへの書き込み = 無効
+		ZWRITEENABLE = FALSE;
 
 		VertexShader = compile vs_3_0 vs_main();
 		PixelShader = compile ps_3_0 ps_nomal();
-
-		//ZWriteEnable = TRUE;		// 深度バッファへの書き込みを無効
-		//AlphaBlendEnable = FALSE;	// α合成を使用
-
-
-		//AlphaBlendEnable = false;
-		//DestBlend = INVSRCALPHA;			// DESTをそのまま描画
-		//SrcBlend = SRCALPHA;
-
-		//SrcBlend = SRCALPHA;		// SRCを半透明合成
-		//DestBlend = INVSRCALPHA;	// DESTをそのまま描画
-		//ZWriteEnable = true;		// 深度バッファへの書き込みを有効
 	}
 }

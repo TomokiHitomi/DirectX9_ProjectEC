@@ -89,9 +89,6 @@
     <ClInclude Include="src\fade.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="src\stencil.h">
-      <Filter>object\test</Filter>
-    </ClInclude>
     <ClInclude Include="src\gui.h">
       <Filter>debug</Filter>
     </ClInclude>
@@ -118,6 +115,12 @@
     </ClInclude>
     <ClInclude Include="src\file.h">
       <Filter>tool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model.h">
+      <Filter>object\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\enemy.h">
+      <Filter>object\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,9 +212,6 @@
     <ClCompile Include="src\fade.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="src\stencil.cpp">
-      <Filter>object\test</Filter>
-    </ClCompile>
     <ClCompile Include="src\gui.cpp">
       <Filter>debug</Filter>
     </ClCompile>
@@ -229,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="src\file.cpp">
       <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model.cpp">
+      <Filter>object\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\enemy.cpp">
+      <Filter>object\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,9 +271,6 @@
     <Filter Include="system">
       <UniqueIdentifier>{c5d3a202-d16b-4ed9-9cc8-165e873ccd96}</UniqueIdentifier>
     </Filter>
-    <Filter Include="object\player">
-      <UniqueIdentifier>{86ac861f-25cf-4d8d-94d9-8fbb290eb53c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="object\stage">
       <UniqueIdentifier>{f87c463f-9ef5-4c24-a06f-be1ed3af4a38}</UniqueIdentifier>
     </Filter>
@@ -283,33 +286,24 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{63ce9fcf-9295-4d0a-92ca-e76d459a0e6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="object\model">
+      <UniqueIdentifier>{0110203c-772a-4ffb-b633-f3382928d668}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\player">
+      <UniqueIdentifier>{86ac861f-25cf-4d8d-94d9-8fbb290eb53c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\enemy">
+      <UniqueIdentifier>{a6ff9f41-a4e4-40db-8720-3784d837cf78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="data\SHADER\plane.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\billboard.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\box.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
     <FxCompile Include="data\SHADER\cloud.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
     <FxCompile Include="data\SHADER\debugsphere.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
-    <FxCompile Include="data\SHADER\skinassimp.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
     <FxCompile Include="data\SHADER\skinmesh.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\skinpmx.fx">
-      <Filter>shader\fx</Filter>
-    </FxCompile>
-    <FxCompile Include="data\SHADER\sprite.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
     <FxCompile Include="data\SHADER\wing_feather.fx">

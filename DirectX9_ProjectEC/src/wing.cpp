@@ -9,6 +9,7 @@
 #include "calculate.h"
 #include "sound.h"
 #include "input.h"
+#include "scene.h"
 
 // デバッグ用
 #ifdef _DEBUG
@@ -49,10 +50,14 @@ Wing::Wing(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// スキンメッシュの初期化
-	m_CSkinMesh = new CSkinMesh;
-	// スキンメッシュにモデルを設定
-	m_CSkinMesh->Init(pDevice, (LPSTR)WING_MODEL);
-	ChangeAnimSpeed(WING_ANIM_SPEED_DEF);
+	m_CSkinMesh = NULL;
+	m_CSkinMesh = SceneManager::ModelMgr->GetCharData(ModelManager::WING);
+
+	//m_CSkinMesh = new CSkinMesh;
+	//// スキンメッシュにモデルを設定
+	//m_CSkinMesh->Init(pDevice, (LPSTR)WING_MODEL);
+	//ChangeAnimSpeed(WING_ANIM_SPEED_DEF);
+
 	// ウィング設置用のマトリクスを初期化
 	m_pSetMtx = NULL;
 
@@ -85,8 +90,8 @@ Wing::Wing(void)
 //=============================================================================
 Wing::~Wing(void)
 {
-	SAFE_RELEASE(m_CSkinMesh);
-	SAFE_DELETE(m_CSkinMesh);
+	//SAFE_RELEASE(m_CSkinMesh);
+	//SAFE_DELETE(m_CSkinMesh);
 }
 
 //=============================================================================

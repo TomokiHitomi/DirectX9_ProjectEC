@@ -1,33 +1,21 @@
 //=============================================================================
 //
-// プレイヤー処理 [cube.h]
+// エネミー処理 [enemy.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _CUBE_H_
-#define _CUBE_H_
+#ifndef _ENEMY_H_
+#define _ENEMY_H_
 
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
-#include "object.h"
-#include "XModel.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-// モデル
-//#define	CUBE_MODEL			"data/model/cube.x"	// 読み込むモデル名
-#define	CUBE_MODEL			"data/model/octahedral.x"	// 読み込むモデル名
-#define	CUBE_TEXTURE		"data/model/"	// 読み込むモデル名
-
-// モデルの最大数
-#define MODEL_CUBE_MAX			(1)
-
-// モデルスケール
-//#define MODEL_CUBE_SCL			(0.15f)
-#define MODEL_CUBE_SCL			(100.0f)
-
+//#define MODEL_PLAYER			("data/model/haku/haku.X")
+//#define MODEL_WING				("data/model/wing/wing.X")
 
 //*****************************************************************************
 // 構造体定義
@@ -36,40 +24,59 @@
 //*****************************************************************************
 // クラス定義
 //*****************************************************************************
-class Cube : public ObjectManager
+class Enemy
 {
-private:
-	typedef struct
-	{
-		CXModel			*CXModel;			// モデル格納用
-		D3DXVECTOR3		vPos;				// 座標情報
-		D3DXVECTOR3		vRot;				// 回転情報
-		D3DXVECTOR3		vScl;				// 拡縮情報
-		D3DXMATRIX		mtxWorld;			// ワールドマトリクス
-		bool			bUse;				// 使用フラグ
-	}Prop;
-	static Prop m_tagProp;
 public:
-	enum CUBE
-	{	// プレイヤー管理
-		CUBE_MAIN,
-		CUBE_MAX
+
+	// コンストラクタ（初期化処理）
+	Enemy(void);
+	//デストラクタ（終了処理）
+	~Enemy(void);
+
+	// 更新処理
+	virtual void Update(void);
+	// 描画処理
+	virtual void Draw(void);
+private:
+
+
+};
+
+class EnemyNormal : public Enemy
+{
+public:
+
+	// コンストラクタ（初期化処理）
+	EnemyNormal(void);
+	//デストラクタ（終了処理）
+	~EnemyNormal(void);
+
+	// 更新処理
+	virtual void Update(void);
+	// 描画処理
+	virtual void Draw(void);
+private:
+
+
+};
+
+
+
+class EnemyManager
+{
+public:
+	enum ENEMY
+	{	
+		ENEMY_MAX
 	};
 
 	// コンストラクタ（初期化処理）
-	Cube(void);
+	EnemyManager(void);
 	//デストラクタ（終了処理）
-	~Cube(void);
+	~EnemyManager(void);
 
-	// 更新処理
-	void	Update(void);
-	// 描画処理
-	void	Draw(void);
 
-	static void SetPos(D3DXVECTOR3 vPos) { m_tagProp.vPos = vPos; }
-	D3DXVECTOR3 GetPos(void) { return m_tagProp.vPos; }
 private:
-
 };
 
 //*****************************************************************************

@@ -89,20 +89,23 @@ technique Tec01		// テクスチャ描画
 {
 	pass p0
 	{
-		//Blendop = ADD;			// SRC(これから描画する側) + DEST(既に描画されてる側)
-		//SrcBlend = SRCALPHA;		// SRCを半透明合成
-		//DestBlend = ONE;			// DESTをそのまま描画
-		//ZWriteEnable = false;		// 深度バッファへの書き込みを無効
-		//AlphaBlendEnable = true;	// α合成を使用
+		// 塗りつぶしモード = 面を塗りつぶす（標準）
+		FILLMODE = SOLID;
 
+		// アルファブレンド = 有効
+		ALPHABLENDENABLE = TRUE;
+		// アルファブレンドオプション = 転送元 + 転送先（標準）
 		BLENDOP = ADD;
-		SRCBLEND = SRCALPHA;		// SRCを半透明合成
-		DESTBLEND = ONE;			// DESTをそのまま描画
-		ZWRITEENABLE = FALSE;		// 深度バッファへの書き込みを無効
+
+		// 新規ブレンド = 係数(As, As, As, As)
+		SRCBLEND = SRCALPHA;
+		// 既存ブレンド = 係数(1, 1, 1, 1)
+		DESTBLEND = ONE;
+
+		// 深度バッファへの書き込み = 無効
+		ZWRITEENABLE = FALSE;
 
 		VertexShader = compile vs_3_0 vs_main();
 		PixelShader = compile ps_3_0 ps_nomal();
-		//DestBlend = INVSRCALPHA;	// DESTをそのまま描画
-		//ZWriteEnable = true;		// 深度バッファへの書き込みを有効
 	}
 }

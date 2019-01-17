@@ -162,11 +162,14 @@ void CXModel::SetMaterialSpecular(float speclar, float power)
 //=============================================================================
 void CXModel::Release(void)
 {
-	for (unsigned int i = 0; i < dwNumMat; i++)
+	if (ppTexture != NULL)
 	{
-		SAFE_RELEASE(ppTexture[i]);
+		for (unsigned int i = 0; i < dwNumMat; i++)
+		{
+			SAFE_RELEASE(ppTexture[i]);
+		}
+		SAFE_DELETE_ARRAY(ppTexture);
 	}
-	SAFE_DELETE_ARRAY(ppTexture);
 	//SAFE_DELETE_ARRAY(ppMat);
 
 	SAFE_RELEASE(pMesh);
