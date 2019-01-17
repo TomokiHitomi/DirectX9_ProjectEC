@@ -112,13 +112,18 @@ void UpdateSound(void)
 {
 	UpdateSoundBgm();
 #ifdef _DEBUG
-	PrintDebugProc("Åy SOUND Åz  BGM FLAG[%d]\n", g_nBgmFlag);
+
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("Sound");
+	if (bGui) ImGui::Text("BGM FLAG[%d]\n", g_nBgmFlag);
+
 	for (int i = 0; i < SOUND_BGM_MAX; i++)
 	{
 		pdwCurrentPlayCursorBGM[i] = NULL;
 		pdwCurrentWriteCursorBGM[i] = NULL;
 		g_pBgm[i]->GetCurrentPosition(pdwCurrentPlayCursorBGM[i], pdwCurrentWriteCursorBGM[i]);
-		PrintDebugProc("BGM00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pBgm[i]), pdwCurrentPlayCursorBGM[i], pdwCurrentWriteCursorBGM[i]);
+		if (bGui) ImGui::Text("BGM00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pBgm[i]), pdwCurrentPlayCursorBGM[i], pdwCurrentWriteCursorBGM[i]);
+		//PrintDebugProc("BGM00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pBgm[i]), pdwCurrentPlayCursorBGM[i], pdwCurrentWriteCursorBGM[i]);
 	}
 
 	for (int i = 0; i < SOUND_SE_MAX; i++)
@@ -126,10 +131,11 @@ void UpdateSound(void)
 		pdwCurrentPlayCursorSE[i] = NULL;
 		pdwCurrentWriteCursorSE[i] = NULL;
 		g_pSe[i]->GetCurrentPosition(pdwCurrentPlayCursorSE[i], pdwCurrentWriteCursorSE[i]);
-
-		PrintDebugProc(" SE00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pSe[i]), pdwCurrentPlayCursorSE[i], pdwCurrentWriteCursorSE[i]);
+		if (bGui) ImGui::Text(" SE00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pSe[i]), pdwCurrentPlayCursorSE[i], pdwCurrentWriteCursorSE[i]);
+		//PrintDebugProc(" SE00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pSe[i]), pdwCurrentPlayCursorSE[i], pdwCurrentWriteCursorSE[i]);
 	}
 
+	if(bGui) ImGui::TreePop();
 	PrintDebugProc("\n");
 #endif
 }

@@ -19,6 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\imconfig.h" />
+    <ClInclude Include="include\imgui.h" />
+    <ClInclude Include="include\imgui_impl_dx9.h" />
+    <ClInclude Include="include\imgui_internal.h" />
+    <ClInclude Include="include\stb_rect_pack.h" />
+    <ClInclude Include="include\stb_textedit.h" />
+    <ClInclude Include="include\stb_truetype.h" />
     <ClInclude Include="src\calculate.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\cloud.h" />
@@ -29,7 +36,9 @@
     <ClInclude Include="src\debugsphere.h" />
     <ClInclude Include="src\effect.h" />
     <ClInclude Include="src\fade.h" />
+    <ClInclude Include="src\file.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\gui.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\joycon.h" />
     <ClInclude Include="src\light.h" />
@@ -52,6 +61,10 @@
     <ClInclude Include="src\XTexture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\imgui.cpp" />
+    <ClCompile Include="include\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui_impl_dx9.cpp" />
     <ClCompile Include="src\calculate.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\cloud.cpp" />
@@ -62,7 +75,9 @@
     <ClCompile Include="src\debugsphere.cpp" />
     <ClCompile Include="src\effect.cpp" />
     <ClCompile Include="src\fade.cpp" />
+    <ClCompile Include="src\file.cpp" />
     <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\joycon.cpp" />
     <ClCompile Include="src\light.cpp" />

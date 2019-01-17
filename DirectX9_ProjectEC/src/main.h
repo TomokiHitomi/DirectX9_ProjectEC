@@ -18,6 +18,11 @@
 #define DIRECTINPUT_VERSION (0x0800)	// 警告対処用
 #include "dinput.h"
 
+/* imgui */
+#include "imgui.h"
+#include "imgui_impl_dx9.h"
+#include "imgui_internal.h"
+
 //*****************************************************************************
 // ライブラリのリンク
 //*****************************************************************************
@@ -93,6 +98,7 @@ typedef struct
 // プロトタイプ宣言
 //*****************************************************************************
 void EndGame(void);
+int	GetFps(void);
 LPDIRECT3DDEVICE9 GetDevice(void);
 
 #endif

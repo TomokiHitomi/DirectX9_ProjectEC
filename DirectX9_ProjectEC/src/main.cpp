@@ -11,17 +11,16 @@
 #include "scene.h"
 #include "input.h"
 #include "joycon.h"
-
-///* imgui */
-//#include "imgui.h"
-//#include "imgui_impl_dx9.h"
-//#include "imgui_internal.h"
+#include "gui.h"
 
 /* Debug */
 #ifdef _DEBUG
 #include "debugproc.h"
 #endif
 
+//*****************************************************************************
+// マクロ定義
+//*****************************************************************************
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -35,6 +34,9 @@ void Draw(void);
 void MainLoop(HWND hWnd);
 void SubLoop(void);
 
+// ImGui用プロシージャ
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 //*****************************************************************************
 // グローバル変数:
 //*****************************************************************************
@@ -43,7 +45,9 @@ LPDIRECT3DDEVICE9	g_pD3DDevice = NULL;	// デバイスオブジェクト(描画に必要)
 int					g_nCountFPS = 0;		// FPSカウンタ
 bool				g_bContinue = true;		// ゲーム継続フラグ
 
-bool show_another_window = false;
+#ifdef _DEBUG
+Gui g_cImgui;
+#endif
 
 //=============================================================================
 // メイン関数
@@ -121,8 +125,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
-
-	std::thread t1(SubLoop);
+	//std::thread t1(SubLoop);
 
 	// メッセージループ
 	while (g_bContinue)
@@ -145,9 +148,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			dwCurrentTime = timeGetTime();
 			if ((dwCurrentTime - dwFPSLastTime) >= 500)	// 0.5秒ごとに実行
 			{
-#ifdef _DEBUG
 				g_nCountFPS = dwFrameCount * 1000 / (dwCurrentTime - dwFPSLastTime);
-#endif
 				dwFPSLastTime = dwCurrentTime;
 				dwFrameCount = 0;
 			}
@@ -174,8 +175,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 					// マウスカーソルの移動制限
 					ClipCursor(&lpScreen);
 
-					// マウスカーソル非表示
-					ShowCursor(false);
+					//// マウスカーソル非表示
+					//ShowCursor(false);
 				}
 				else
 				{
@@ -186,7 +187,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				dwExecLastTime = dwCurrentTime;
 
 				// 更新処理
-				JoyconUpdate();
+				//JoyconUpdate();
 				Update();
 				//pollLoop();
 
@@ -202,7 +203,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	EndGame();
 
 	// スレッド1の処理が終わるまで待機
-	t1.join();
+	//t1.join();
+
+#ifdef _DEBUG
+	// imguiの終了処理
+	g_cImgui.Uninit();
+#endif
 
 	DestroyWindow(hWnd);
 
@@ -240,6 +246,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	default:
 		break;
 	}
+
+#ifdef _DEBUG
+	// imguiの終了処理
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+	{
+		return true;
+	}
+#endif
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -339,17 +353,15 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);	// ２番目のアルファ引数
 
-
-	// imguiの初期化
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGui_ImplDX9_Init(g_pD3DDevice);
-	//ImGui::StyleColorsDark();
+#ifdef _DEBUG
+	// imguiの初期化処理
+	g_cImgui.Init(hWnd, g_pD3DDevice);
+#endif
 
 	// シーンの初期化処理
 	SceneManager::Init(hInstance, hWnd);
 
-	start();
+	//start();
 
 	return S_OK;
 }
@@ -359,9 +371,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void Uninit(void)
 {
-	// imguiの解放
-	//ImGui_ImplDX9_Shutdown();
-
 	if (g_pD3DDevice != NULL)
 	{// デバイスオブジェクトの開放
 		g_pD3DDevice->Release();
@@ -376,7 +385,7 @@ void Uninit(void)
 
 	// シーンの終了処理
 	SceneManager::Uninit();
-	actuallyQuit();
+	//actuallyQuit();
 }
 
 //=============================================================================
@@ -384,12 +393,10 @@ void Uninit(void)
 //=============================================================================
 void Update(void)
 {
-	// imguiの更新
-	//ImGui::NewFrame();
-	//ImGui_ImplDX9_NewFrame();
-	//ImGui::Begin("Another Window", &show_another_window);
-	//ImGui::Text("Hello from another window!");
-	//ImGui::End();
+#ifdef _DEBUG
+	// imguiの更新開始
+	g_cImgui.Start();
+#endif
 
 	// 更新処理
 	{	
@@ -398,8 +405,10 @@ void Update(void)
 		//PrintDebugProc("【UpdateAt】\n[%f]\n", timer2.End());
 	}
 
+#ifdef _DEBUG
 	// imguiの更新終了
-	//ImGui::EndFrame();
+	g_cImgui.End();
+#endif
 }
 
 //=============================================================================
@@ -418,12 +427,14 @@ void Draw(void)
 		SceneManager::Draw();
 		//PrintDebugProc("【DrawAt】\n[%f]\n", timer.End());
 
+#ifdef _DEBUG
+		// imguiの描画処理
+		g_cImgui.Draw();
+#endif
+
 		// 描画の終了
 		g_pD3DDevice->EndScene();
 	}
-
-	// imguiの描画
-	//ImGui::Render();
 
 	// バックバッファとフロントバッファの入れ替え
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -453,6 +464,14 @@ void SubLoop(void)
 void EndGame(void)
 {
 	g_bContinue = false;
+}
+
+//=============================================================================
+// フレームレート取得
+//=============================================================================
+int GetFps(void)
+{
+	return g_nCountFPS;
 }
 
 //=============================================================================

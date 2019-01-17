@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "cube.h"
 #include "sound.h"
+#include "file.h"
 
 
 // デバッグ用
@@ -115,11 +116,56 @@ void Player::Init(void)
 	// カメラEyeをモデル後方にセット
 	CameraManager::pCamera[CameraManager::CENTER]->SetEye(m_vPos + m_vZ * 100);
 
+	//WriteFile();
+
 #ifdef _DEBUG
 	m_cDebug.bUse = true;
 	m_cDebug.fSize = PLAYER_COLLISION_SIZE;
 	m_cDebug.nIdx = DebugObject::pSphere->Set(m_cDebug.fSize);
 #endif
+}
+
+
+
+//=============================================================================
+// ファイル確認処理
+//=============================================================================
+void Player::CheckFile(void)
+{
+	if (LoadFile()) { return; }
+	else
+	{
+		WriteFile();
+		LoadFile();
+	}
+}
+
+//=============================================================================
+// ファイル読み込み処理
+//=============================================================================
+bool Player::LoadFile(void)
+{
+	FILE *fp;
+	fopen_s(&fp, "data/file/player.dat", "rb");
+	if (fp == NULL) { return false; }
+
+	// メンバ変数に読み込む
+	fread(this, sizeof(Player), 1, fp);
+	fclose(fp);
+}
+
+//=============================================================================
+// ファイル書き込み処理
+//=============================================================================
+void Player::WriteFile(void)
+{
+	FILE *fp;
+	// バイナリ書き込みモードでファイルオープン
+	fopen_s(&fp, "data/file/player.dat", "wb");
+
+	// メンバ変数を書き込む
+	fwrite(this, sizeof(Player), 1, fp);
+	fclose(fp);
 }
 
 //=============================================================================
@@ -147,41 +193,20 @@ Player::~Player(void)
 void Player::Update(void)
 {
 #ifdef _DEBUG
-	PrintDebugProc("【 PLAYER 】\n");
-	PrintDebugProc("Pos [%f,%f,%f]\n", m_vPos.x, m_vPos.y, m_vPos.z);
-	PrintDebugProc("Rot [%f,%f,%f]\n", m_vRot.x, m_vRot.y, m_vRot.z);
-	PrintDebugProc("RotI[%f,%f,%f]\n", m_vRotIner.x, m_vRotIner.y, m_vRotIner.z);
-	PrintDebugProc("Move[%f,%f,%f]\n", m_vMove.x, m_vMove.y, m_vMove.z);
-	PrintDebugProc("Spd [%f]\n", m_fMoveSpeed);
-	PrintDebugProc("vX  [%f,%f,%f]\n",
-		m_vX.x, m_vX.y, m_vX.z);
-	PrintDebugProc("vY  [%f,%f,%f]\n",
-		m_vY.x, m_vY.y, m_vY.z);
-	PrintDebugProc("vZ  [%f,%f,%f]\n",
-		m_vZ.x, m_vZ.y, m_vZ.z);
-	PrintDebugProc("mtxX[%f,%f,%f]\n",
-		m_mtxWorld._11, m_mtxWorld._12, m_mtxWorld._13);
-	PrintDebugProc("mtxY[%f,%f,%f]\n",
-		m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
-	PrintDebugProc("mtxZ[%f,%f,%f]\n",
-		m_mtxWorld._31, m_mtxWorld._32, m_mtxWorld._33);
-	PrintDebugProc("mtxA[%f,%f,%f]\n",
-		m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43);
-	PrintDebugProc("atanTest [%f]\n",
-		-atan2(m_vZ.y, 1.0f));
-	PrintDebugProc("\n");
-	
-	//if (GetKeyboardTrigger(DIK_N))
-	//{
-	//	DebugObject::pSphere->Set(50.0f);
-	//	DebugObject::pSphere->SetPos(nTextIdx, m_vPos);
-	//	nTextIdx++;
-	//}
-	//else if (GetKeyboardTrigger(DIK_M))
-	//{
-	//	nTextIdx--;
-	//	DebugObject::pSphere->Release(nTextIdx);
-	//}
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("Player");
+	if (bGui)
+	{
+		ImGui::Text("Pos [%f,%f,%f]\n", m_vPos.x, m_vPos.y, m_vPos.z);
+		ImGui::Text("Rot [%f,%f,%f]\n", m_vRot.x, m_vRot.y, m_vRot.z);
+		ImGui::Text("RotI[%f,%f,%f]\n", m_vRotIner.x, m_vRotIner.y, m_vRotIner.z);
+		ImGui::Text("Move[%f,%f,%f]\n", m_vMove.x, m_vMove.y, m_vMove.z);
+		ImGui::Text("Spd [%f]\n", m_fMoveSpeed);
+		ImGui::Text("vX  [%f,%f,%f]\n", m_vX.x, m_vX.y, m_vX.z);
+		ImGui::Text("vY  [%f,%f,%f]\n", m_vY.x, m_vY.y, m_vY.z);
+		ImGui::Text("vZ  [%f,%f,%f]\n", m_vZ.x, m_vZ.y, m_vZ.z);
+		ImGui::TreePop();
+	}
 #endif
 
 	if (m_bUse)
@@ -229,36 +254,7 @@ void Player::Update(void)
 
 		// ソードの更新処理
 		SAFE_UPDATE(m_cSword);
-
-#ifdef _DEBUG
-		// ウィングのローカル情報を作成
-		//D3DXVECTOR3 scl;
-		//scl = D3DXVECTOR3(PLAYER_WING_SCL, PLAYER_WING_SCL, PLAYER_WING_SCL);
-
-		//if (GetKeyboardTrigger(DIK_R))testpos.x += 1.0f;
-		//if (GetKeyboardTrigger(DIK_F))testpos.x -= 1.0f;
-		//if (GetKeyboardTrigger(DIK_T))testpos.y += 1.0f;
-		//if (GetKeyboardTrigger(DIK_G))testpos.y -= 1.0f;
-		//if (GetKeyboardTrigger(DIK_Y))testpos.z += 1.0f;
-		//if (GetKeyboardTrigger(DIK_H))testpos.z -= 1.0f;
-
-		//if (GetKeyboardTrigger(DIK_U))testrot.x += 0.1f;
-		//if (GetKeyboardTrigger(DIK_J))testrot.x -= 0.1f;
-		//if (GetKeyboardTrigger(DIK_I))testrot.y += 0.1f;
-		//if (GetKeyboardTrigger(DIK_K))testrot.y -= 0.1f;
-		//if (GetKeyboardTrigger(DIK_O))testrot.z += 0.1f;
-		//if (GetKeyboardTrigger(DIK_L))testrot.z -= 0.1f;
-
-		//// 持ち剣の行列を作成
-		//WorldConvert(&m_mtxWorldWing, testpos, testrot, scl);
-		//PrintDebugProc("TEST pos[%f, %f, %f] rot[%f, %f, %f]\n",
-		//	testpos.x, testpos.y, testpos.z, testrot.x, testrot.y, testrot.z);
-
-
-#endif
 	}
-
-
 }
 
 //=============================================================================
@@ -909,8 +905,6 @@ void Player::CheckAnim(void)
 	// アニメーションビットパターンを初期化
 	m_dwAnim = 0x00000000l;
 }
-
-
 
 //=============================================================================
 // コンストラクタ（初期化処理）

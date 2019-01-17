@@ -51,6 +51,16 @@ DebugObject::~DebugObject(void)
 //=============================================================================
 void DebugObject::Update(void)
 {
+#ifdef _DEBUG
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("DebugObject");
+	if (bGui)
+	{
+		if (ImGui::Button("Draw"))
+			s_bUse = s_bUse ? false : true;
+		ImGui::TreePop();
+	}
+#endif
 	SAFE_UPDATE(pSphere);
 }
 

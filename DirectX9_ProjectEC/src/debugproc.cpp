@@ -25,7 +25,7 @@
 LPD3DXFONT	g_pD3DXFont = NULL;			// フォントへのポインタ
 char		g_aStrDebug[4096 * 10] = {"\0"};	// デバッグ情報
 long		g_lDrawPos = 0;
-bool		g_bDispDebug = true;
+bool		g_bDispDebug = false;
 int			g_nDispColor = 0;
 D3DCOLOR	g_xColor = SetColorPallet(COLOR_PALLET_RED);
 
@@ -79,7 +79,7 @@ void UpdateDebugProc(void)
 	if (GetKeyboardTrigger(DIK_F1))
 	{// デバッグ表示ON/OFF
 		g_bDispDebug = g_bDispDebug ? false : true;
-		DebugObject::SetUse(g_bDispDebug);
+		//DebugObject::SetUse(g_bDispDebug);
 	}
 	if (GetKeyboardPress(DIK_LSHIFT))
 	{

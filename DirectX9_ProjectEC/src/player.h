@@ -145,7 +145,17 @@ public:
 	void	Update(void);
 	// 描画処理
 	void	Draw(void);
+
+	// ファイル確認処理
+	void	CheckFile(void);
+	// ファイル読み込み処理
+	bool	LoadFile(void);
+	// ファイル書き込み処理
+	void	WriteFile(void);
+
 private:
+	//typedef struct
+	//{
 	D3DXVECTOR3		m_vPos;				// 座標情報
 	D3DXVECTOR3		m_vRot;				// 回転情報
 	D3DXVECTOR3		m_vScl;				// 拡縮情報
@@ -153,23 +163,31 @@ private:
 	D3DXVECTOR3		m_vRotIner;			// 回転情報
 	D3DXVECTOR3		m_vRotChange;		// 回転情報
 	D3DXVECTOR3		m_vUp;
-
 	// ローカルベクトル
 	D3DXVECTOR3		m_vX;
 	D3DXVECTOR3		m_vY;
 	D3DXVECTOR3		m_vZ;
 
-	D3DXMATRIX		m_mtxWorld;				// ワールドマトリクス
-	D3DXMATRIX*		m_pMtxTorso;			// ワールドマトリクス
-
 	MODE			m_eMode;
 	MODE			m_eModeNext;
 	MODE			m_eModeOld;
 
-	int				m_nCount;			// 汎用カウンター
 	float			m_fMoveSpeed;
+
+	//}Prop;
+
+	//Prop m_sProp;
+
+	int				m_nCount;			// 汎用カウンター
 	float			m_fRiseSpeed;
 	bool			m_bUse;				// 使用フラグ
+
+
+
+	D3DXMATRIX		m_mtxWorld;				// ワールドマトリクス
+	D3DXMATRIX*		m_pMtxTorso;			// ワールドマトリクス
+
+
 
 #ifdef _DEBUG
 	DebugObjectData m_cDebug;

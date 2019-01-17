@@ -110,7 +110,12 @@ Sword::~Sword(void)
 void Sword::Update(void)
 {
 #ifdef _DEBUG
-	PrintDebugProc("Åy SWORD Åz\nCnt[%d]\n", m_nCnt);
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("Sword");
+	if (bGui)
+	{
+		ImGui::Text("Cnt[%d]\n", m_nCnt);
+	}
 #endif
 
 	if (m_bUse)
@@ -254,20 +259,18 @@ void Sword::Update(void)
 			}
 
 #ifdef _DEBUG
-			PrintDebugProc("No[%d] Use[%d] Mode[%d] Len[%f] Spd[%f]\n"
-				,i, m_cSword[i].bUse, m_cSword[i].eMode,
-				m_cSword[i].fLength, m_cSword[i].fSpeed);
+			if (bGui)
+			{
+				ImGui::Text("No[%d] Use[%d] Mode[%d] Len[%f] Spd[%f]\n"
+					, i, m_cSword[i].bUse, m_cSword[i].eMode,
+					m_cSword[i].fLength, m_cSword[i].fSpeed);
+			}
 #endif
 		}
-
-
-#ifdef _DEBUG
-		//PrintDebugProc("Pos [%f,%f,%f]\n", m_vPos.x, m_vPos.y, m_vPos.z);
-#endif
 	}
 
 #ifdef _DEBUG
-	PrintDebugProc("\n");
+	if(bGui) ImGui::TreePop();
 #endif
 }
 

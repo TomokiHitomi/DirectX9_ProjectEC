@@ -377,8 +377,8 @@ HRESULT InitializeMobUse(HINSTANCE hInst, HWND hWindow)
 	// アクセス権を得る
 	pMobUse->Acquire();
 
-	// マウスカーソル非表示
-	ShowCursor(false);
+	//// マウスカーソル非表示
+	//ShowCursor(false);
 
 	SetRect(&rectMove, 0, 0, 1280 * SCREEN_SCALE, 720 * SCREEN_SCALE);
 	return result;

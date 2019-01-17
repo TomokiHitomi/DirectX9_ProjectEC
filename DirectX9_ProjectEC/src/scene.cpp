@@ -216,6 +216,26 @@ void SceneManager::EndSeS(void)
 //=============================================================================
 void SceneManager::DebugScene(void)
 {
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("Scene");
+	if (bGui)
+	{
+		// 現在のシーンを表示
+		switch (m_eScene)
+		{
+		case SCENE::TITLE:
+			ImGui::Text("Scene[TITLE]");
+			break;
+		case SCENE::GAME:
+			ImGui::Text("Scene[GAME]");
+			break;
+		case SCENE::RESULT:
+			ImGui::Text("Scene[RESULT]");
+			break;
+		}
+		ImGui::TreePop();
+	}
+
 	// デバッグの更新処理
 	UpdateDebugProc();
 
