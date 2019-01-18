@@ -11,6 +11,7 @@
 * インクルード
 *******************************************************************************/
 #include "object.h"
+#include "debugobject.h"
 #include "octa.h"
 
 //*****************************************************************************
@@ -33,21 +34,41 @@ public:
 	Enemy*	m_pPrev;		// リストの前ポインタ
 	Enemy*	m_pNext;		// リストの次ポインタ
 
-	int		m_nWave;
-
 	// コンストラクタ（初期化処理）
 	Enemy(void);
 	//デストラクタ（終了処理）
 	~Enemy(void);
+
+	void Start(void);
 	// 更新処理
 	virtual void Update(void);
 	// 描画処理
 	virtual void Draw(void);
 
 	void Release(void);
-private:
 
+	class Prop
+	{
+	public:
+		int				nWave;	// 出現ウェーブ
+		D3DXVECTOR3		vPos;	// 座標
+		float			fSize;	// サイズ
+		bool			bUse;	// 使用フラグ
+		Prop()
+		{
+			nWave = -1;
+			vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			fSize = 0.0f;
+			bUse = false;
+		}
+	};
 
+	Prop		m_cProp;
+	Octa*		pOcta;
+	OctaData	m_cOctaData;
+#ifdef _DEBUG
+	DebugObjectData m_cDebug;
+#endif
 };
 
 class EnemyNormal : public Enemy
@@ -96,9 +117,10 @@ public:
 	void Draw(void);
 	// ファイル読込処理
 	void Load(void);
-	// 
+	// ファイル読込処理
+	void Read(FILE* fp);
+ 
 	bool Create(Enemy** ppEnemy, int* pData);
-private:
 	Octa* pOcta;
 };
 

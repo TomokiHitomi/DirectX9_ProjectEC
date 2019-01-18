@@ -395,7 +395,7 @@ void Camera::SetUp(D3DXVECTOR3 vUp)
 //=============================================================================
 void Camera::SetAtIner(float fIner)
 {
-	fAtIner = SetLimit(fIner, 1.0f, 0.0f);
+	SetLimit(&fAtIner,fIner, 1.0f, 0.0f);
 }
 
 //=============================================================================
@@ -403,7 +403,7 @@ void Camera::SetAtIner(float fIner)
 //=============================================================================
 void Camera::SetEyeIner(float fIner)
 {
-	fEyeIner = SetLimit(fIner, 1.0f, 0.0f);
+	SetLimit(&fEyeIner, fIner, 1.0f, 0.0f);
 }
 
 //=============================================================================
@@ -411,7 +411,7 @@ void Camera::SetEyeIner(float fIner)
 //=============================================================================
 void Camera::SetUpIner(float fIner)
 {
-	fUpIner = SetLimit(fIner, 1.0f, 0.0f);
+	SetLimit(&fUpIner, fIner, 1.0f, 0.0f);
 }
 
 //=============================================================================
@@ -419,7 +419,7 @@ void Camera::SetUpIner(float fIner)
 //=============================================================================
 void Camera::AddAtIner(float fIner)
 {
-	fAtIner = SetLimit(fAtIner + fIner, 1.0f, 0.0f);
+	SetLimit(&fAtIner,fAtIner + fIner, 1.0f, 0.0f);
 }
 
 //=============================================================================
@@ -427,7 +427,7 @@ void Camera::AddAtIner(float fIner)
 //=============================================================================
 void Camera::AddEyeIner(float fIner)
 {
-	fEyeIner = SetLimit(fEyeIner + fIner, 1.0f, 0.0f);
+	SetLimit(&fEyeIner, fEyeIner + fIner, 1.0f, 0.0f);
 }
 
 //=============================================================================
@@ -435,7 +435,7 @@ void Camera::AddEyeIner(float fIner)
 //=============================================================================
 void Camera::AddUpIner(float fIner)
 {
-	fUpIner = SetLimit(fUpIner + fIner, 1.0f, 0.0f);
+	SetLimit(&fUpIner, fUpIner + fIner, 1.0f, 0.0f);
 }
 
 

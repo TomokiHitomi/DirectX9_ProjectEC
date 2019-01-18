@@ -163,6 +163,9 @@ private:
 	D3DXVECTOR3		m_vRotIner;			// 回転情報
 	D3DXVECTOR3		m_vRotChange;		// 回転情報
 	D3DXVECTOR3		m_vUp;
+
+	D3DXVECTOR3		m_vTarget;			// ターゲット座標
+
 	// ローカルベクトル
 	D3DXVECTOR3		m_vX;
 	D3DXVECTOR3		m_vY;
@@ -236,6 +239,7 @@ public:
 	D3DXVECTOR3 GetVecY(void) { return m_vY; }
 	D3DXVECTOR3 GetVecZ(void) { return m_vZ; }
 	D3DXVECTOR3 GetPos(void) { return m_vPos; }
+	D3DXVECTOR3 GetPosTaget(void) { return m_vTarget; }
 	MODE GetMode(void) { return m_eMode; }
 };
 
@@ -268,6 +272,7 @@ public:
 	static D3DXVECTOR3 GetVecX(PLAYER player) { return m_pPlayer[player]->GetVecX(); }
 	static D3DXVECTOR3 GetVecY(PLAYER player) { return m_pPlayer[player]->GetVecY(); }
 	static D3DXVECTOR3 GetVecZ(PLAYER player) { return m_pPlayer[player]->GetVecZ(); }
+	static D3DXVECTOR3 GetPosTaget(PLAYER player) { return m_pPlayer[player]->GetPosTaget(); }
 };
 
 

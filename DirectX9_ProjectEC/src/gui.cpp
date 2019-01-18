@@ -19,6 +19,8 @@
 #define GUI_FONT_SIZE (15.0f * SCREEN_SCALE)
 #define GUI_FONT_POS (20 * SCREEN_SCALE)
 
+#define GUI_FPS_ALERT (55)
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -26,7 +28,7 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-bool Gui::s_bUse = false;
+bool Gui::s_bUse = true;
 
 //=============================================================================
 // コンストラクタ（初期化処理）
@@ -52,8 +54,8 @@ void Gui::Init(HWND hWnd, LPDIRECT3DDEVICE9 pDevice)
 	ImGui::CreateContext();
 	ImGui_ImplDX9_Init(hWnd, pDevice);
 
-	// スタイルを指定（黒）
-	ImGui::StyleColorsDark();
+	//// スタイルを指定（黒）
+	//ImGui::StyleColorsDark();
 
 	// I/Oを初期化
 	ImGuiIO& io = ImGui::GetIO();
@@ -80,16 +82,35 @@ void Gui::Uninit(void)
 //=============================================================================
 void Gui::Start(void)
 {
-	// imguiの更新
+	// 新規フレームを作成
 	ImGui_ImplDX9_NewFrame();
-	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.7f, 0.2f, 0.2f, 0.8f));
-	ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.7f, 0.2f, 0.2f, 0.5f));
+
+	// FPSの取得
+	int nFps = GetFps();
+
+	// FPSの値が指定値より上下でタイトルの色を変更
+	if (nFps >= GUI_FPS_ALERT)
+	{	// グリーン
+		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.2f, 0.7f, 0.2f, 0.8f));
+		ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.2f, 0.7f, 0.2f, 0.5f));
+	}
+	else
+	{	// レッド
+		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.7f, 0.2f, 0.2f, 0.8f));
+		ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.7f, 0.2f, 0.2f, 0.5f));
+	}
+
+	// ウィンドウ色を黒（半透明）に設定
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.4f));
+	// ウィンドウの初期位置を設定
 	ImGui::SetNextWindowPos(ImVec2(GUI_FONT_POS, GUI_FONT_POS), ImGuiSetCond_Once);
 	//ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiSetCond_Once);
 
-	ImGui::Begin(u8"Debug");
-	ImGui::Text("FPS [%d]\n", GetFps());
+	// imguiの更新開始
+	ImGui::Begin("Debug");
+
+	// FPSを表示
+	ImGui::Text("FPS [%d]\n", nFps);
 }
 
 //=============================================================================
@@ -99,6 +120,8 @@ void Gui::End(void)
 {
 	// imguiの更新終了
 	ImGui::End();
+
+	// 変更したスタイルの数だけポップ
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
@@ -109,17 +132,7 @@ void Gui::End(void)
 //=============================================================================
 void Gui::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-
-	//// Z比較なし
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-
 	// imguiの描画
 	ImGui::Render();
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
-	//// Z比較あり
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-
 }

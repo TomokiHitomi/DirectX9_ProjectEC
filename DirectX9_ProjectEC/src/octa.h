@@ -15,10 +15,11 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define OCTA_MAX		(50)
+#define OCTA_MAX			(50)
 #define	OCTA_MODEL			"data/model/octahedral.x"	// 読み込むモデル名
+#define OCTA_ROT_SPEED		(0.01f)
 
-#define DEBUGSPHERE_COLOR	(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f))
+//#define DEBUGSPHERE_COLOR	(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f))
 
 //*****************************************************************************
 // 構造体定義
@@ -42,13 +43,20 @@ public:
 
 	// 使用状態にする
 	int Set(float fSize);
+	// カラーをセット
+	void SetColor(int nIdx, D3DCOLOR xColor);
 	// 座標をセット
 	void SetPos(int nIdx, D3DXVECTOR3 vPos);
+	// 回転を加算
+	void AddRot(int nIdx, float fRot);
+
+
 	// 解放
 	void Release(int nIdx);
 private:
 	LPD3DXEFFECT		pEffect;		// シェーダー関連
 	D3DXMATRIX			m_mtxWorld;		// ワールドマトリクス
+	UINT				m_nCount;
 	bool				m_bUse;			// 使用フラグ
 
 	// インスタンシング用
@@ -68,6 +76,7 @@ private:
 		D3DXVECTOR3 vPos;		// ワールド座標
 		float		fSize;		// サイズ
 		float		fUse;		// 使用フラグ（シェーダ用）
+		float		fRot;		// 回転
 		D3DCOLOR	vColor;		// カラー
 	}INSTANCE;
 
@@ -96,6 +105,20 @@ private:
 	HRESULT SetInst(void);
 	// 頂点シェーダ宣言の作成
 	HRESULT CreateDecl(LPDIRECT3DDEVICE9 pDevice, LPD3DXMESH pMesh);
+};
+
+class OctaData
+{
+public:
+	int		nIdx;
+	float	fSize;
+	bool	bUse;
+	OctaData()
+	{
+		nIdx = -1;
+		fSize = 0.0f;
+		bUse = false;
+	}
 };
 
 //*****************************************************************************

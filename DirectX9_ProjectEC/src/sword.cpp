@@ -10,7 +10,6 @@
 #include "input.h"
 #include "camera.h"
 #include "player.h"
-#include "cube.h"
 #include "collision.h"
 
 // デバッグ用
@@ -137,15 +136,16 @@ void Sword::Update(void)
 		posTemp += PlayerManager::GetPos(PlayerManager::PLAYER_1P);
 		//posTemp += pPlayer->GetPos();
 
-		// テスト用：キューブのポインタを取得
-		Cube *pCube = ObjectManager::GetObjectPointer<Cube>(ObjectManager::CUBE);
-		posTarget = pCube->GetPos();
 
 		 
 		// プレイヤーモードに応じてモーフ値を変動
 		//if (pPlayer->GetMode() == Player::MODE_FLY) m_fMorph += SWORD_MORPH_SPEED;
 		if (PlayerManager::GetMode(PlayerManager::PLAYER_1P) == Player::MODE_FLY) m_fMorph += SWORD_MORPH_SPEED;
 		else m_fMorph -= SWORD_MORPH_SPEED;
+
+
+		// テスト用
+		posTarget = PlayerManager::GetPosTaget(PlayerManager::PLAYER_1P);
 
 		// 0.0～1.0fの範囲でクランプ
 		m_fMorph = saturate(m_fMorph);

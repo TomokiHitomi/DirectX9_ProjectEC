@@ -9,7 +9,6 @@
 #include "calculate.h"
 #include "input.h"
 #include "camera.h"
-#include "cube.h"
 #include "sound.h"
 #include "file.h"
 #include "scene.h"
@@ -94,6 +93,8 @@ void Player::Init(void)
 	m_vX = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 	m_vY = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_vZ = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+
+	m_vTarget = D3DXVECTOR3(0.0f, 500.0f, 0.0f);
 
 	m_eMode = MODE_FLOAT;
 	m_eModeOld = MODE_MAX;	// 1フレーム目はモードチェンジに入りたい
@@ -199,15 +200,16 @@ void Player::Update(void)
 	bool bGui = ImGui::TreeNode("Player");
 	if (bGui)
 	{
-		ImGui::Text("Pos [%f,%f,%f]\n", m_vPos.x, m_vPos.y, m_vPos.z);
-		ImGui::Text("Rot [%f,%f,%f]\n", m_vRot.x, m_vRot.y, m_vRot.z);
-		ImGui::Text("RotI[%f,%f,%f]\n", m_vRotIner.x, m_vRotIner.y, m_vRotIner.z);
-		ImGui::Text("Move[%f,%f,%f]\n", m_vMove.x, m_vMove.y, m_vMove.z);
+		ImGui::Text("Pos [%6.0f.%6.0f,%6.0f]\n", m_vPos.x, m_vPos.y, m_vPos.z);
+		ImGui::Text("Rot [%2.2f.%2.2f,%2.2f]\n", m_vRot.x, m_vRot.y, m_vRot.z);
+		ImGui::Text("RotI[%2.2f.%2.2f,%2.2f]\n", m_vRotIner.x, m_vRotIner.y, m_vRotIner.z);
+		ImGui::Text("Move[%2.2f.%2.2f,%2.2f]\n", m_vMove.x, m_vMove.y, m_vMove.z);
 		ImGui::Text("Spd [%f]\n", m_fMoveSpeed);
-		ImGui::Text("vX  [%f,%f,%f]\n", m_vX.x, m_vX.y, m_vX.z);
-		ImGui::Text("vY  [%f,%f,%f]\n", m_vY.x, m_vY.y, m_vY.z);
-		ImGui::Text("vZ  [%f,%f,%f]\n", m_vZ.x, m_vZ.y, m_vZ.z);
+		ImGui::Text("vX  [%.2f.%.2f,%.2f]\n", m_vX.x, m_vX.y, m_vX.z);
+		ImGui::Text("vY  [%.2f.%.2f,%.2f]\n", m_vY.x, m_vY.y, m_vY.z);
+		ImGui::Text("vZ  [%.2f.%.2f,%.2f]\n", m_vZ.x, m_vZ.y, m_vZ.z);
 		ImGui::Text("combo[%d] time[%d]\n", m_nComboCount, m_nComboTime);
+		ImGui::InputFloat3("Target", &m_vTarget.x,2);
 		ImGui::TreePop();
 	}
 #endif
@@ -386,7 +388,7 @@ void Player::SetCamera(void)
 		break;
 	case MODE_LOCKON:
 		// カメラをAtを対象に設定
-		pCamera->SetAt(ZERO_D3DXVECTOR3);
+		pCamera->SetAt(m_vTarget);
 		// カメラEyeをモデル後方にセット
 		pCamera->SetEye(m_vPos + (m_vY * 30) + m_vZ * 100);
 		// カメラUpをモデル上部に設定
@@ -628,8 +630,8 @@ void Player::Lockon(void)
 	m_vY = m_vY + (D3DXVECTOR3(0.0f, 1.0f, 0.0f) - m_vY) * 0.1f;
 
 	// 対象座標と自らの座標を減算
-	D3DXVECTOR3 vLook = ZERO_D3DXVECTOR3 - m_vPos;
-	vLook *= -1.0f;
+	D3DXVECTOR3 vLook = m_vPos - m_vTarget;
+	//vLook *= -1.0f;
 
 	D3DXVec3Normalize(&vLook, &vLook);
 	m_vZ = m_vZ + (vLook - m_vZ) * 0.1f;
@@ -760,8 +762,6 @@ void Player::Change(void)
 	// カメラUpをモデル上部に設定
 	CameraManager::pCamera[CameraManager::CENTER]->SetUp(m_vY);
 	//Camera::SetUp(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-
-	Cube::SetPos(m_vPos - m_vZ * 100);
 }
 
 
@@ -770,10 +770,7 @@ void Player::Change(void)
 //=============================================================================
 void Player::Move(void)
 {
-#ifdef _DEBUG
-	D3DXVECTOR3 vTemp = D3DXVECTOR3(m_pMtxTorso->_41, m_pMtxTorso->_42, m_pMtxTorso->_43);
-	DebugObject::pSphere->SetPos(m_cDebug.nIdx, vTemp + m_vMove);
-#endif
+
 	if (GetKeyboardPress(DIK_Q) && GetKeyboardPress(DIK_E))
 	{
 		//if (m_fMoveSpeed > 0.0f)
@@ -801,7 +798,13 @@ void Player::Move(void)
 	m_vPos += m_vMove;
 
 	// 移動制限処理
-	m_vPos.y = SetLimit(m_vPos.y, PLAYER_HEIGHT_MAX, PLAYER_HEIGHT_MIN);
+	if (SetLimit(&m_vPos.y, m_vPos.y, PLAYER_HEIGHT_MAX, PLAYER_HEIGHT_MIN))
+		m_vMove.y = 0.0f;
+
+#ifdef _DEBUG
+	D3DXVECTOR3 vTemp = D3DXVECTOR3(m_pMtxTorso->_41, m_pMtxTorso->_42, m_pMtxTorso->_43);
+	DebugObject::pSphere->SetPos(m_cDebug.nIdx, vTemp + m_vMove);
+#endif
 
 	// 移動量に慣性をかける
 	m_vMove.x += (0.0f - m_vMove.x) * PLAYER_MOVE_INERTIA;

@@ -225,11 +225,23 @@ D3DXVECTOR3 *CrossProduct(D3DXVECTOR3 *ret, D3DXVECTOR3 *vl, D3DXVECTOR3 *vr)
 //=============================================================================
 // 数値限界設定
 //=============================================================================
-float SetLimit(float fTag, float fMax, float fMin)
+bool SetLimit(float* pOut, float fTag, float fMax, float fMin)
 {
-	if (fTag > fMax) { return fMax; }
-	else if (fMin > fTag) { return fMin; }
-	else { return fTag; }
+	if (fTag > fMax)
+	{
+		*pOut = fMax;
+		return true;
+	}
+	else if (fMin > fTag)
+	{ 
+		*pOut = fMin;
+		return true;
+	}
+	else
+	{ 
+		*pOut = fTag;
+		return false;
+	}
 }
 //=============================================================================
 // PI調整処理（180度）

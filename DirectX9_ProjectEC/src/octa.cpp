@@ -47,6 +47,7 @@ Octa::Octa(void)
 		m_tData[i].vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_tData[i].fSize = 0.0f;
 		m_tData[i].fUse = 0.0f;
+		m_tData[i].fRot = ((rand() % 618) * 0.01f);
 		m_tData[i].vColor = SetColorPalletRandom();
 
 		m_tData[i].bUse = false;
@@ -54,6 +55,7 @@ Octa::Octa(void)
 
 	// 使用フラグの初期化
 	m_bUse = true;
+	m_nCount = 0;
 
 	// シェーダポインタの初期化・取得
 	pEffect = NULL;
@@ -69,6 +71,24 @@ Octa::Octa(void)
 void Octa::Update(void)
 {
 	SetInst();
+#ifdef _DEBUG
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("Octa");
+	if (bGui)
+	{
+		ImGui::Text("Count [%d]\n", m_nCount);
+
+		// 管理用データの初期化
+		for (UINT i = 0; i <= m_nCount; i++)
+		{
+			ImGui::Text("No[%2d] Pos [%6.0f.%6.0f,%6.0f] Size[%3.0f] Rot[%3.2] Use[%d]\n",
+				i,m_tData[i].vPos.x, m_tData[i].vPos.y, m_tData[i].vPos.z,
+				m_tData[i].fSize, m_tData[i].fRot, m_tData[i].bUse
+			);
+		}
+		ImGui::TreePop();
+	}
+#endif
 }
 
 //=============================================================================
@@ -76,81 +96,84 @@ void Octa::Update(void)
 //=============================================================================
 void Octa::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	// ビュー・プロジェクション行列を取得
-	D3DXMATRIX mtxView, mtxProjection;
-	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
-
-	// インスタンス宣言
-	pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | OCTA_MAX);
-	pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
-
-	// 頂点とインデックスを設定
-	pDevice->SetVertexDeclaration(m_pDecl);
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, (UINT)m_dwVtxSize);			// 頂点バッファ
-	pDevice->SetStreamSource(1, m_pInstBuff, 0, sizeof(INSTANCE));	// インスタンスバッファ
-	pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファ
-
-		// 使用するテクニックを定義
-	if (FAILED(pEffect->SetTechnique("Tec01")))
+	if (m_nCount > 0)
 	{
-		// エラー
-		MessageBox(NULL, "テクニックの定義に失敗しました", "Tec01", MB_OK);
-		//return S_FALSE;
+		LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+		// ビュー・プロジェクション行列を取得
+		D3DXMATRIX mtxView, mtxProjection;
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+		pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+		// インスタンス宣言
+		pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | m_nCount);
+		pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
+
+		// 頂点とインデックスを設定
+		pDevice->SetVertexDeclaration(m_pDecl);
+		pDevice->SetStreamSource(0, m_pVtxBuff, 0, (UINT)m_dwVtxSize);			// 頂点バッファ
+		pDevice->SetStreamSource(1, m_pInstBuff, 0, sizeof(INSTANCE));	// インスタンスバッファ
+		pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファ
+
+			// 使用するテクニックを定義
+		if (FAILED(pEffect->SetTechnique("Tec01")))
+		{
+			// エラー
+			MessageBox(NULL, "テクニックの定義に失敗しました", "Tec01", MB_OK);
+			//return S_FALSE;
+		}
+
+		// 必要な行列情報をセット
+		pEffect->SetMatrix("proj", &mtxProjection);
+		pEffect->SetMatrix("view", &mtxView);
+		pEffect->SetMatrix("world", &m_mtxWorld);
+
+		// カメラ情報を取得
+		Camera* pCamera = CameraManager::GetCameraNow();
+		D3DXVECTOR4 eyeTmp = D3DXVECTOR4(pCamera->GetEye(), 0.0f);
+		// カメラ視点をセット
+		if (FAILED(pEffect->SetVector("eye", &eyeTmp)))
+		{
+			// エラー
+			MessageBox(NULL, "カメラEye情報のセットに失敗しました。", "eye", MB_OK);
+		}
+		// ライト情報を取得
+		Light* pLight = LightManager::GetLightAdr(LightManager::Main);
+		// ライト情報をセット
+		if (FAILED(pEffect->SetValue("lt", &pLight->value, sizeof(Light::LIGHTVALUE))))
+		{
+			// エラー
+			MessageBox(NULL, "ライト情報のセットに失敗しました。", "lt", MB_OK);
+		}
+
+		// 結果を確定させる
+		pEffect->CommitChanges();
+
+		// シェーダーの開始、numPassには指定してあるテクニックに定義してあるpassの数が変える
+		UINT numPass = 0;
+		pEffect->Begin(&numPass, 0);
+		for (UINT i = 0; i < numPass; i++)
+		{
+			// パスを指定して開始
+			pEffect->BeginPass(i);
+
+			// 描画
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_dwNumVtx, 0, m_dwNumFace);
+
+			// シェーダーパスを終了
+			pEffect->EndPass();
+		}
+		// シェーダーを終了
+		pEffect->End();
+
+		// インスタンス宣言を標準に戻す
+		pDevice->SetStreamSourceFreq(0, 1);
+		pDevice->SetStreamSourceFreq(1, 1);
+
+		// 固定機能に戻す
+		pDevice->SetVertexShader(NULL);
+		pDevice->SetPixelShader(NULL);
 	}
-	
-	// 必要な行列情報をセット
-	pEffect->SetMatrix("proj", &mtxProjection);
-	pEffect->SetMatrix("view", &mtxView);
-	pEffect->SetMatrix("world", &m_mtxWorld);
-
-	// カメラ情報を取得
-	Camera* pCamera = CameraManager::GetCameraNow();
-	D3DXVECTOR4 eyeTmp = D3DXVECTOR4(pCamera->GetEye(), 0.0f);
-	// カメラ視点をセット
-	if (FAILED(pEffect->SetVector("eye", &eyeTmp)))
-	{
-		// エラー
-		MessageBox(NULL, "カメラEye情報のセットに失敗しました。", "eye", MB_OK);
-	}
-	// ライト情報を取得
-	Light* pLight = LightManager::GetLightAdr(LightManager::Main);
-	// ライト情報をセット
-	if (FAILED(pEffect->SetValue("lt", &pLight->value, sizeof(Light::LIGHTVALUE))))
-	{
-		// エラー
-		MessageBox(NULL, "ライト情報のセットに失敗しました。", "lt", MB_OK);
-	}
-
-	// 結果を確定させる
-	pEffect->CommitChanges();
-
-	// シェーダーの開始、numPassには指定してあるテクニックに定義してあるpassの数が変える
-	UINT numPass = 0;
-	pEffect->Begin(&numPass, 0);
-	for (UINT i = 0; i < numPass; i++)
-	{
-		// パスを指定して開始
-		pEffect->BeginPass(i);
-
-		// 描画
-		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_dwNumVtx, 0, m_dwNumFace);
-
-		// シェーダーパスを終了
-		pEffect->EndPass();
-	}
-	// シェーダーを終了
-	pEffect->End();
-
-	// インスタンス宣言を標準に戻す
-	pDevice->SetStreamSourceFreq(0, 1);
-	pDevice->SetStreamSourceFreq(1, 1);
-
-	// 固定機能に戻す
-	pDevice->SetVertexShader(NULL);
-	pDevice->SetPixelShader(NULL);
 }
 
 //=============================================================================
@@ -173,12 +196,32 @@ int Octa::Set(float fSize)
 }
 
 //=============================================================================
+// カラーをセット
+//=============================================================================
+void Octa::SetColor(int nIdx, D3DCOLOR xColor)
+{
+	if (nIdx < 0)return;
+	m_tData[nIdx].vColor = xColor;
+	return;
+}
+
+//=============================================================================
 // 座標をセット
 //=============================================================================
 void Octa::SetPos(int nIdx, D3DXVECTOR3 vPos)
 {
 	if (nIdx < 0)return;
 	m_tData[nIdx].vPos = vPos;
+	return;
+}
+
+//=============================================================================
+// 回転を加算
+//=============================================================================
+void Octa::AddRot(int nIdx, float fRot)
+{
+	if (nIdx < 0)return;
+	m_tData[nIdx].fRot += fRot;
 	return;
 }
 
@@ -328,8 +371,10 @@ HRESULT Octa::SetInst(void)
 		pInst->vPos = m_tData[i].vPos;
 		pInst->fSize = m_tData[i].fSize;
 		pInst->fUse = m_tData[i].fUse;
+		pInst->fRot = m_tData[i].fRot;
 		pInst->vColor = m_tData[i].vColor;
 		pInst++;
+		if (m_tData[i].bUse) m_nCount = i + 1;
 	}
 
 	// 座標データをアンロックする
@@ -353,7 +398,8 @@ HRESULT Octa::CreateDecl(LPDIRECT3DDEVICE9 pDevice, LPD3DXMESH pMesh)
 		{ 1, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },		// ワールド位置
 		{ 1, 12, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },		// サイズ
 		{ 1, 16, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },		// 使用フラグ
-		{ 1, 20, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },		// 頂点カラー
+		{ 1, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },		// 頂点カラー
+		{ 1, 24, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },		// 頂点カラー
 		D3DDECL_END()
 	};
 

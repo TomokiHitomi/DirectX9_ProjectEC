@@ -6,6 +6,8 @@
 //=============================================================================
 #include "main.h"
 #include "enemy.h"
+#include "game.h"
+#include "calculate.h"
 
 // デバッグ用
 #ifdef _DEBUG
@@ -38,7 +40,28 @@ Enemy::Enemy(void)
 //=============================================================================
 Enemy::~Enemy(void)
 {
+#ifdef _DEBUG
+	DebugObject::pSphere->Release(m_cDebug.nIdx);
+#endif
+}
 
+//=============================================================================
+// 開始処理
+//=============================================================================
+void Enemy::Start(void)
+{
+	m_cProp.bUse = true;
+
+	m_cOctaData.bUse = true;
+	m_cOctaData.fSize = m_cProp.fSize;
+	m_cOctaData.nIdx = pOcta->Set(m_cOctaData.fSize);
+	pOcta->SetColor(m_cOctaData.nIdx, SetColorPallet(COLOR_PALLET_MAGENTA));
+
+#ifdef _DEBUG
+	m_cDebug.bUse = true;
+	m_cDebug.fSize = m_cProp.fSize;
+	m_cDebug.nIdx = DebugObject::pSphere->Set(m_cDebug.fSize);
+#endif
 }
 
 //=============================================================================
@@ -46,7 +69,11 @@ Enemy::~Enemy(void)
 //=============================================================================
 void Enemy::Update(void)
 {
-
+	pOcta->SetPos(m_cOctaData.nIdx, m_cProp.vPos);
+	pOcta->AddRot(m_cOctaData.nIdx, 0.02f);
+#ifdef _DEBUG
+	DebugObject::pSphere->SetPos(m_cDebug.nIdx, m_cProp.vPos);
+#endif
 }
 
 //=============================================================================
@@ -62,6 +89,11 @@ void Enemy::Draw(void)
 //=============================================================================
 void Enemy::Release(void)
 {
+	pOcta->Release(m_cOctaData.nIdx);
+#ifdef _DEBUG
+	DebugObject::pSphere->Release(m_cDebug.nIdx);
+#endif
+
 	// 前ポインタがNULLではない
 	if ((m_pPrev) != NULL)
 	{
@@ -112,12 +144,6 @@ EnemyManager::EnemyManager(void)
 	pOcta = NULL;
 	pOcta = new Octa;
 
-	for (UINT i = 0; i < 10; i++)
-	{
-		int nIdx = pOcta->Set(100.0f);
-		pOcta->SetPos(nIdx, D3DXVECTOR3(i*100.0f, 500.0f, 0.0f));
-	}
-
 	// 読込処理
 	Load();
 }
@@ -127,6 +153,7 @@ EnemyManager::EnemyManager(void)
 //=============================================================================
 EnemyManager::~EnemyManager(void)
 {
+	Uninit();
 	SAFE_DELETE(pOcta);
 }
 
@@ -175,6 +202,12 @@ bool EnemyManager::Create(Enemy** ppEnemy, int* pData)
 		*ppEnemy = new EnemyNormal;
 		break;
 	}
+
+	(*ppEnemy)->m_cProp.nWave = pData[0];
+	(*ppEnemy)->m_cProp.vPos = D3DXVECTOR3(pData[2], pData[3], pData[4]);
+	(*ppEnemy)->m_cProp.fSize = pData[5];
+
+	(*ppEnemy)->pOcta = pOcta;
 	return true;
 }
 
@@ -183,14 +216,28 @@ bool EnemyManager::Create(Enemy** ppEnemy, int* pData)
 //=============================================================================
 void EnemyManager::Load(void)
 {
-	int nData[8];
-
 	FILE *fp;
+
+	// ファイルを開く
 	fopen_s(&fp,ENEMY_FILE, "r");
 
 	// ファイルオープンエラー処理
 	if (fp == NULL)
 		return;
+
+	// データ取得
+	Read(fp);
+
+	// ファイルを閉じる
+	fclose(fp);
+}
+
+//=============================================================================
+// ファイル読込処理
+//=============================================================================
+void EnemyManager::Read(FILE* fp)
+{
+	int nData[8];
 
 	Enemy** ppList = &m_pRoot;
 	Enemy** ppPrev = NULL;
@@ -198,7 +245,7 @@ void EnemyManager::Load(void)
 	if (fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d",
 		&nData[0], &nData[1], &nData[2], &nData[3], &nData[4], &nData[5], &nData[6], &nData[7]) != EOF)
 	{
-		if(!Create(ppList,&nData[0]))
+		if (!Create(ppList, &nData[0]))
 			return;
 		ppPrev = ppList;
 		ppList = &(*ppList)->m_pNext;
@@ -216,9 +263,6 @@ void EnemyManager::Load(void)
 		ppPrev = ppList;
 		ppList = &(*ppList)->m_pNext;
 	}
-
-	fclose(fp);
-
 }
 
 //=============================================================================
@@ -230,7 +274,14 @@ void EnemyManager::Update(void)
 
 	while (pList != NULL)
 	{
-		pList->Update();
+		if (pList->m_cProp.nWave > GameScene::GetWave())
+			break;
+
+		if (pList->m_cProp.bUse)
+			pList->Update();
+		else
+			pList->Start();
+
 		pList = pList->m_pNext;
 	}
 
@@ -242,12 +293,12 @@ void EnemyManager::Update(void)
 //=============================================================================
 void EnemyManager::Draw(void)
 {
-	Enemy* pList = m_pRoot;
+	//Enemy* pList = m_pRoot;
 
-	while (pList != NULL)
-	{
-		pList->Draw();
-		pList = pList->m_pNext;
-	}
+	//while (pList != NULL)
+	//{
+	//	pList->Draw();
+	//	pList = pList->m_pNext;
+	//}
 	SAFE_DRAW(pOcta);
 }

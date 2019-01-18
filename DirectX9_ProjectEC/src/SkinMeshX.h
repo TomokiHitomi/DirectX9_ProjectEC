@@ -147,8 +147,15 @@ public:
 	VOID ChangeAnim(DWORD _NewAnimNum, FLOAT fShift);
 	//現在のアニメーション番号取得
 	DWORD GetAnimTrack() { return m_CurrentTrack; }
-	//現在のアニメーションタイム(アニメーション開始からの時間)を取得
-	DWORD GetAnimTime() { return m_AnimeTime; }
+	////現在のアニメーションタイム(アニメーション開始からの時間)を取得
+	//DWORD GetAnimTime() { return m_AnimeTime; }
+	// 現在のアニメーションタイムを取得
+	FLOAT GetAnimTime()
+	{
+		int q = (int)(m_fAnimeTime / m_fLoopTime);
+		float r = m_fAnimeTime - m_fLoopTime * q;
+		return r;
+	}
 	//アニメーション速度を取得
 	FLOAT GetAnimSpeed() { return m_AnimSpeed; }
 	//アニメーション速度を設定
@@ -216,5 +223,6 @@ private:
 	FLOAT	m_fShiftTime;			// シフトするのにかかる時間
 	FLOAT	m_fCurWeight;			// 現在のウェイト時間
 	DWORD	m_OldTrack;				// 変更前アニメーショントラック
+
 };
 #endif

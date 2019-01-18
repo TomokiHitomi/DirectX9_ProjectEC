@@ -1053,14 +1053,15 @@ VOID CSkinMesh::Update(void)
 	//0(再生中の)トラックからトラックデスクをセットする
 	m_pAnimController->SetTrackDesc(0, &(m_CurrentTrackDesc));
 
+	// アニメーション時間を加算
+	m_fAnimeTime += m_AnimSpeed;
+
 	// ループフラグが true の場合はアニメーション時間データの更新
 	if (m_bLoopFlag[m_CurrentTrack])
 		m_pAnimController->AdvanceTime(m_AnimSpeed, NULL);
 	// false の場合は1ループ目まで更新
 	else
 	{
-		// アニメーション時間を加算
-		m_fAnimeTime += m_AnimSpeed;
 		// 1ループの時間を上回るまで更新
 		if (m_fLoopTime > m_fAnimeTime)
 			m_pAnimController->AdvanceTime(m_AnimSpeed, NULL);

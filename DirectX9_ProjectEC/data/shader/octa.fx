@@ -4,22 +4,12 @@
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-float4x4	world;		// ワールドマトリクス
-float4x4	view;		// ビューマトリクス
-float4x4	proj;		// プロジェクションマトリクス
-float4		eye;		// 視点座標
 
-// ライト
-typedef struct _LIGHT
-{
-	float4		dif;	// 拡散光
-	float4		amb;	// 環境光
-	float4		spc;	// 反射光
-	float3		pos;	// 座標
-	float3		dir;	// 平行光源
-}LIGHT;
-
-LIGHT		lt;
+//*****************************************************************************
+// マクロ定義
+//*****************************************************************************
+#define FX_OCTA_AMBIENT	(0.4f)
+#define FX_OCTA_POWER	(5.0f)
 
 //*****************************************************************************
 // 構造体定義
@@ -32,6 +22,7 @@ struct VS_IN		// 頂点シェーダの引数
 	float3	worldPos	: TEXCOORD0;
 	float	size		: TEXCOORD1;
 	float	use			: TEXCOORD2;
+	float	rot			: TEXCOORD3;
 	float4	col			: COLOR0;
 };
 
@@ -42,6 +33,55 @@ struct VS_OUT		// 頂点シェーダの戻り値かつピクセルシェーダーの引数
 	float4	col	: COLOR0;
 	float4	spc : TEXCOORD0;
 };
+
+// ライト
+typedef struct _LIGHT
+{
+	float4		dif;	// 拡散光
+	float4		amb;	// 環境光
+	float4		spc;	// 反射光
+	float3		pos;	// 座標
+	float3		dir;	// 平行光源
+}LIGHT;
+
+//*****************************************************************************
+// グローバル変数:
+//*****************************************************************************
+float4x4	world;		// ワールドマトリクス
+float4x4	view;		// ビューマトリクス
+float4x4	proj;		// プロジェクションマトリクス
+float4		eye;		// 視点座標
+LIGHT		lt;			// ライト
+
+//*****************************************************************************
+// サンプラー
+//*****************************************************************************
+
+
+//=============================================================================
+// 回転（Y）
+//=============================================================================
+float4x4 RotationY(float agl)
+{
+	float4x4 mtx;
+	mtx._11 = cos(agl);
+	mtx._12 = 0.0f;
+	mtx._13 = -sin(agl);
+	mtx._14 = 0.0f;
+	mtx._21 = 0.0f;
+	mtx._22 = 1.0f;
+	mtx._23 = 0.0f;
+	mtx._24 = 0.0f;
+	mtx._31 = sin(agl);
+	mtx._32 = 0.0f;
+	mtx._33 = cos(agl);
+	mtx._34 = 0.0f;
+	mtx._41 = 0.0f;
+	mtx._42 = 0.0f;
+	mtx._43 = 0.0f;
+	mtx._44 = 1.0f;
+	return mtx;
+}
 
 //=============================================================================
 // 頂点シェーダ
@@ -58,6 +98,8 @@ VS_OUT vs_main(VS_IN In)
 		);
 
 	float4x4 mtxWorld = world;
+
+	mtxWorld = mul(RotationY(In.rot), mtxWorld);
 
 	// インスタンシング用ワールド座標をワールドマトリクスに追加
 	mtxWorld._41 = In.worldPos.x;
@@ -85,21 +127,21 @@ VS_OUT vs_main(VS_IN In)
 	L = normalize(-lt.dir);
 
 	// 視線ベクトルを求める
-	V = normalize(eye.xyz - P);
+	V = normalize(P - eye.xyz);
 
 	// 光ベクトルと視線とのハーフベクトルを求める
 	H = normalize(L + V);
 
 	// 光源計算を行って出力カラーを決める
-	Out.col = In.col * 0.4f +
+	Out.col = In.col * FX_OCTA_AMBIENT +
 		lt.dif * In.col *
 		max(0.0f, dot(N, L));	// 0.0未満の場合は0.0に
 
 	Out.col.a = In.col.a * In.use;
 
 	// スペキュラーによる反射色を計算　g_powerが大きいほど鋭く光る
-	Out.spc = lt.spc * In.col *
-		pow(max(0.0f, dot(N, H)), 0.8f);
+	Out.spc = lt.spc *
+		pow(max(0.0f, dot(N, H)), FX_OCTA_POWER);
 
 	//Out.col = saturate(Out.col + Out.spc);
 	//Out.col = In.col;

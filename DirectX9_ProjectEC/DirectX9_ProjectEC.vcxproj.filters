@@ -77,9 +77,6 @@
     <ClInclude Include="src\cloud.h">
       <Filter>object\stage</Filter>
     </ClInclude>
-    <ClInclude Include="src\cube.h">
-      <Filter>object\test</Filter>
-    </ClInclude>
     <ClInclude Include="src\collision.h">
       <Filter>system</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="src\octa.h">
       <Filter>object\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tool.h">
+      <Filter>tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +203,6 @@
     <ClCompile Include="src\cloud.cpp">
       <Filter>object\stage</Filter>
     </ClCompile>
-    <ClCompile Include="src\cube.cpp">
-      <Filter>object\test</Filter>
-    </ClCompile>
     <ClCompile Include="src\collision.cpp">
       <Filter>system</Filter>
     </ClCompile>
@@ -241,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="src\octa.cpp">
       <Filter>object\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tool.cpp">
+      <Filter>tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

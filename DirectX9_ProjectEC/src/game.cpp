@@ -16,7 +16,6 @@
 #include "player.h"
 #include "enemy.h"
 #include "stage.h"
-#include "cube.h"
 #include "effect.h"
 
 /* デバッグ */
@@ -36,13 +35,22 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-extern SceneManager		g_cScene;				// Sceneマネージャ
+int GameScene::m_nWave = 0;
 
 //=============================================================================
 // 更新処理
 //=============================================================================
 void GameScene::Update(void)
 {
+#ifdef _DEBUG
+	// imguiの更新開始
+	ImGui::Begin("GameScene");
+	ImGui::Text("Wave[%d]\n", GameScene::m_nWave);
+	if (ImGui::Button("WaveAdd"))
+		GameScene::m_nWave++;
+	// imguiの更新終了
+	ImGui::End();
+#endif
 	ObjectManager::UpdateAll();
 }
 
@@ -59,13 +67,13 @@ void GameScene::Draw(void)
 //=============================================================================
 GameScene::GameScene(void)
 {
+	m_nWave = 0;
 #ifdef _DEBUG
 	ObjectManager::CreateObject<DebugObject>();
 #endif
 	ObjectManager::CreateObject<EnemyManager>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<Cube>();
 	ObjectManager::CreateObject<EffectManager>();
 }
 

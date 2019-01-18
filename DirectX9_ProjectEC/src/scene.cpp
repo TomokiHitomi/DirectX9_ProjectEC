@@ -189,12 +189,12 @@ SceneManager::~SceneManager(void)
 //=============================================================================
 void SceneManager::EndSeS(void)
 {
-	EndSe(SE_FIRE1);
-	EndSe(SE_WATER_SUCK);
-	EndSe(SE_WATER1);
-	EndSe(SE_WATER2);
-	EndSe(SE_WIND_SUCK);
-	EndSe(SE_WIND1);
+	//EndSe(SE_FIRE1);
+	//EndSe(SE_WATER_SUCK);
+	//EndSe(SE_WATER1);
+	//EndSe(SE_WATER2);
+	//EndSe(SE_WIND_SUCK);
+	//EndSe(SE_WIND1);
 }
 
 #ifdef _DEBUG

@@ -54,6 +54,7 @@ private:
 	LPD3DXEFFECT		pEffect;		// シェーダー関連
 	D3DXMATRIX			m_mtxWorld;		// ワールドマトリクス
 	D3DXVECTOR4			m_vColor;		// カラー
+	UINT				m_nCount;		// カウント
 	bool				m_bUse;			// 使用フラグ
 
 	// インスタンシング用

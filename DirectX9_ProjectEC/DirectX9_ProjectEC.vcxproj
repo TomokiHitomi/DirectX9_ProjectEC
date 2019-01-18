@@ -30,7 +30,6 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\cloud.h" />
     <ClInclude Include="src\collision.h" />
-    <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\debugobject.h" />
     <ClInclude Include="src\debugproc.h" />
     <ClInclude Include="src\debugsphere.h" />
@@ -57,6 +56,7 @@
     <ClInclude Include="src\stage.h" />
     <ClInclude Include="src\sword.h" />
     <ClInclude Include="src\title.h" />
+    <ClInclude Include="src\tool.h" />
     <ClInclude Include="src\wing.h" />
     <ClInclude Include="src\wing_feather.h" />
     <ClInclude Include="src\XModel.h" />
@@ -71,7 +71,6 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\cloud.cpp" />
     <ClCompile Include="src\collision.cpp" />
-    <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\debugobject.cpp" />
     <ClCompile Include="src\debugproc.cpp" />
     <ClCompile Include="src\debugsphere.cpp" />
@@ -98,6 +97,7 @@
     <ClCompile Include="src\stage.cpp" />
     <ClCompile Include="src\sword.cpp" />
     <ClCompile Include="src\title.cpp" />
+    <ClCompile Include="src\tool.cpp" />
     <ClCompile Include="src\wing.cpp" />
     <ClCompile Include="src\wing_feather.cpp" />
     <ClCompile Include="src\XModel.cpp" />

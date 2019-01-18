@@ -31,6 +31,10 @@ private:
 	bool	GameStop(void);			// ゲーム停止メソッド
 	int		m_nStopCount;			// ゲーム停止カウント
 	bool	m_bGameStart;			// ゲーム開始フラグ
+	static int		m_nWave;
+public:
+	static int GetWave(void) { return m_nWave; }
+	static void SetWave(int nWave) { m_nWave = nWave; }
 };
 
 //*****************************************************************************

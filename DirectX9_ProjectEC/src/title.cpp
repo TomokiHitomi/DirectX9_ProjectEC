@@ -17,7 +17,6 @@
 #include "light.h"
 #include "player.h"
 #include "skydome.h"
-#include "cube.h"
 #include "stencil.h"
 #include "effect.h"
 #include "stage.h"
@@ -91,7 +90,6 @@ TitleScene::TitleScene(void)
 	ObjectManager::CreateObject<DebugObject>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<Cube>();
 	ObjectManager::CreateObject<EffectManager>();
 }
 

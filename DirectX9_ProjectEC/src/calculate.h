@@ -86,7 +86,7 @@ void MatrixRotationVecAndUp(D3DXMATRIX *mtxOut, D3DXVECTOR3 vLook, D3DXVECTOR3 v
 float CompHigh(float f1, float f2);
 float DotProduct(D3DXVECTOR3 *vl, D3DXVECTOR3 *vr);
 D3DXVECTOR3 *CrossProduct(D3DXVECTOR3 *ret, D3DXVECTOR3 *vl, D3DXVECTOR3 *vr);
-float SetLimit(float fTag, float fMax, float fMin);
+bool SetLimit(float* pOut, float fTag, float fMax, float fMin);
 float PiCalculate180(float fAngle);
 float PiCalculate360(float fAngle);
 void QuaternionCalculate(D3DXVECTOR3 *pInit, D3DXVECTOR3 *pC, float Rad, D3DXVECTOR3 *ret);

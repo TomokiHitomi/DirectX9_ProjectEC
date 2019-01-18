@@ -50,6 +50,8 @@ DebugSphere::DebugSphere(void)
 	// カラーの初期化
 	m_vColor = DEBUGSPHERE_COLOR;
 
+	m_nCount = 0;
+
 	// 使用フラグの初期化
 	m_bUse = true;
 
@@ -67,6 +69,15 @@ DebugSphere::DebugSphere(void)
 void DebugSphere::Update(void)
 {
 	SetInst();
+#ifdef _DEBUG
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("DebugSphere");
+	if (bGui)
+	{
+		ImGui::Text("Count [%d]\n", m_nCount);
+		ImGui::TreePop();
+	}
+#endif
 }
 
 //=============================================================================
@@ -74,66 +85,69 @@ void DebugSphere::Update(void)
 //=============================================================================
 void DebugSphere::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	// ビュー・プロジェクション行列を取得
-	D3DXMATRIX mtxView, mtxProjection;
-	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
-
-	// インスタンス宣言
-	pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | DEBUGSPHERE_MAX);
-	pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
-
-	// 頂点とインデックスを設定
-	pDevice->SetVertexDeclaration(m_pDecl);
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, (UINT)m_dwVtxSize);			// 頂点バッファ
-	pDevice->SetStreamSource(1, m_pInstBuff, 0, sizeof(INSTANCE));	// インスタンスバッファ
-	pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファ
-
-		// 使用するテクニックを定義
-	if (FAILED(pEffect->SetTechnique("Tec01")))
+	if (m_nCount > 0)
 	{
-		// エラー
-		MessageBox(NULL, "テクニックの定義に失敗しました", "Tec01", MB_OK);
-		//return S_FALSE;
+		LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+		// ビュー・プロジェクション行列を取得
+		D3DXMATRIX mtxView, mtxProjection;
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+		pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+		// インスタンス宣言
+		pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | m_nCount);
+		pDevice->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
+
+		// 頂点とインデックスを設定
+		pDevice->SetVertexDeclaration(m_pDecl);
+		pDevice->SetStreamSource(0, m_pVtxBuff, 0, (UINT)m_dwVtxSize);			// 頂点バッファ
+		pDevice->SetStreamSource(1, m_pInstBuff, 0, sizeof(INSTANCE));	// インスタンスバッファ
+		pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファ
+
+			// 使用するテクニックを定義
+		if (FAILED(pEffect->SetTechnique("Tec01")))
+		{
+			// エラー
+			MessageBox(NULL, "テクニックの定義に失敗しました", "Tec01", MB_OK);
+			//return S_FALSE;
+		}
+
+		// 必要な行列情報をセット
+		pEffect->SetMatrix("proj", &mtxProjection);
+		pEffect->SetMatrix("view", &mtxView);
+		pEffect->SetMatrix("world", &m_mtxWorld);
+
+		// ベクトルをセット（カラー）
+		pEffect->SetVector("g_vColor", &m_vColor);
+
+		// 結果を確定させる
+		pEffect->CommitChanges();
+
+		// シェーダーの開始、numPassには指定してあるテクニックに定義してあるpassの数が変える
+		UINT numPass = 0;
+		pEffect->Begin(&numPass, 0);
+		for (UINT i = 0; i < numPass; i++)
+		{
+			// パスを指定して開始
+			pEffect->BeginPass(i);
+
+			// 描画
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_dwNumVtx, 0, m_dwNumFace);
+
+			// シェーダーパスを終了
+			pEffect->EndPass();
+		}
+		// シェーダーを終了
+		pEffect->End();
+
+		// インスタンス宣言を標準に戻す
+		pDevice->SetStreamSourceFreq(0, 1);
+		pDevice->SetStreamSourceFreq(1, 1);
+
+		// 固定機能に戻す
+		pDevice->SetVertexShader(NULL);
+		pDevice->SetPixelShader(NULL);
 	}
-	
-	// 必要な行列情報をセット
-	pEffect->SetMatrix("proj", &mtxProjection);
-	pEffect->SetMatrix("view", &mtxView);
-	pEffect->SetMatrix("world", &m_mtxWorld);
-
-	// ベクトルをセット（カラー）
-	pEffect->SetVector("g_vColor", &m_vColor);
-
-	// 結果を確定させる
-	pEffect->CommitChanges();
-
-	// シェーダーの開始、numPassには指定してあるテクニックに定義してあるpassの数が変える
-	UINT numPass = 0;
-	pEffect->Begin(&numPass, 0);
-	for (UINT i = 0; i < numPass; i++)
-	{
-		// パスを指定して開始
-		pEffect->BeginPass(i);
-
-		// 描画
-		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_dwNumVtx, 0, m_dwNumFace);
-
-		// シェーダーパスを終了
-		pEffect->EndPass();
-	}
-	// シェーダーを終了
-	pEffect->End();
-
-	// インスタンス宣言を標準に戻す
-	pDevice->SetStreamSourceFreq(0, 1);
-	pDevice->SetStreamSourceFreq(1, 1);
-
-	// 固定機能に戻す
-	pDevice->SetVertexShader(NULL);
-	pDevice->SetPixelShader(NULL);
 }
 
 //=============================================================================
@@ -314,6 +328,8 @@ HRESULT DebugSphere::SetInst(void)
 		pInst->vPos = m_tData[i].vPos;
 		pInst->fSize = m_tData[i].fSize;
 		pInst->fUse = m_tData[i].fUse;
+
+		if (m_tData[i].bUse) m_nCount = i + 1;
 		pInst++;
 	}
 
