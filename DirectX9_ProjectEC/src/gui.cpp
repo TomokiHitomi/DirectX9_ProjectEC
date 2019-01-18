@@ -19,7 +19,8 @@
 #define GUI_FONT_SIZE (15.0f * SCREEN_SCALE)
 #define GUI_FONT_POS (20 * SCREEN_SCALE)
 
-#define GUI_FPS_ALERT (55)
+#define GUI_FPS_ALERT_1 (60)
+#define GUI_FPS_ALERT_2 (55)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -89,10 +90,15 @@ void Gui::Start(void)
 	int nFps = GetFps();
 
 	// FPSの値が指定値より上下でタイトルの色を変更
-	if (nFps >= GUI_FPS_ALERT)
+	if (nFps >= GUI_FPS_ALERT_1)
 	{	// グリーン
 		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.2f, 0.7f, 0.2f, 0.8f));
 		ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.2f, 0.7f, 0.2f, 0.5f));
+	}
+	else if (nFps >= GUI_FPS_ALERT_2)
+	{	// イエロー
+		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.7f, 0.7f, 0.2f, 0.8f));
+		ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.7f, 0.7f, 0.2f, 0.5f));
 	}
 	else
 	{	// レッド

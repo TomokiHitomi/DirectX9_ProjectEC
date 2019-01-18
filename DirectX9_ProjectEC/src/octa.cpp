@@ -81,7 +81,7 @@ void Octa::Update(void)
 		// 管理用データの初期化
 		for (UINT i = 0; i <= m_nCount; i++)
 		{
-			ImGui::Text("No[%2d] Pos [%6.0f.%6.0f,%6.0f] Size[%3.0f] Rot[%3.2] Use[%d]\n",
+			ImGui::Text("No[%2d] Pos [%6.0f.%6.0f,%6.0f] Size[%3.0f] Rot[%3.2f] Use[%d]\n",
 				i,m_tData[i].vPos.x, m_tData[i].vPos.y, m_tData[i].vPos.z,
 				m_tData[i].fSize, m_tData[i].fRot, m_tData[i].bUse
 			);

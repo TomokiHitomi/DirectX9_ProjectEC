@@ -25,6 +25,9 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
+#ifdef _DEBUG
+bool EnemyManager::s_bDebug;
+#endif
 
 //=============================================================================
 // コンストラクタ（初期化処理）
@@ -72,6 +75,11 @@ void Enemy::Update(void)
 	pOcta->SetPos(m_cOctaData.nIdx, m_cProp.vPos);
 	pOcta->AddRot(m_cOctaData.nIdx, 0.02f);
 #ifdef _DEBUG
+	if (EnemyManager::s_bDebug)
+	{
+		ImGui::Text("Pos [%6.0f.%6.0f,%6.0f]\n",
+			m_cProp.vPos.x, m_cProp.vPos.y, m_cProp.vPos.z);
+	}
 	DebugObject::pSphere->SetPos(m_cDebug.nIdx, m_cProp.vPos);
 #endif
 }
@@ -271,6 +279,10 @@ void EnemyManager::Read(FILE* fp)
 void EnemyManager::Update(void)
 {
 	Enemy* pList = m_pRoot;
+#ifdef _DEBUG
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	s_bDebug = ImGui::TreeNode("Enemy");
+#endif
 
 	while (pList != NULL)
 	{
@@ -284,6 +296,13 @@ void EnemyManager::Update(void)
 
 		pList = pList->m_pNext;
 	}
+
+#ifdef _DEBUG
+	if (s_bDebug)
+	{
+		ImGui::TreePop();
+	}
+#endif
 
 	SAFE_UPDATE(pOcta);
 }

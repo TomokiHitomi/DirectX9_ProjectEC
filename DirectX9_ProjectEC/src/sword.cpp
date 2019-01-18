@@ -44,7 +44,10 @@ Sword::Sword(void)
 	m_pSetMtx = NULL;
 
 	m_eMode = Sword::SHOT;
+
 	m_nCnt = 0;
+	m_nCntMax = m_nCnt;
+
 	m_nCntRot = 0;
 	m_fRot = 0.01f;
 	m_fRotSpeed = SWORD_ROT_SPEED_MAX;
@@ -62,15 +65,12 @@ Sword::Sword(void)
 		m_cSword[i].fLength = SWORD_ROT_LENGTH;
 		m_cSword[i].fSpeed = 0.0f;
 		m_cSword[i].fAngle = 0.0f;
-		if (i < SWORD_MAX_INIT)
-		{
-			m_cSword[i].bUse = true;
-			m_nCnt++;
-		}
-		else
-		{
-			m_cSword[i].bUse = false;
-		}
+		m_cSword[i].bUse = false;
+	}
+
+	for (UINT i = 0; i < SWORD_MAX_INIT; i++)
+	{
+		Add();
 	}
 
 	m_vScl = D3DXVECTOR3(SWORD_SCL, SWORD_SCL, SWORD_SCL);
@@ -84,8 +84,6 @@ Sword::Sword(void)
 
 	// 持ち剣の行列を作成
 	WorldConvert(&m_mtxSword, pos, rot, m_vScl);
-
-	m_nCntMax = m_nCnt;
 }
 
 //=============================================================================
@@ -93,6 +91,11 @@ Sword::Sword(void)
 //=============================================================================
 Sword::~Sword(void)
 {
+	for (UINT i = 0; i < m_nCntMax; i++)
+	{
+		Sub();
+	}
+
 	if (m_CXModel != NULL)
 	{
 		m_CXModel->Release();
@@ -110,7 +113,7 @@ void Sword::Update(void)
 	bool bGui = ImGui::TreeNode("Sword");
 	if (bGui)
 	{
-		ImGui::Text("Cnt[%d]\n", m_nCnt);
+		ImGui::Text("CntMax[%d] Cnt[%d]\n", m_nCntMax, m_nCnt);
 	}
 #endif
 
@@ -132,7 +135,7 @@ void Sword::Update(void)
 		posTemp = D3DXVECTOR3(mtxTemp._21, mtxTemp._22, mtxTemp._23);
 		D3DXVec3Normalize(&posTemp, &posTemp);
 
-		posTemp *= SWORD_POS_Y;
+		posTemp *= SWORD_POS_Y * (1.0f - m_fMorph) + SWORD_POS_Y_FLY * m_fMorph;
 		posTemp += PlayerManager::GetPos(PlayerManager::PLAYER_1P);
 		//posTemp += pPlayer->GetPos();
 
@@ -233,10 +236,12 @@ void Sword::Update(void)
 				m_cSword[i].vZ = ZERO_D3DXVECTOR3;
 
 				// モーフ値に応じてベクトルを設定
-				m_cSword[i].vX += vUp * (1.0f - m_fMorph);
+				// Float
 				m_cSword[i].vZ += temp * (1.0f - m_fMorph);
-
 				CrossProduct(&temp, &temp, &m_vAxis);
+				m_cSword[i].vX += temp * (1.0f - m_fMorph);
+
+				// Fly
 				m_cSword[i].vX += temp * m_fMorph;
 				m_cSword[i].vZ += -m_vAxis * m_fMorph;
 
@@ -255,11 +260,18 @@ void Sword::Update(void)
 			}
 
 #ifdef _DEBUG
+			DebugObject::pSphere->SetPos(m_cSword[i].m_cDebug.nIdx, m_cSword[i].vPos + m_cSword[i].vZ * SWORD_COLLISION_POS);
 			if (bGui)
 			{
 				ImGui::Text("No[%d] Use[%d] Mode[%d] Len[%f] Spd[%f]\n"
 					, i, m_cSword[i].bUse, m_cSword[i].eMode,
 					m_cSword[i].fLength, m_cSword[i].fSpeed);
+				ImGui::Text("vX[%.2f.%.2f,%.2f] ",
+					m_cSword[i].vX.x, m_cSword[i].vX.y, m_cSword[i].vX.z);
+				ImGui::Text("vY[%.2f.%.2f,%.2f] ",
+					m_cSword[i].vY.x, m_cSword[i].vY.y, m_cSword[i].vY.z);
+				ImGui::Text("vZ[%.2f.%.2f,%.2f]\n",
+					m_cSword[i].vZ.x, m_cSword[i].vZ.y, m_cSword[i].vZ.z);
 			}
 #endif
 		}
@@ -413,6 +425,11 @@ void Sword::Add(void)
 			m_cSword[i].fAngle = m_fRot;
 			m_nCnt++;
 			m_nCntMax++;
+#ifdef _DEBUG
+			m_cSword[i].m_cDebug.bUse = true;
+			m_cSword[i].m_cDebug.fSize = SWORD_COLLISION_SIZE;
+			m_cSword[i].m_cDebug.nIdx = DebugObject::pSphere->Set(m_cSword[i].m_cDebug.fSize);
+#endif
 			return;
 		}
 	}
@@ -423,7 +440,7 @@ void Sword::Add(void)
 //=============================================================================
 void Sword::Sub(void)
 {
-	for (unsigned int i = SWORD_MAX - 1; i >= 0; i--)
+	for (int i = SWORD_MAX - 1; i >= 0; i--)
 	{
 		if (m_cSword[i].bUse)
 		{
@@ -432,6 +449,9 @@ void Sword::Sub(void)
 			{
 				m_nCnt--;
 			}
+#ifdef _DEBUG
+			DebugObject::pSphere->Release(m_cSword[i].m_cDebug.nIdx);
+#endif
 			m_nCntMax--;
 			return;
 		}

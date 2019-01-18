@@ -12,12 +12,14 @@
 *******************************************************************************/
 #include "object.h"
 #include "XModel.h"
+#include "debugobject.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 // モデル
-#define SWORD_MODEL					("data/model/sword/Espada.x")
+//#define SWORD_MODEL					("data/model/sword/Espada.x")
+#define SWORD_MODEL					("data/model/sword/Anelace.x")
 #define SWORD_MODEL_TEX				("Espada_AlbedoTransparency.png")
 
 #define SWORD_MAX					(50)
@@ -25,6 +27,7 @@
 
 #define SWORD_SCL					(3.0f)
 #define SWORD_POS_Y					(20.0f)
+#define SWORD_POS_Y_FLY				(8.0f)
 
 #define SWORD_SPEED_MIN				(8.0f)
 #define SWORD_SPEED_MAX				(8.0f)
@@ -51,6 +54,9 @@
 #define SWORD_MORPH_SPEED			(0.05f)
 
 #define SWORD_HAND_ROT				(D3DXVECTOR3(1.5f,0.9f,0.0f))
+
+#define SWORD_COLLISION_SIZE		(10.0f)
+#define SWORD_COLLISION_POS			(10)
 
 //*****************************************************************************
 // 構造体定義
@@ -95,6 +101,9 @@ private:
 		float				fLength;
 		float				fAngle;
 		bool				bUse;
+#ifdef _DEBUG
+		DebugObjectData m_cDebug;
+#endif
 	};
 
 	enum Mode

@@ -110,14 +110,14 @@ void Player::Init(void)
 	// 行列の初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	// カメラをAtをモデルに設定
-	CameraManager::pCamera[CameraManager::CENTER]->SetAt(m_vPos + (m_vY * 30));
+	//// カメラをAtをモデルに設定
+	//CameraManager::pCamera[CameraManager::CENTER]->SetAt(m_vPos + (m_vY * 30));
 
-	// カメラUpをモデル上部に設定
-	CameraManager::pCamera[CameraManager::CENTER]->SetUp(m_vY);
+	//// カメラUpをモデル上部に設定
+	//CameraManager::pCamera[CameraManager::CENTER]->SetUp(m_vY);
 
-	// カメラEyeをモデル後方にセット
-	CameraManager::pCamera[CameraManager::CENTER]->SetEye(m_vPos + m_vZ * 100);
+	//// カメラEyeをモデル後方にセット
+	//CameraManager::pCamera[CameraManager::CENTER]->SetEye(m_vPos + m_vZ * 100);
 
 	//WriteFile();
 
@@ -360,6 +360,7 @@ void Player::Attack(void)
 void Player::SetCamera(void)
 {
 	Camera* pCamera = CameraManager::GetCameraNow();
+	D3DXVECTOR3 temp;
 
 	switch (m_eMode)
 	{
@@ -378,13 +379,20 @@ void Player::SetCamera(void)
 	case MODE_FLY:
 		// カメラをAtをモデルに設定
 		pCamera->SetAt(m_vPos + (m_vY * 30));
+		//pCamera->SetAt(m_vTarget);
+		//temp =  m_vPos - m_vTarget;
+		//D3DXVec3Normalize(&temp, &temp);
+
 		// カメラEyeをモデル後方にセット
 		pCamera->SetEye(m_vPos + m_vZ * 100);
+		//pCamera->SetEye(m_vPos + temp * 100);
 		// カメラUpをモデル上部に設定
 		pCamera->SetUp(m_vY);
+		//pCamera->SetUp(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 
 		// カメラ慣性を減らす
 		pCamera->AddAtIner(0.02f);
+		//pCamera->AddEyeIner(0.02f);
 		break;
 	case MODE_LOCKON:
 		// カメラをAtを対象に設定

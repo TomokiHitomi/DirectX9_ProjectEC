@@ -185,6 +185,7 @@ void DebugSphere::SetPos(int nIdx, D3DXVECTOR3 vPos)
 void DebugSphere::Release(int nIdx)
 {
 	if (nIdx < 0)return;
+	m_tData[nIdx].vPos.y = -500.0f;
 	m_tData[nIdx].fUse = 0.0f;
 	m_tData[nIdx].bUse = false;
 	return;

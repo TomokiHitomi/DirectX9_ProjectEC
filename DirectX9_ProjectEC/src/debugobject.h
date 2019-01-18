@@ -48,6 +48,12 @@ public:
 	int		nIdx;
 	float	fSize;
 	bool	bUse;
+	DebugObjectData()
+	{
+		nIdx = -1;
+		fSize = 0.0f;
+		bUse = false;
+	}
 };
 
 //*****************************************************************************

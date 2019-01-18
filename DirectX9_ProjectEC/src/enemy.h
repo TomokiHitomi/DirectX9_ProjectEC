@@ -122,6 +122,10 @@ public:
  
 	bool Create(Enemy** ppEnemy, int* pData);
 	Octa* pOcta;
+
+#ifdef _DEBUG
+	static bool s_bDebug;
+#endif
 };
 
 //*****************************************************************************

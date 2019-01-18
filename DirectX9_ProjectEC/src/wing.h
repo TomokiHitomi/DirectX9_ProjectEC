@@ -45,6 +45,12 @@
 //#define WING_ANIM_	0x00001000
 //#define WING_ANIM_	0x00002000
 
+// SE
+#define WING_SE_FLAG_MARGIN		(0.1f)
+#define WING_SE_FLOAT			(0.5f)
+#define WING_SE_FLY1			(0.4f)
+#define WING_SE_FLY2			(1.2f)
+
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
@@ -67,6 +73,8 @@ private:
 	int				m_nWingFeaderCount;
 	int				m_nWingFeaderTime;
 
+	bool			m_bSe;
+
 public:
 	// コンストラクタ（初期化処理）
 	Wing(void);
@@ -76,6 +84,7 @@ public:
 	void Update(void);
 	// 描画処理
 	void Draw(void);
+
 	// アニメーション設定処理
 	void SetAnim(DWORD dwFlag) { m_dwAnim |= dwFlag; }
 	void SetMtx(D3DXMATRIX* pSetMtx) { m_pSetMtx = pSetMtx; }
@@ -91,6 +100,9 @@ private:
 	void ChangeAnim(DWORD dwAnime, FLOAT fShift)	{ if (m_CSkinMesh != NULL) m_CSkinMesh->ChangeAnim(dwAnime, fShift); }
 	void ChangeAnimSpeed(FLOAT AnimSpeed)			{ if (m_CSkinMesh != NULL) m_CSkinMesh->SetAnimSpeed(AnimSpeed); }
 	void CheckAnim(void);
+
+	// Se設定処理
+	void Se(void);
 };
 
 //*****************************************************************************

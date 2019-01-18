@@ -84,6 +84,9 @@ Wing::Wing(void)
 
 	// ワールド行列を作成
 	WorldConvert(&m_mtxWorld, pos, rot, scl);
+
+	// SEフラグ
+	m_bSe = true;
 }
 
 //=============================================================================
@@ -94,8 +97,6 @@ Wing::~Wing(void)
 	//SAFE_RELEASE(m_CSkinMesh);
 	//SAFE_DELETE(m_CSkinMesh);
 }
-
-bool bSe = true;
 
 //=============================================================================
 // 更新処理
@@ -113,26 +114,8 @@ void Wing::Update(void)
 	}
 #endif
 
-	int Test = 0;
-	float fAnimTime = m_CSkinMesh->GetAnimTime();
-	switch (m_CSkinMesh->GetAnimTrack())
-	{
-	case WING_FLOAT:
-		if (fAnimTime < 0.1f)
-		{
-			bSe = true;
-		}
-		if (fAnimTime > 0.5f)
-		{
-			if (bSe)
-			{
-				SetSe(SE_WING, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
-				bSe = false;
-			}
-		}
-		break;
-	}
-
+	// Se設定処理
+	Se();
 	// アニメーションの変更を確認
 	CheckAnim();
 	// スキンメッシュのアップデート
@@ -156,6 +139,56 @@ void Wing::Update(void)
 	m_nWingFeaderTime++;
 	// フェザーを更新
 	m_cWingFeader.Update();
+}
+
+//=============================================================================
+// Se設定処理
+//=============================================================================
+void Wing::Se(void)
+{
+	float fAnimTime = m_CSkinMesh->GetAnimTime();
+	switch (m_CSkinMesh->GetAnimTrack())
+	{
+	case WING_FLOAT:
+		if (fAnimTime < WING_SE_FLOAT)
+		{
+			m_bSe = true;
+		}
+		if (fAnimTime > WING_SE_FLOAT)
+		{
+			if (m_bSe)
+			{
+				SetSe(SE_WING, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				m_bSe = false;
+			}
+		}
+		break;
+	case WING_FLY:
+		if (fAnimTime < WING_SE_FLY1
+			|| (fAnimTime > WING_SE_FLY1 + WING_SE_FLAG_MARGIN
+			&& fAnimTime < WING_SE_FLY2))
+		{
+			m_bSe = true;
+		}
+		if (fAnimTime > WING_SE_FLY1 && fAnimTime < WING_SE_FLY1 + WING_SE_FLAG_MARGIN)
+		{
+			if (m_bSe)
+			{
+				SetSe(SE_WING, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				m_bSe = false;
+			}
+		}
+		if (fAnimTime > WING_SE_FLY2 && fAnimTime < WING_SE_FLY2 + WING_SE_FLAG_MARGIN)
+		{
+			if (m_bSe)
+			{
+				SetSe(SE_WING, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				m_bSe = false;
+			}
+		}
+		break;
+	}
+
 }
 
 //=============================================================================
