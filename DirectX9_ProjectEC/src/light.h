@@ -18,7 +18,7 @@
 #define LIGHT_SPECULAR			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
 
 #define LIGHT_POSITION			(D3DXVECTOR3(0.0f,0.0f,0.0f))
-#define LIGHT_DIRECTION			(D3DXVECTOR3(0.0f,-0.5f,-0.5f))
+#define LIGHT_DIRECTION			(D3DXVECTOR3(0.0f,-0.3f,-0.8f))
 
 // 固定機能用ライト
 #define	LIGHT_MAX				(3)						// ライトの数

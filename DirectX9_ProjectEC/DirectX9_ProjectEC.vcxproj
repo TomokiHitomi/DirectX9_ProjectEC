@@ -46,6 +46,7 @@
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\model.h" />
     <ClInclude Include="src\object.h" />
+    <ClInclude Include="src\octa.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\result.h" />
     <ClInclude Include="src\scene.h" />
@@ -86,6 +87,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\object.cpp" />
+    <ClCompile Include="src\octa.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\result.cpp" />
     <ClCompile Include="src\scene.cpp" />
@@ -113,6 +115,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shader\octa.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="data\SHADER\skinmesh.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

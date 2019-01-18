@@ -122,6 +122,9 @@
     <ClInclude Include="src\enemy.h">
       <Filter>object\enemy</Filter>
     </ClInclude>
+    <ClInclude Include="src\octa.h">
+      <Filter>object\enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -236,6 +239,9 @@
     <ClCompile Include="src\enemy.cpp">
       <Filter>object\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="src\octa.cpp">
+      <Filter>object\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="camera">
@@ -310,6 +316,9 @@
       <Filter>shader\fx</Filter>
     </FxCompile>
     <FxCompile Include="data\SHADER\xmodel.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shader\octa.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
   </ItemGroup>

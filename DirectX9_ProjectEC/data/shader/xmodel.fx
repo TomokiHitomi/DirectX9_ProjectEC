@@ -199,6 +199,7 @@ technique LIGHT_ON_TEX
 
 		// 深度バッファへの書き込み = 有効（標準）
 		ZWRITEENABLE = TRUE;
+
 		VertexShader = compile vs_3_0 vs_light_on();
 		PixelShader = compile ps_3_0 ps_light_on_tex();
 	}

@@ -29,7 +29,8 @@
 //=============================================================================
 Enemy::Enemy(void)
 {
-
+	m_pPrev = NULL;
+	m_pNext = NULL;
 }
 
 //=============================================================================
@@ -56,6 +57,45 @@ void Enemy::Draw(void)
 
 }
 
+//=============================================================================
+// 解放処理
+//=============================================================================
+void Enemy::Release(void)
+{
+	// 前ポインタがNULLではない
+	if ((m_pPrev) != NULL)
+	{
+		// 前ポインタが指す次ポインタを
+		// 自らが格納している次ポインタに差し替える
+		(m_pPrev)->m_pNext = m_pNext;
+	}
+
+	// 次ポインタがNULLではない
+	if (m_pNext != NULL)
+	{
+		// 次ポインタが指す前ポインタを
+		// 自らが格納している前ポインタに差し替える
+		m_pNext->m_pPrev = m_pPrev;
+	}
+
+	delete this;
+}
+
+//=============================================================================
+// 更新処理
+//=============================================================================
+void EnemyNormal::Update(void)
+{
+
+}
+
+//=============================================================================
+// 更新処理
+//=============================================================================
+void EnemyNormal::Draw(void)
+{
+
+}
 
 
 //=============================================================================
@@ -63,7 +103,23 @@ void Enemy::Draw(void)
 //=============================================================================
 EnemyManager::EnemyManager(void)
 {
+	// オブジェクトIDとプライオリティの設定処理
+	SetIdAndPriority(ObjectID::ENEMYMANAGER, Priority::Middle, Priority::Middle);
 
+	// ルートポインタを初期化
+	m_pRoot = NULL;
+
+	pOcta = NULL;
+	pOcta = new Octa;
+
+	for (UINT i = 0; i < 10; i++)
+	{
+		int nIdx = pOcta->Set(100.0f);
+		pOcta->SetPos(nIdx, D3DXVECTOR3(i*100.0f, 500.0f, 0.0f));
+	}
+
+	// 読込処理
+	Load();
 }
 
 //=============================================================================
@@ -71,5 +127,127 @@ EnemyManager::EnemyManager(void)
 //=============================================================================
 EnemyManager::~EnemyManager(void)
 {
+	SAFE_DELETE(pOcta);
+}
 
+//=============================================================================
+// 初期化処理
+//=============================================================================
+void EnemyManager::Init(void)
+{
+
+}
+
+//=============================================================================
+// 終了処理
+//=============================================================================
+void EnemyManager::Uninit(void)
+{
+	Enemy* pList = m_pRoot;
+	Enemy* pTemp = NULL;
+
+	while (pList != NULL)
+	{
+		pTemp = pList->m_pNext;
+		pList->Release();
+		pList = pTemp;
+	}
+}
+
+//=============================================================================
+// 
+//=============================================================================
+bool EnemyManager::Create(Enemy** ppEnemy, int* pData)
+{
+	if (pData[0] < 0)
+		return false;
+
+	//EnemyNormal* pTest = new EnemyNormal;
+	//delete pTest;
+
+	// 仮に[1]がタイプだったとしたら
+	switch (pData[1])
+	{
+	case ENEMY_NORMAL:
+		*ppEnemy = new Enemy;
+		break;
+	case 1:
+		*ppEnemy = new EnemyNormal;
+		break;
+	}
+	return true;
+}
+
+//=============================================================================
+// ファイル読込処理
+//=============================================================================
+void EnemyManager::Load(void)
+{
+	int nData[8];
+
+	FILE *fp;
+	fopen_s(&fp,ENEMY_FILE, "r");
+
+	// ファイルオープンエラー処理
+	if (fp == NULL)
+		return;
+
+	Enemy** ppList = &m_pRoot;
+	Enemy** ppPrev = NULL;
+
+	if (fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d",
+		&nData[0], &nData[1], &nData[2], &nData[3], &nData[4], &nData[5], &nData[6], &nData[7]) != EOF)
+	{
+		if(!Create(ppList,&nData[0]))
+			return;
+		ppPrev = ppList;
+		ppList = &(*ppList)->m_pNext;
+	}
+	else
+		return;
+
+	// エネミーステータス設定
+	while (fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d",
+		&nData[0], &nData[1], &nData[2], &nData[3], &nData[4], &nData[5], &nData[6], &nData[7]) != EOF)
+	{
+		if (!Create(ppList, &nData[0]))
+			return;
+		(*ppList)->m_pPrev = *ppPrev;
+		ppPrev = ppList;
+		ppList = &(*ppList)->m_pNext;
+	}
+
+	fclose(fp);
+
+}
+
+//=============================================================================
+// 更新処理
+//=============================================================================
+void EnemyManager::Update(void)
+{
+	Enemy* pList = m_pRoot;
+
+	while (pList != NULL)
+	{
+		pList->Update();
+		pList = pList->m_pNext;
+	}
+
+	SAFE_UPDATE(pOcta);
+}
+
+//=============================================================================
+// 描画処理
+//=============================================================================
+void EnemyManager::Draw(void)
+{
+	Enemy* pList = m_pRoot;
+
+	while (pList != NULL)
+	{
+		pList->Draw();
+		pList = pList->m_pNext;
+	}
+	SAFE_DRAW(pOcta);
 }

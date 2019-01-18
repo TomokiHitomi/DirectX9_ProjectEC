@@ -229,8 +229,10 @@ void CXModel::Draw(D3DXMATRIX mtxWorld)
 
 			if (bLight)
 			{	// ライトON
+				// カメラ情報を取得
 				Camera* pCamera = CameraManager::GetCameraNow();
 				D3DXVECTOR4 eyeTmp = D3DXVECTOR4(pCamera->GetEye(), 0.0f);
+				// カメラ視点をセット
 				if (FAILED(pEffect->SetVector("eye", &eyeTmp)))
 				{
 					// エラー

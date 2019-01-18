@@ -14,6 +14,7 @@
 /* ゲームで必要なインクルード */
 #include "fade.h"
 #include "player.h"
+#include "enemy.h"
 #include "stage.h"
 #include "cube.h"
 #include "effect.h"
@@ -61,6 +62,7 @@ GameScene::GameScene(void)
 #ifdef _DEBUG
 	ObjectManager::CreateObject<DebugObject>();
 #endif
+	ObjectManager::CreateObject<EnemyManager>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
 	ObjectManager::CreateObject<Cube>();

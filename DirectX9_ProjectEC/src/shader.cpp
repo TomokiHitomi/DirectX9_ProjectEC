@@ -70,6 +70,7 @@ HRESULT ShaderManager::Load(void)
 	pShader[SKINMESH] = new Shader(SHADER_FILE_SKINMESH);
 	pShader[WING_FEATHER] = new Shader(SHADER_FILE_WING_FEATHER);
 	pShader[CLOUD] = new Shader(SHADER_FILE_CLOUD);
+	pShader[OCTA] = new Shader(SHADER_FILE_OCTA);
 	pShader[DEBUGSPHERE] = new Shader(SHADER_FILE_DEBUGSPHERE);
 	return S_OK;
 }

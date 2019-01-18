@@ -51,8 +51,11 @@ public:
 		STAGE,
 		CLOUD,
 		PLAYERMANAGER,
+		ENEMYMANAGER,
 		DEBUGOBJECT
 	};
+
+private:
 	// ルートポインタ
 	enum ObjectRoot
 	{
@@ -60,7 +63,6 @@ public:
 		DrawRoot,
 		ObjectRootMax
 	};
-private:
 	static int		nObjectCount;					// 全オブジェクト数のカウンタ
 	static ObjectManager	*s_pRoot[ObjectRootMax];		// リストの更新ルートポインタ
 	ObjectManager			*m_pPrev[ObjectRootMax];		// リストの前ポインタ

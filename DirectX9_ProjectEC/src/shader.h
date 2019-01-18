@@ -16,6 +16,7 @@
 #define SHADER_FILE_SKINMESH		("data/shader/skinmesh.fx")
 #define SHADER_FILE_WING_FEATHER	("data/shader/wing_feather.fx")
 #define SHADER_FILE_CLOUD			("data/shader/cloud.fx")
+#define SHADER_FILE_OCTA			("data/shader/octa.fx")
 #define SHADER_FILE_DEBUGSPHERE		("data/shader/debugsphere.fx")
 
 #define SHR(p,n) { if(FAILED(p)) { MessageBox(NULL, "シェーダへのデータ転送に失敗", n , MB_OK); } }
@@ -49,6 +50,7 @@ public:
 		SKINMESH,
 		WING_FEATHER,
 		CLOUD,
+		OCTA,
 		DEBUGSPHERE,
 		FILE_MAX
 	};

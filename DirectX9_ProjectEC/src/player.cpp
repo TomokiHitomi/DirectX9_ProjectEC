@@ -207,6 +207,7 @@ void Player::Update(void)
 		ImGui::Text("vX  [%f,%f,%f]\n", m_vX.x, m_vX.y, m_vX.z);
 		ImGui::Text("vY  [%f,%f,%f]\n", m_vY.x, m_vY.y, m_vY.z);
 		ImGui::Text("vZ  [%f,%f,%f]\n", m_vZ.x, m_vZ.y, m_vZ.z);
+		ImGui::Text("combo[%d] time[%d]\n", m_nComboCount, m_nComboTime);
 		ImGui::TreePop();
 	}
 #endif
@@ -295,18 +296,12 @@ void Player::Attack(void)
 {
 	//m_eMode = MODE_LOCKON;
 
-#ifdef _DEBUG
-	PrintDebugProc("Animation\n");
-#endif
-
 	if (IsMobUseLeftTriggered() && !IsMobUseRightPressed())
 	{
 		m_nComboCount++;
 		if (m_nComboCount > PLAYER_ATK_COMBO_MAX) m_nComboCount = PLAYER_ATK_COMBO_MAX;
 	}
-#ifdef _DEBUG
-	PrintDebugProc("combo[%d] time[%d]\n", m_nComboCount, m_nComboTime);
-#endif
+
 
 	if (m_nComboCount > 0)
 	{
@@ -911,8 +906,6 @@ void Player::CheckAnim(void)
 //=============================================================================
 PlayerManager::PlayerManager(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
 	// オブジェクトIDとプライオリティの設定処理
 	SetIdAndPriority(ObjectID::PLAYERMANAGER, Priority::Middle, Priority::Middle);
 

@@ -10,12 +10,15 @@
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
+#include "object.h"
+#include "octa.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 //#define MODEL_PLAYER			("data/model/haku/haku.X")
 //#define MODEL_WING				("data/model/wing/wing.X")
+#define ENEMY_FILE				("data/file/enemy.dat")
 
 //*****************************************************************************
 // 構造体定義
@@ -27,16 +30,21 @@
 class Enemy
 {
 public:
+	Enemy*	m_pPrev;		// リストの前ポインタ
+	Enemy*	m_pNext;		// リストの次ポインタ
+
+	int		m_nWave;
 
 	// コンストラクタ（初期化処理）
 	Enemy(void);
 	//デストラクタ（終了処理）
 	~Enemy(void);
-
 	// 更新処理
 	virtual void Update(void);
 	// 描画処理
 	virtual void Draw(void);
+
+	void Release(void);
 private:
 
 
@@ -45,16 +53,16 @@ private:
 class EnemyNormal : public Enemy
 {
 public:
-
+	int nTest;
 	// コンストラクタ（初期化処理）
-	EnemyNormal(void);
+	EnemyNormal(void) { ; }
 	//デストラクタ（終了処理）
-	~EnemyNormal(void);
+	~EnemyNormal(void) { ; }
 
 	// 更新処理
-	virtual void Update(void);
+	void Update(void);
 	// 描画処理
-	virtual void Draw(void);
+	void Draw(void);
 private:
 
 
@@ -62,21 +70,36 @@ private:
 
 
 
-class EnemyManager
+class EnemyManager : public ObjectManager
 {
 public:
 	enum ENEMY
 	{	
+		ENEMY_NORMAL,
 		ENEMY_MAX
 	};
+
+	Enemy* m_pRoot;		// リストの更新ルートポインタ
 
 	// コンストラクタ（初期化処理）
 	EnemyManager(void);
 	//デストラクタ（終了処理）
 	~EnemyManager(void);
 
-
+	// 初期化処理
+	void Init(void);
+	// 終了処理
+	void Uninit(void);
+	// 更新処理
+	void Update(void);
+	// 描画処理
+	void Draw(void);
+	// ファイル読込処理
+	void Load(void);
+	// 
+	bool Create(Enemy** ppEnemy, int* pData);
 private:
+	Octa* pOcta;
 };
 
 //*****************************************************************************

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// スプライトシェーダ [sprite.fx]
+// 羽根シェーダ [wing_feather.fx]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
@@ -94,13 +94,15 @@ technique Tec01		// テクスチャ描画
 
 		// アルファブレンド = 有効
 		ALPHABLENDENABLE = TRUE;
+
 		// アルファブレンドオプション = 転送元 + 転送先（標準）
 		BLENDOP = ADD;
+		//BLENDOPALPHA = ADD;
 
 		// 新規ブレンド = 係数(As, As, As, As)
 		SRCBLEND = SRCALPHA;
-		// 既存ブレンド = 係数(1, 1, 1, 1)
-		DESTBLEND = ONE;
+		// 既存ブレンド = 係数( 1 - As, 1 - As, 1 - As, 1 - As)
+		DESTBLEND = INVSRCALPHA;
 
 		// 深度バッファへの書き込み = 無効
 		ZWRITEENABLE = FALSE;
