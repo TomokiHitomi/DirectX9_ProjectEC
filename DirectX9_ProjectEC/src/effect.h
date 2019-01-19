@@ -43,7 +43,7 @@ public:
 
 	enum EFFECT
 	{	// プレイヤー管理
-		EFFECT1,
+		EFFECT_MAGICAREA,
 		//EFFECT2,
 		//EFFECT3,
 		//EFFECT4,
@@ -74,11 +74,18 @@ public:
 	void	Update(void);
 	// 描画処理
 	void	Draw(void);
+
+public:
+	::Effekseer::Handle Play(EFFECT eEffect, D3DXVECTOR3 vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	void SetMatrix(::Effekseer::Handle handle, D3DXMATRIX mtx);
+	void SetScale(::Effekseer::Handle handle, float fScl);
 };
 
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
+::Effekseer::Matrix44 ConvertMtx44(D3DXMATRIX mtx);
+::Effekseer::Matrix43 ConvertMtx43(D3DXMATRIX mtx);
 
 #endif

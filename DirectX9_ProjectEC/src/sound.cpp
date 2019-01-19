@@ -27,19 +27,19 @@ void		UpdateSoundBgm(void);
 //*****************************************************************************
 // グローバル変数:
 //*****************************************************************************
-LPDIRECTSOUNDBUFFER8	g_pBgm[SOUND_BGM_MAX];
-LPDIRECTSOUNDBUFFER8	g_pSe[SOUND_SE_MAX];
-LPDIRECTSOUNDBUFFER8	g_pVoice[SOUND_VOICE_MAX];
+LPDIRECTSOUNDBUFFER8	g_pBgm[BGM_MAX];
+LPDIRECTSOUNDBUFFER8	g_pSe[SE_MAX];
+LPDIRECTSOUNDBUFFER8	g_pVoice[VOICE_MAX];
 int						g_nBgmFlag;
 bool					g_bBgmBoss;
-LONG					g_nVol[SOUND_BGM_MAX];
+LONG					g_nVol[BGM_MAX];
 
 
-LPDWORD pdwCurrentPlayCursorBGM[SOUND_BGM_MAX];
-LPDWORD pdwCurrentWriteCursorBGM[SOUND_BGM_MAX];
+LPDWORD pdwCurrentPlayCursorBGM[BGM_MAX];
+LPDWORD pdwCurrentWriteCursorBGM[BGM_MAX];
 
-LPDWORD pdwCurrentPlayCursorSE[SOUND_SE_MAX];
-LPDWORD pdwCurrentWriteCursorSE[SOUND_SE_MAX];
+LPDWORD pdwCurrentPlayCursorSE[SE_MAX];
+LPDWORD pdwCurrentWriteCursorSE[SE_MAX];
 
 // サウンドファイルのパス（sound.hの通しナンバーと順番を合わせること）
 const TCHAR* c_soundFilename[] = {
@@ -52,10 +52,11 @@ const TCHAR* c_soundFilename[] = {
 	// SE
 	_T("data/sound/se/翼.wav"),
 	// VOICE
-	_T("data/sound/voice/start_voice.wav"),
-	_T("data/sound/voice/1_voice.wav"),
-	_T("data/sound/voice/2_voice.wav"),
-	_T("data/sound/voice/3_voice.wav")
+	_T("data/sound/voice/swordwoman-attack1.wav"),
+	_T("data/sound/voice/swordwoman-attack2.wav"),
+	_T("data/sound/voice/swordwoman-attack3.wav"),
+	_T("data/sound/voice/swordwoman-special1.wav"),
+	_T("data/sound/voice/swordwoman-guard1.wav")
 };
 
 // グローバル変数
@@ -75,7 +76,7 @@ HRESULT InitSound( HWND hWnd )
 	g_nBgmFlag = SOUND_BGM_TITLE;
 	g_bBgmBoss = false;
 
-	for (int i = 0; i < SOUND_BGM_MAX; i++)
+	for (int i = 0; i < BGM_MAX; i++)
 	{
 		g_nVol[i] = VOLUME_MIN;
 	}
@@ -93,7 +94,7 @@ void UpdateSound(void)
 	bool bGui = ImGui::TreeNode("Sound");
 	if (bGui) ImGui::Text("BGM FLAG[%d]\n", g_nBgmFlag);
 
-	for (int i = 0; i < SOUND_BGM_MAX; i++)
+	for (int i = 0; i < BGM_MAX; i++)
 	{
 		pdwCurrentPlayCursorBGM[i] = NULL;
 		pdwCurrentWriteCursorBGM[i] = NULL;
@@ -102,7 +103,7 @@ void UpdateSound(void)
 		//PrintDebugProc("BGM00%d[%l]  CurrentPos[%d] Write[%d]\n", i, GetVol(g_pBgm[i]), pdwCurrentPlayCursorBGM[i], pdwCurrentWriteCursorBGM[i]);
 	}
 
-	for (int i = 0; i < SOUND_SE_MAX; i++)
+	for (int i = 0; i < SE_MAX; i++)
 	{
 		pdwCurrentPlayCursorSE[i] = NULL;
 		pdwCurrentWriteCursorSE[i] = NULL;
@@ -353,22 +354,22 @@ long GetVol(LPDIRECTSOUNDBUFFER8 pBuffer)
 void SetSound(void)
 {
 	// BGMがずれないようにロードと分ける
-	for (int i = BGM_00; i < SOUND_BGM_MAX; i++)
+	for (int i = 0; i < BGM_MAX; i++)
 	{
 		// 各BGMロード
 		g_pBgm[i] = LoadSound(i);
 	}
-	for (int i = BGM_00; i < SOUND_BGM_MAX; i++)
+	for (int i = 0; i < BGM_MAX; i++)
 	{
 		// 各BGMボリュームセット
 		PlaySound(g_pBgm[i], E_DS8_FLAG_LOOP, SOUND_OPTION_BGM, 0);
 		SetVol(g_pBgm[i], VOLUME_MIN);
 	}
 
-	for (int i = 0; i < SOUND_SE_MAX; i++)
+	for (int i = 0; i < SE_MAX; i++)
 	{	
 		// 各SEロード
-		g_pSe[i] = LoadSound(i + SE_00);
+		g_pSe[i] = LoadSound(i + BGM_MAX);
 		//// 各SEボリュームセット
 		//if (i != SE_DRAMROLL)
 		//{
@@ -378,10 +379,10 @@ void SetSound(void)
 
 	//SetVol(g_pSe[11], SE_11_VOLUME_SE);
 
-	for (int i = 0; i < SOUND_VOICE_MAX; i++)
+	for (int i = 0; i < VOICE_MAX; i++)
 	{
 		// 各SEロード
-		g_pVoice[i] = LoadSound(i + VOICE_00);
+		g_pVoice[i] = LoadSound(i + BGM_MAX + SE_MAX);
 	}
 }
 

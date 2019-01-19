@@ -51,7 +51,11 @@ Sword::Sword(void)
 	m_nCntRot = 0;
 	m_fRot = 0.01f;
 	m_fRotSpeed = SWORD_ROT_SPEED_MAX;
+
+	// モーフ
 	m_fMorph = 0.0f;
+	m_fMorphGuard = 0.0f;
+
 	m_bUse = true;
 
 	for (unsigned int i = 0; i < SWORD_MAX + 1; i++)
@@ -119,83 +123,75 @@ void Sword::Update(void)
 
 	if (m_bUse)
 	{
+		// プレイヤーのポインタを取得
+		Player* pPlayer = PlayerManager::GetPlayer(PlayerManager::PLAYER_1P);
+
 		// ソードの更新処理
 		D3DXVECTOR3 temp,posTemp, posTarget,vUp;
 		D3DXMATRIX mtxTemp;
 
-		// テスト用：プレイヤーのポインタを取得して、上半身２のマトリクスを取得
-		//Player *pPlayer = ObjectManager::GetObjectPointer<Player>(ObjectManager::PLAYER);
-		//mtxTemp = pPlayer->m_CSkinMesh[Player::CHARACTER]->GetBoneMatrix(PLAYER_MODEL_BONE_WING);
-		//posTemp = D3DXVECTOR3(mtxTemp._41, mtxTemp._42, mtxTemp._43);
-
-		//posTemp = pPlayer->GetPos();
-		//posTemp += pPlayer->GetVecY() * SWORD_POS_Y;
-		mtxTemp = PlayerManager::GetMtx(PlayerManager::PLAYER_1P);
-		//mtxTemp = pPlayer->GetMtx();
-		posTemp = D3DXVECTOR3(mtxTemp._21, mtxTemp._22, mtxTemp._23);
-		D3DXVec3Normalize(&posTemp, &posTemp);
-
-		posTemp *= SWORD_POS_Y * (1.0f - m_fMorph) + SWORD_POS_Y_FLY * m_fMorph;
-		posTemp += PlayerManager::GetPos(PlayerManager::PLAYER_1P);
-		//posTemp += pPlayer->GetPos();
+		// クォータニオン用
+		D3DXVECTOR3 vAxis, vRadian, vX, vY, vZ;
+		float fLength;
 
 
-		 
+		// プレイヤーの行列を取得
+		mtxTemp = pPlayer->GetMtx();
+		// 取得した行列を正規化
+		D3DXMatrixNormalize(&mtxTemp, &mtxTemp);
+
+		// 行列内のベクトルを取得
+		vX = D3DXVECTOR3(mtxTemp._11, mtxTemp._12, mtxTemp._13);
+		vY = D3DXVECTOR3(mtxTemp._21, mtxTemp._22, mtxTemp._23);
+		vZ = D3DXVECTOR3(mtxTemp._31, mtxTemp._32, mtxTemp._33);
+
+		//vX = pPlayer->GetVecX();
+		//vY = pPlayer->GetVecY();
+		//vZ = pPlayer->GetVecZ();
+
+
+		// プレイヤーのガードに応じてモーフ値を変動
+		bool bGuard = pPlayer->GetGuard();
+		if (bGuard) m_fMorphGuard += SWORD_MORPH_SPEED;
+		else m_fMorphGuard -= SWORD_MORPH_SPEED;
+
 		// プレイヤーモードに応じてモーフ値を変動
-		//if (pPlayer->GetMode() == Player::MODE_FLY) m_fMorph += SWORD_MORPH_SPEED;
-		if (PlayerManager::GetMode(PlayerManager::PLAYER_1P) == Player::MODE_FLY) m_fMorph += SWORD_MORPH_SPEED;
+		if (pPlayer->GetMode() == Player::MODE_FLY || bGuard)
+			m_fMorph += SWORD_MORPH_SPEED;
 		else m_fMorph -= SWORD_MORPH_SPEED;
 
+		// 0.0～1.0fの範囲でクランプ
+		m_fMorphGuard = saturate(m_fMorphGuard);
+		m_fMorph = saturate(m_fMorph);
+
+		// 設置座標
+		
+		float fPosY = SWORD_POS_Y * (1.0f - m_fMorph) + SWORD_POS_Y_FLY * m_fMorph;
+		fPosY = fPosY * (1.0f - m_fMorphGuard) + SWORD_POS_Y_GUARD * m_fMorphGuard;
+		posTemp = vY * fPosY;
+		posTemp += pPlayer->GetPos();
 
 		// テスト用
 		posTarget = PlayerManager::GetPosTaget(PlayerManager::PLAYER_1P);
 
-		// 0.0～1.0fの範囲でクランプ
-		m_fMorph = saturate(m_fMorph);
-
-		//// テスト用操作
-		//if (IsMobUseRightTriggered())
-		//{
-		//	Shot();
-		//}
-		//else if (IsMobUseRightPressed())
-		//{
-		//	if (IsMobUseLeftTriggered())
-		//	{
-		//		RetrunAll();
-		//	}
-		//}
-
-		//// テスト用ソード追加
-		//if (GetKeyboardTrigger(DIK_E))
-		//{
-		//	Add();
-		//}
-		//else if (GetKeyboardTrigger(DIK_Q))
-		//{
-		//	Sub();
-		//}
-
-		//else
-		//{
-		//	//m_eMode = Sword::ROT;
-		//	Stay();
-		//}
-		
 		// ソード回転処理
 		Rot();
+		
+
+
+
+
+		vAxis = vZ * (1.0f - m_fMorphGuard) + vY * (m_fMorphGuard);
+		vRadian = vX * (1.0f - m_fMorphGuard) + vZ * (m_fMorphGuard);
+
+		CrossProduct(&vUp, &vAxis, &vRadian);
+
+		// モーフ情報に応じて展開半径を変化
+		fLength = SWORD_ROT_LENGTH * (1.0f - m_fMorph) + SWORD_ROT_LENGTH_FLY * m_fMorph;
+
 
 		int nCnt = 0;
 		m_fAngle = D3DX_PI * 2 / m_nCnt;
-		//m_vAxis = pPlayer->GetVecY() * (1.0f - m_fMorph) + pPlayer->GetVecZ() * m_fMorph;
-		//m_vAxis =pPlayer->GetVecZ();
-		m_vAxis = PlayerManager::GetVecZ(PlayerManager::PLAYER_1P);
-
-		m_vRadian = PlayerManager::GetVecX(PlayerManager::PLAYER_1P);
-		CrossProduct(&vUp, &m_vAxis, &m_vRadian);
-
-		// モーフ情報に応じて展開半径を変化
-		m_fLength = SWORD_ROT_LENGTH * (1.0f - m_fMorph) + SWORD_ROT_LENGTH_FLY * m_fMorph;
 
 		for (unsigned int i = 0; i < m_nCntMax; i++)
 		{
@@ -204,7 +200,7 @@ void Sword::Update(void)
 			{
 			case SwordData::RETURN:
 				m_cSword[i].fAngle += ((m_fAngle * nCnt + m_fRot) - m_cSword[i].fAngle) / SWORD_ROT_ADJUST_TIME;
-				QuaternionCalculate(&m_vRadian, &m_vAxis, m_cSword[i].fAngle, &temp);
+				QuaternionCalculate(&vRadian, &vAxis, m_cSword[i].fAngle, &temp);
 				if (CheckHitBC(m_cSword[i].vPos, posTemp + temp * m_cSword[i].fLength, 100, 100))
 				{
 					m_cSword[i].eMode = SwordData::STAY;
@@ -213,7 +209,7 @@ void Sword::Update(void)
 				}
 				else
 				{
-					m_cSword[i].fSpeed += (m_fLength - m_cSword[i].fSpeed) / SWORD_SPEED_ADD;
+					m_cSword[i].fSpeed += (fLength - m_cSword[i].fSpeed) / SWORD_SPEED_ADD;
 					temp = (posTemp + temp * m_cSword[i].fLength) - m_cSword[i].vPos;
 					D3DXVec3Normalize(&temp, &temp);
 					m_cSword[i].vPos += temp * m_cSword[i].fSpeed;
@@ -224,11 +220,11 @@ void Sword::Update(void)
 				break;
 			case SwordData::STAY:
 				m_cSword[i].fAngle += ((m_fAngle * nCnt + m_fRot) - m_cSword[i].fAngle) / SWORD_ROT_ADJUST_TIME;
-				QuaternionCalculate(&m_vRadian, &m_vAxis, m_cSword[i].fAngle, &temp);
+				QuaternionCalculate(&vRadian, &vAxis, m_cSword[i].fAngle, &temp);
 
 				m_cSword[i].vPos = posTemp + temp * m_cSword[i].fLength;
 				m_cSword[i].fLength =
-					max(m_fLength, m_cSword[i].fLength - SWORD_LENGTH_RETRUN_SUB);
+					max(fLength, m_cSword[i].fLength - SWORD_LENGTH_RETRUN_SUB);
 
 				// プレイヤーのモードで剣の向きを変える
 				// 情報を初期化
@@ -238,12 +234,12 @@ void Sword::Update(void)
 				// モーフ値に応じてベクトルを設定
 				// Float
 				m_cSword[i].vZ += temp * (1.0f - m_fMorph);
-				CrossProduct(&temp, &temp, &m_vAxis);
+				CrossProduct(&temp, &temp, &vAxis);
 				m_cSword[i].vX += temp * (1.0f - m_fMorph);
 
 				// Fly
 				m_cSword[i].vX += temp * m_fMorph;
-				m_cSword[i].vZ += -m_vAxis * m_fMorph;
+				m_cSword[i].vZ += -vAxis * m_fMorph;
 
 				nCnt++;
 				break;

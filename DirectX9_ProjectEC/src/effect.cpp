@@ -23,14 +23,13 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-::Effekseer::Matrix44 ConvertMtx44(D3DXMATRIX mtx);
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
 const WCHAR* EffectManager::c_filename[] = {
 	// エフェクトファイル
-	L"Sword_Sacredlight.efk"
+	L"data/effect/magicarea.efk"
 	//L"TrinityField.efk",
 	//L"high_sword",
 	//L"test2.efk",
@@ -163,19 +162,17 @@ EffectManager::~EffectManager(void)
 //=============================================================================
 void EffectManager::Update(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
 	// エフェクトの移動処理を行う
 	//g_manager->AddLocation(g_handle, ::Effekseer::Vector3D(0.2f, 0.0f, 0.0f));
-	if (GetKeyboardTrigger(DIK_B))
-	{
-		m_handle = m_manager->Play(m_effect[EFFECT1], 0, 5.0f, 0);
-		m_manager->SetScale(m_handle, 5.0f, 5.0f, 5.0f);
-	}
-	if (GetKeyboardTrigger(DIK_M))
-	{
-		m_manager->StopEffect(m_handle);
-	}
+	//if (GetKeyboardTrigger(DIK_B))
+	//{
+	//	m_handle = m_manager->Play(m_effect[EFFECT1], 0, 500.0f, 0);
+	//	m_manager->SetScale(m_handle, 15.0f, 15.0f, 15.0f);
+	//}
+	//if (GetKeyboardTrigger(DIK_M))
+	//{
+	//	m_manager->StopEffect(m_handle);
+	//}
 
 	// エフェクトの更新処理を行う
 	m_manager->Update();
@@ -190,6 +187,9 @@ void EffectManager::Draw(void)
 
 	D3DXMATRIX mtxView, mtxPro;
 
+	//// UpがYのビュー行列を取得
+	//mtxView = CameraManager::GetCameraNow()->GetMtxViewUpY();
+
 	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 	pDevice->GetTransform(D3DTS_PROJECTION, &mtxPro);
 
@@ -200,8 +200,8 @@ void EffectManager::Draw(void)
 	m_renderer->SetProjectionMatrix(ConvertMtx44(mtxPro));
 
 
-	// 両面描画する
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	//// 両面描画する
+	//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 
 	// エフェクトの描画開始処理を行う。
@@ -216,13 +216,37 @@ void EffectManager::Draw(void)
 	// エフェクトの描画終了処理を行う。
 	m_renderer->EndRendering();
 
-	// 裏面をカリングに戻す
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
+	//// 裏面をカリングに戻す
+	//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 //=============================================================================
-// Effekseer用行列変換処理
+// 再生処理
+//=============================================================================
+::Effekseer::Handle EffectManager::Play(EFFECT eEffect, D3DXVECTOR3 vPos)
+{
+	return m_manager->Play(m_effect[eEffect], vPos.x, vPos.y, vPos.z);
+}
+
+//=============================================================================
+// 行列設定処理
+//=============================================================================
+void EffectManager::SetMatrix(::Effekseer::Handle handle, D3DXMATRIX mtx)
+{
+	m_manager->SetMatrix(handle, ConvertMtx43(mtx));
+}
+
+//=============================================================================
+// 拡縮設定処理
+//=============================================================================
+void EffectManager::SetScale(::Effekseer::Handle handle, float fScl)
+{
+	m_manager->SetScale(handle, fScl, fScl, fScl);
+}
+
+
+//=============================================================================
+// Effekseer用行列変換処理(4x4)
 //=============================================================================
 ::Effekseer::Matrix44 ConvertMtx44(D3DXMATRIX mtx)
 {
@@ -244,4 +268,29 @@ void EffectManager::Draw(void)
 	mtx44.Values[3][2] = mtx._43;
 	mtx44.Values[3][3] = mtx._44;
 	return mtx44;
+}
+
+//=============================================================================
+// Effekseer用行列変換処理(4x3)
+//=============================================================================
+::Effekseer::Matrix43 ConvertMtx43(D3DXMATRIX mtx)
+{
+	::Effekseer::Matrix43 mtx43;
+	mtx43.Value[0][0] = mtx._11;
+	mtx43.Value[0][1] = mtx._12;
+	mtx43.Value[0][2] = mtx._13;
+	//mtx43.Value[0][3] = mtx._14;
+	mtx43.Value[1][0] = mtx._21;
+	mtx43.Value[1][1] = mtx._22;
+	mtx43.Value[1][2] = mtx._23;
+	//mtx43.Value[1][3] = mtx._24;
+	mtx43.Value[2][0] = mtx._31;
+	mtx43.Value[2][1] = mtx._32;
+	mtx43.Value[2][2] = mtx._33;
+	//mtx43.Value[2][3] = mtx._34;
+	mtx43.Value[3][0] = mtx._41;
+	mtx43.Value[3][1] = mtx._42;
+	mtx43.Value[3][2] = mtx._43;
+	//mtx43.Value[3][3] = mtx._44;
+	return mtx43;
 }

@@ -224,10 +224,11 @@ void Wing::Draw(void)
 void Wing::CheckAnim(void)
 {
 	// 優先順位ごとに if 分岐
-	if		(WING_ANIM_FRY & m_dwAnim)		ChangeAnim(WING_FLY, WING_ANIM_WEIGHT_DEF);
+	if		(WING_ANIM_DUMMY & m_dwAnim);
+	else if (WING_ANIM_CLOSE & m_dwAnim)	ChangeAnim(WING_CLOSE, WING_ANIM_WEIGHT_DEF);
+	else if (WING_ANIM_FRY & m_dwAnim)		ChangeAnim(WING_FLY, WING_ANIM_WEIGHT_DEF);
 	else if	(WING_ANIM_FLOAT & m_dwAnim)	ChangeAnim(WING_FLOAT, WING_ANIM_WEIGHT_DEF);
 	else if	(WING_ANIM_BACK & m_dwAnim)		ChangeAnim(WING_BACK, WING_ANIM_WEIGHT_DEF);
-	else if	(WING_ANIM_CLOSE & m_dwAnim)	ChangeAnim(WING_CLOSE, WING_ANIM_WEIGHT_DEF);
 
 	// アニメーションビットパターンを初期化
 	m_dwAnim = 0x00000000l;

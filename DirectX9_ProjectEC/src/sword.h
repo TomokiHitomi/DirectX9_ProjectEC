@@ -28,6 +28,7 @@
 #define SWORD_SCL					(3.0f)
 #define SWORD_POS_Y					(20.0f)
 #define SWORD_POS_Y_FLY				(8.0f)
+#define SWORD_POS_Y_GUARD			(35.0f)
 
 #define SWORD_SPEED_MIN				(8.0f)
 #define SWORD_SPEED_MAX				(8.0f)
@@ -38,7 +39,7 @@
 //#define SWORD_ROT_SPEED			(0.02f)
 #define SWORD_ROT_SPEED_MIN			(-0.1f)
 #define SWORD_ROT_SPEED_COUNT		(30)
-#define SWORD_ROT_SPEED_MAX			(0.03f)
+#define SWORD_ROT_SPEED_MAX			(0.02f)
 #define SWORD_ROT_SPEED_ADD			(20)
 #define SWORD_ROT_SPEED_SUB			(3)
 
@@ -121,19 +122,18 @@ private:
 	D3DXVECTOR3		m_vScl;				// 拡縮情報
 	int				m_nMax;
 
-	// クォータニオン用
-	D3DXVECTOR3		m_vAxis;
-	D3DXVECTOR3		m_vRadian;
 
 	int				m_nCnt;
 	int				m_nCntMax;
 	int				m_nCntRot;
 
 	float			m_fAngle;
-	float			m_fLength;
 	float			m_fRot;
 	float			m_fRotSpeed;
+
+	// モーフ
 	float			m_fMorph;
+	float			m_fMorphGuard;
 
 	bool			m_bUse;
 

@@ -75,6 +75,19 @@ Player::Player(void)
 	m_cSword = new Sword;
 	// キャラクターのボーンマトリクスのアドレスを取得
 	m_cSword->SetMtx(m_CSkinMesh->GetBoneMatrixAdr((LPSTR)PLAYER_MODEL_BONE_RIGHT_HAND));
+
+
+	// エフェクトマネージャーのポインタを取得
+	pEffetMgr = NULL;
+	pEffetMgr = ObjectManager::GetObjectPointer<EffectManager>(ObjectManager::EFFECT);
+	// エフェクトハンドルの初期化
+	m_handle = -1;
+
+	// ループエフェクトを呼び出し
+	m_handle = pEffetMgr->Play(EffectManager::EFFECT_MAGICAREA);
+
+	//pEffetMgr->m_manager->StopEffect(m_handle);
+	//m_handle = -1;
 }
 
 //=============================================================================
@@ -106,6 +119,15 @@ void Player::Init(void)
 	// アタック
 	m_nComboTime = 0;
 	m_nComboCount = 0;
+	m_bAttack = false;
+	m_nCharge = 0;
+	m_bChargeAttack = false;
+
+	// ガード
+	m_bGuard = false;
+
+	// 魔法陣
+	m_fMagicScl = 0.0f;
 
 	// 行列の初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -210,6 +232,7 @@ void Player::Update(void)
 		ImGui::Text("vZ  [%.2f.%.2f,%.2f]\n", m_vZ.x, m_vZ.y, m_vZ.z);
 		ImGui::Text("combo[%d] time[%d]\n", m_nComboCount, m_nComboTime);
 		ImGui::InputFloat3("Target", &m_vTarget.x,2);
+		ImGui::InputFloat("scl", &m_fMagicScl);
 		ImGui::TreePop();
 	}
 #endif
@@ -217,7 +240,7 @@ void Player::Update(void)
 	if (m_bUse)
 	{
 
-		Attack();	// 攻撃処理
+
 
 		//// モード遷移処理
 		//if (m_eMode == MODE_CHANGE)
@@ -236,6 +259,9 @@ void Player::Update(void)
 			break;
 		}
 
+		Attack();	// 攻撃処理
+		Guard();	// 防御処理
+
 		Move();		// 移動処理
 
 		// カメラ設定
@@ -249,6 +275,12 @@ void Player::Update(void)
 
 		// ワールド変換
 		WorldConvertAxis(&m_mtxWorld, m_vPos, m_vZ, m_vY, m_vScl);
+
+		if (m_handle >= 0)
+		{
+			pEffetMgr->SetMatrix(m_handle, m_mtxWorld);
+			pEffetMgr->SetScale(m_handle, m_fMagicScl);
+		}
 
 		// スキンメッシュの更新処理
 		m_CSkinMesh->Update();
@@ -297,13 +329,74 @@ void Player::Draw(void)
 void Player::Attack(void)
 {
 	//m_eMode = MODE_LOCKON;
-
-	if (IsMobUseLeftTriggered() && !IsMobUseRightPressed())
+	if (!m_bGuard)
 	{
-		m_nComboCount++;
-		if (m_nComboCount > PLAYER_ATK_COMBO_MAX) m_nComboCount = PLAYER_ATK_COMBO_MAX;
+		if (!m_bChargeAttack)
+		{
+			if (IsMobUseLeftPressed())
+			{
+				m_nCharge++;
+				if (m_nCharge == PLAYER_ATK_CHARGE)
+				{
+					// チャージ完了
+				}
+			}
+			else
+			{
+				if (m_nCharge > PLAYER_ATK_CHARGE)
+				{
+					m_bChargeAttack = true;
+				}
+				m_nCharge = 0;
+			}
+
+			if (IsMobUseLeftTriggered() && !IsMobUseRightPressed())
+			{
+				if (m_eMode == MODE_FLY)
+					m_eMode = MODE_FLOAT;
+
+				m_bAttack = true;
+				m_nComboCount++;
+				if (m_nComboCount > PLAYER_ATK_COMBO_MAX) m_nComboCount = PLAYER_ATK_COMBO_MAX;
+			}
+
+			if (m_cSword != NULL)
+			{
+				// ソード射出
+				if (IsMobUseRightTriggered()) m_cSword->Shot();
+			}
+		}
+		else
+		{
+			m_nCharge++;
+			if(m_nCharge <= PLAYER_ATK_CHARGE_TIME)
+			{
+				SetAnim(PLAYER_ANIM_ATK_RICARD);
+			}
+			else
+			{
+				m_bChargeAttack = false;
+				m_nCharge = 0;
+			}
+		}
+	}
+	else
+	{
+		m_nCharge = 0;
 	}
 
+	// ソード回収
+	if (IsMobUseRightPressed()) { if (IsMobUseLeftTriggered())m_cSword->RetrunAll(); }
+
+
+#ifdef _DEBUG
+	if (m_cSword != NULL)
+	{
+		// テスト用ソード追加
+		if (GetKeyboardTrigger(DIK_E)) m_cSword->Add();
+		else if (GetKeyboardTrigger(DIK_Q))m_cSword->Sub();
+	}
+#endif
 
 	if (m_nComboCount > 0)
 	{
@@ -332,26 +425,55 @@ void Player::Attack(void)
 		}
 		if (m_nComboTime <= nComboTimeMax)
 		{
+			switch (m_nComboTime)
+			{
+			case 1:
+				SetVoice(VOICE_ATK1, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				break;
+			case 30:
+				SetVoice(VOICE_ATK2, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				break;
+			case 50:
+				SetVoice(VOICE_ATK4, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				break;
+			}
 			SetAnim(dwAnim);
 		}
 		else
 		{
 			m_nComboCount = 0;
 			m_nComboTime = 0;
+			m_bAttack = false;
 		}
 	}
+}
 
-	if (m_cSword != NULL)
+//=============================================================================
+// 防御処理
+//=============================================================================
+void Player::Guard(void)
+{
+	if (!m_bAttack && !m_bChargeAttack)
 	{
-		// ソード操作
-		if (IsMobUseRightTriggered()) m_cSword->Shot();
-		else if (IsMobUseRightPressed()) {if (IsMobUseLeftTriggered())m_cSword->RetrunAll();}
+		if (GetKeyboardPress(DIK_G))
+		{
+			if (m_eMode == MODE_FLY)
+				m_eMode = MODE_FLOAT;
 
-		// テスト用ソード追加
-		if (GetKeyboardTrigger(DIK_E)) m_cSword->Add(); 
-		else if (GetKeyboardTrigger(DIK_Q))m_cSword->Sub();
+			if (!m_bGuard)
+			{
+				SetVoice(VOICE_GUARD1, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+				m_bGuard = true;
+			}
+
+			// 防御アニメーションをセット
+			SetAnim(PLAYER_ANIM_GUARD);
+		}
+		else
+		{
+			m_bGuard = false;
+		}
 	}
-
 }
 
 //=============================================================================
@@ -362,13 +484,27 @@ void Player::SetCamera(void)
 	Camera* pCamera = CameraManager::GetCameraNow();
 	D3DXVECTOR3 temp;
 
+	D3DXMATRIX mtxTemp;
+	D3DXVECTOR3 vX, vY, vZ;
+
+	// プレイヤーの行列を取得
+	mtxTemp = m_mtxWorld;
+	// 取得した行列を正規化
+	D3DXMatrixNormalize(&mtxTemp, &mtxTemp);
+
+	// 行列内のベクトルを取得
+	vX = D3DXVECTOR3(mtxTemp._11, mtxTemp._12, mtxTemp._13);
+	vY = D3DXVECTOR3(mtxTemp._21, mtxTemp._22, mtxTemp._23);
+	vZ = D3DXVECTOR3(mtxTemp._31, mtxTemp._32, mtxTemp._33);
+
+
 	switch (m_eMode)
 	{
 	case MODE_FLOAT:
 		// カメラをAtをモデルに設定
-		pCamera->SetAt(m_vPos + (m_vY * 30));
+		pCamera->SetAt(m_vPos + (vY * 30) + (-vZ * 100));
 		// カメラEyeをモデル後方にセット
-		pCamera->SetEye(m_vPos + (m_vY * 30) + m_vZ * 100);
+		pCamera->SetEye(m_vPos + (vY * 30) + (vZ * 100));
 		// カメラUpをモデル上部に設定
 		pCamera->SetUp(m_vY);
 
@@ -398,7 +534,7 @@ void Player::SetCamera(void)
 		// カメラをAtを対象に設定
 		pCamera->SetAt(m_vTarget);
 		// カメラEyeをモデル後方にセット
-		pCamera->SetEye(m_vPos + (m_vY * 30) + m_vZ * 100);
+		pCamera->SetEye(m_vPos + (vX * 30) + (vY * 30) + (vZ * 100));
 		// カメラUpをモデル上部に設定
 		pCamera->SetUp(m_vY);
 
@@ -629,10 +765,11 @@ void Player::Fly(void)
 //=============================================================================
 void Player::Lockon(void)
 {
+	
 	// 浮遊アニメーションをセット
 	SetAnim(PLAYER_ANIM_FLOAT);
 	// ウィングのアニメーションをセット
-	m_cWing->SetAnim(WING_ANIM_CLOSE);
+	m_cWing->SetAnim(WING_ANIM_FLOAT);
 
 	// Ｙベクトルを上に向ける
 	m_vY = m_vY + (D3DXVECTOR3(0.0f, 1.0f, 0.0f) - m_vY) * 0.1f;
@@ -718,10 +855,12 @@ void Player::Lockon(void)
 	// 上昇・下降処理
 	if (GetKeyboardPress(DIK_SPACE) && GetKeyboardPress(DIK_LSHIFT))
 	{
+		m_vMove.y = -m_fMoveSpeed;
 		m_fRiseSpeed = max(m_fRiseSpeed - 0.5f, -10.0f);
 	}
 	else if (GetKeyboardPress(DIK_SPACE))
 	{
+		m_vMove.y = m_fMoveSpeed;
 		m_fRiseSpeed = min(m_fRiseSpeed + 0.5f, PLAYER_MOVE_SPEED_MAX);
 	}
 	else
@@ -732,7 +871,7 @@ void Player::Lockon(void)
 			m_fRiseSpeed = min(m_fRiseSpeed + 0.2f, 0.0f);
 	}
 
-	m_vMove.y += m_fRiseSpeed;
+	//m_vMove.y += m_fRiseSpeed;
 
 
 	// 移動を適用
@@ -778,6 +917,17 @@ void Player::Change(void)
 //=============================================================================
 void Player::Move(void)
 {
+	if (m_bAttack || m_bGuard || m_bChargeAttack)
+	{
+		// ウィングのアニメーションをセット
+		m_cWing->SetAnim(WING_ANIM_CLOSE);
+		SetLimit(&m_fMagicScl, m_fMagicScl + 2.0f, 20.0f, 0.0f);
+	}
+	else
+	{
+		SetLimit(&m_fMagicScl, m_fMagicScl - 2.0f, 20.0f, 0.0f);
+	}
+
 
 	if (GetKeyboardPress(DIK_Q) && GetKeyboardPress(DIK_E))
 	{
@@ -900,7 +1050,8 @@ void Player::CheckAnim(void)
 {
 	// 優先順位ごとに if 分岐
 	if		(PLAYER_ANIM_DUMMY & m_dwAnim)			ChangeAnim(PLAYER_FLOAT, PLAYER_ANIM_WEIGHT_DEF);
-
+	else if (PLAYER_ANIM_GUARD & m_dwAnim)			ChangeAnim(PLAYER_GUARD, PLAYER_ANIM_WEIGHT_DEF);
+	else if (PLAYER_ANIM_ATK_RICARD & m_dwAnim)		ChangeAnim(PLAYER_ATK_RICARD, PLAYER_ANIM_WEIGHT_DEF);
 	else if	(PLAYER_ANIM_ATK_ROUNDUP & m_dwAnim)	ChangeAnim(PLAYER_ATK_ROUNDUP, PLAYER_ANIM_WEIGHT_ATK);
 	else if	(PLAYER_ANIM_ATK_THRUST & m_dwAnim)		ChangeAnim(PLAYER_ATK_THRUST, PLAYER_ANIM_WEIGHT_ATK);
 	else if (PLAYER_ANIM_ATK_HORIZON & m_dwAnim)	ChangeAnim(PLAYER_ATK_HORIZON, PLAYER_ANIM_WEIGHT_ATK);
@@ -912,13 +1063,14 @@ void Player::CheckAnim(void)
 	m_dwAnim = 0x00000000l;
 }
 
+
 //=============================================================================
 // コンストラクタ（初期化処理）
 //=============================================================================
 PlayerManager::PlayerManager(void)
 {
 	// オブジェクトIDとプライオリティの設定処理
-	SetIdAndPriority(ObjectID::PLAYERMANAGER, Priority::Middle, Priority::Middle);
+	SetIdAndPriority(ObjectID::PLAYERMANAGER, Priority::Middle, Priority::High);
 
 	for (unsigned int i = 0; i < PLAYER_MAX; i++)
 	{

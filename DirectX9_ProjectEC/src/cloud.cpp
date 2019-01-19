@@ -44,7 +44,7 @@ LPCTSTR g_lpCloudEH[] = {
 Cloud::Cloud()
 {
 	// オブジェクトIDとプライオリティの設定処理
-	SetIdAndPriority(ObjectID::CLOUD, Priority::Middle, Priority::Low);
+	SetIdAndPriority(ObjectID::CLOUD, Priority::Middle, Priority::Middle);
 
 	// 各ポインタの初期化
 	m_pTexture = NULL;	// テクスチャ

@@ -291,22 +291,22 @@ void SceneManager::DebugScene(void)
 	//{	//		
 	//	SetSe(SE_RESULT_SELECT, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
 	//}
-	//if (GetKeyboardTrigger(DIK_5))
-	//{	// 
-	//	SetSe(SE_RESULT_KETTEI, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
-	//}
-	//if (GetKeyboardTrigger(DIK_6))
-	//{	// 
-	//	SetVoice(VOICE_3, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
-	//}
-	//if (GetKeyboardTrigger(DIK_7))
-	//{	// 
-	//	SetVoice(VOICE_2, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
-	//}
-	//if (GetKeyboardTrigger(DIK_8))
-	//{	// 
-	//	SetVoice(VOICE_START, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
-	//}
+	if (GetKeyboardTrigger(DIK_5))
+	{	// 
+		SetVoice(VOICE_ATK4, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+	}
+	if (GetKeyboardTrigger(DIK_6))
+	{	// 
+		SetVoice(VOICE_ATK1, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+	}
+	if (GetKeyboardTrigger(DIK_7))
+	{	// 
+		SetVoice(VOICE_ATK2, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+	}
+	if (GetKeyboardTrigger(DIK_8))
+	{	// 
+		SetVoice(VOICE_ATK3, E_DS8_FLAG_NONE, SOUND_OPTION_CONTINUE_ON, 0);
+	}
 
 	PrintDebugProc("\n");
 }

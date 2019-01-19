@@ -12,10 +12,9 @@
 *******************************************************************************/
 #include "object.h"
 #include "SkinMeshX.h"
-#include "XModel.h"
-#include "XTexture.h"
 #include "sword.h"
 #include "wing.h"
+#include "effect.h"
 
 // デバッグ用
 #ifdef _DEBUG
@@ -54,7 +53,7 @@
 #define PLAYER_ROT_SPEED_MAX_Z		(0.03f)
 
 
-#define PLAYER_MOVE_INERTIA			(0.3f)
+#define PLAYER_MOVE_INERTIA			(0.03f)
 #define PLAYER_ROT_INERTIA			(0.3f)
 
 #define PLAYER_ALPHA_TEST			(150)
@@ -81,20 +80,23 @@
 #define PLAYER_ANIM_ATK_HORIZON			(0x00000004)
 #define PLAYER_ANIM_ATK_THRUST			(0x00000008)
 #define PLAYER_ANIM_ATK_ROUNDUP			(0x00000010)
-//#define PLAYER_ANIM_	(0x00000020)
-//#define PLAYER_ANIM_	(0x00000040)
-//#define PLAYER_ANIM_	(0x00000080)
-//#define PLAYER_ANIM_	(0x00000100)
-//#define PLAYER_ANIM_	(0x00000200)
-//#define PLAYER_ANIM_	(0x00001000)
+#define PLAYER_ANIM_ATK_RICARD			(0x00000020)
+#define PLAYER_ANIM_GUARD				(0x00000040)
+#define PLAYER_ANIM_STEP_FLONT			(0x00000080)
+#define PLAYER_ANIM_STEP_BACK			(0x00000100)
+#define PLAYER_ANIM_STEP_LEFT			(0x00000200)
+#define PLAYER_ANIM_STEP_RIGHT			(0x00001000)
 //#define PLAYER_ANIM_	(0x00002000)
 #define PLAYER_ANIM_DUMMY				(0x80000000)
 
 // アタック
-#define PLAYER_ATK_COMBOTIME_HORIZON	(12 *2)
-#define PLAYER_ATK_COMBOTIME_THRUST		(9*2)
-#define PLAYER_ATK_COMBOTIME_ROUNDUP	(25*2)
+#define PLAYER_ATK_COMBOTIME_HORIZON	(12 * 2)
+#define PLAYER_ATK_COMBOTIME_THRUST		(9 * 2)
+#define PLAYER_ATK_COMBOTIME_ROUNDUP	(25 * 2)
 #define PLAYER_ATK_COMBO_MAX			(3)
+
+#define PLAYER_ATK_CHARGE_TIME			(60 * 2)
+#define PLAYER_ATK_CHARGE				(60)
 
 
 //*****************************************************************************
@@ -191,6 +193,10 @@ private:
 	D3DXMATRIX*		m_pMtxTorso;			// ワールドマトリクス
 
 
+	// エフェクト関係
+	EffectManager* pEffetMgr;
+	::Effekseer::Handle					m_handle;
+
 
 #ifdef _DEBUG
 	DebugObjectData m_cDebug;
@@ -199,6 +205,12 @@ private:
 	// アニメーション
 	enum PlayerAnim
 	{	// アニメーションセットは追加の逆順
+		PLAYER_STEP_RIGHT,
+		PLAYER_STEP_LEFT,
+		PLAYER_STEP_BACK,
+		PLAYER_STEP_FRONT,
+		PLAYER_GUARD,
+		PLAYER_ATK_RICARD,
 		PLAYER_ATK_ROUNDUP,
 		PLAYER_ATK_THRUST,
 		PLAYER_ATK_HORIZON,
@@ -215,15 +227,26 @@ private:
 
 
 	// アタック
+	void Attack(void);
 	int			m_nComboTime;
 	int			m_nComboCount;
-	void Attack(void);
+	bool		m_bAttack;
+	int			m_nCharge;
+	bool		m_bChargeAttack;
 
+	// ガード
+	void Guard(void);
+	bool m_bGuard;
 
+	// 魔法陣
+	float		m_fMagicScl;
 
+	// モード
 	void Float(void);
 	void Fly(void);
 	void Lockon(void);
+
+
 	void Change(void);
 	void ModeChange(void);
 	void Move(void);
@@ -231,9 +254,11 @@ private:
 	void RotFunc(D3DXVECTOR3);
 	void SetCamera(void);
 
+
 	Wing	*m_cWing;
 	Sword	*m_cSword;
 public:
+	bool GetGuard(void) { return m_bGuard; }
 	D3DXMATRIX GetMtx(void) { return m_mtxWorld; }
 	D3DXVECTOR3 GetVecX(void) { return m_vX; }
 	D3DXVECTOR3 GetVecY(void) { return m_vY; }
@@ -253,7 +278,6 @@ public:
 	};
 	static Player		*m_pPlayer[PLAYER_MAX];
 
-public:
 	// コンストラクタ（初期化処理）
 	PlayerManager(void);
 	//デストラクタ（終了処理）

@@ -71,10 +71,10 @@ GameScene::GameScene(void)
 #ifdef _DEBUG
 	ObjectManager::CreateObject<DebugObject>();
 #endif
+	ObjectManager::CreateObject<EffectManager>();
 	ObjectManager::CreateObject<EnemyManager>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<EffectManager>();
 }
 
 //=============================================================================

@@ -43,7 +43,7 @@
 //#define WING_ANIM_	0x00000100
 //#define WING_ANIM_	0x00000200
 //#define WING_ANIM_	0x00001000
-//#define WING_ANIM_	0x00002000
+#define WING_ANIM_DUMMY			(0x00002000)
 
 // SE
 #define WING_SE_FLAG_MARGIN		(0.1f)

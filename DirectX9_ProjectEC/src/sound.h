@@ -26,26 +26,11 @@
 #define SE_11_CONTINUITY		(5)				// ヒットSEの再生間隔
 #define SE_11_VOLUME_SE			(-1200)			// SE11のボリューム設定
 
-#define SOUND_BGM_MAX			(SE_00)
-#define SOUND_SE_MAX			(VOICE_00 - SE_00)
-#define SOUND_VOICE_MAX			(SOUND_MAX - VOICE_00)
+//#define SOUND_BGM_MAX			(BGM_MAX)
+//#define SOUND_SE_MAX			(VOICE_00 - SE_00)
+//#define SOUND_VOICE_MAX			(SOUND_MAX - VOICE_00)
 
 #define SOUND_SE_DRAMROLL_END	(1000000)
-
-enum
-{	// サウンド通しナンバー(sound.cppの順番と合わせる事)
-	BGM_00,
-	BGM_01,
-	BGM_02,
-	BGM_03,
-	BGM_04,
-	SE_00,
-	VOICE_00,
-	VOICE_01,
-	VOICE_02,
-	VOICE_03,
-	SOUND_MAX
-};
 
 enum
 {	// BGM
@@ -53,20 +38,24 @@ enum
 	BGM_WHITELILY_V,
 	BGM_RESULT,
 	BGM_SELECT,
-	BGM_RESULT2
+	BGM_RESULT2,
+	BGM_MAX
 };
 
 enum
 {	// SE
-	SE_WING
+	SE_WING,
+	SE_MAX
 };
 
 enum
 {	// VOICE
-	VOICE_START,
-	VOICE_1,
-	VOICE_2,
-	VOICE_3
+	VOICE_ATK1,		// たぁっ！
+	VOICE_ATK2,		// スキあり！
+	VOICE_ATK3,		// かわせるかしら！？
+	VOICE_ATK4,		// はあーっ！
+	VOICE_GUARD1,	// きかないわ！
+	VOICE_MAX
 };
 
 enum
