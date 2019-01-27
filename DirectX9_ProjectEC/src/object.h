@@ -53,7 +53,8 @@ public:
 		CLOUD,
 		PLAYERMANAGER,
 		ENEMYMANAGER,
-		DEBUGOBJECT
+		DEBUGOBJECT,
+		UI
 	};
 
 private:

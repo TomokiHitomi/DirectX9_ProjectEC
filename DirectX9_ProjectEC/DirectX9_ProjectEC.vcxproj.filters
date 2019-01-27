@@ -125,6 +125,15 @@
     <ClInclude Include="src\tool.h">
       <Filter>tool</Filter>
     </ClInclude>
+    <ClInclude Include="src\ui.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\titleui.h">
+      <Filter>ui\title</Filter>
+    </ClInclude>
+    <ClInclude Include="src\titlelogo.h">
+      <Filter>ui\title</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -242,6 +251,15 @@
     <ClCompile Include="src\tool.cpp">
       <Filter>tool</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\titleui.cpp">
+      <Filter>ui\title</Filter>
+    </ClCompile>
+    <ClCompile Include="src\titlelogo.cpp">
+      <Filter>ui\title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="camera">
@@ -304,6 +322,9 @@
     <Filter Include="ui">
       <UniqueIdentifier>{fdf92dfc-68ca-4e00-9a93-b1105b7d43b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ui\title">
+      <UniqueIdentifier>{9b278cc9-bc30-433a-b57e-bd32f1da0a23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\SHADER\cloud.fx">
@@ -322,6 +343,9 @@
       <Filter>shader\fx</Filter>
     </FxCompile>
     <FxCompile Include="data\shader\octa.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shader\xtexture.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
   </ItemGroup>

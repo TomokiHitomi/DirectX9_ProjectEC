@@ -912,8 +912,14 @@ HRESULT CSkinMesh::Init(LPDIRECT3DDEVICE9 lpD3DDevice, LPSTR pMeshPass) {
 	CHAR TmpMeshPass[256];
 	strcpy_s(TmpMeshPass, sizeof(TmpMeshPass) - 1, pMeshPass);
 
+	int nMax = 0;
+	while (TmpMeshPass[nMax] != NULL)
+	{
+		nMax++;
+	}
+
 	int nSearch = 0;
-	for (int i = 256 - 1; i > 0; i--)
+	for (int i = nMax - 1; i > 0; i--)
 	{
 		if (TmpMeshPass[i] == '/')
 		{

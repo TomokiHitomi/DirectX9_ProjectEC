@@ -1,16 +1,18 @@
 //=============================================================================
 //
-// ファイル処理 [file.h]
+// タイトルUI処理 [titleui.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _FILE_H_
-#define _FILE_H_
+#ifndef _TITLEUI_H_
+#define _TITLEUI_H_
 
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
 #include "main.h"
+#include "ui.h"
+#include "titlelogo.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -23,51 +25,18 @@
 //*****************************************************************************
 // クラス定義
 //*****************************************************************************
-class File
+class TitleUi : public BaseUi
 {
 public:
-	// コンストラクタ（初期化処理）
-	File(void);
-	//デストラクタ（終了処理）
-	~File(void);
+	TitleLogo* pLogo;
 
-	template <typename Data>
-	static bool Load(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "rb");
+	TitleUi();
+	~TitleUi();
 
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 読み込み処理
-		fread(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
-
-	template <typename Data>
-	static bool Save(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "wb");
-
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 書き込み処理
-		fwrite(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
+	void Update(void);
+	void Draw(void);
+	void Release(void);
 };
-
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************

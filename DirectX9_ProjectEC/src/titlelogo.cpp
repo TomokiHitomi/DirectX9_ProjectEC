@@ -1,32 +1,10 @@
 //=============================================================================
 //
-// タイトル処理 [title.cpp]
+// タイトルUI処理 [titleui.cpp]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#include "title.h"
-
-/* 全体で必要なインクルード */
-#include "input.h"
-#include "camera.h"
-#include "sound.h"
-
-/* タイトルで必要なインクルード */
-#include "object.h"
-#include "SkinMeshX.h"
-#include "light.h"
-#include "player.h"
-#include "skydome.h"
-#include "stencil.h"
-#include "effect.h"
-#include "stage.h"
-#include "debugobject.h"
-#include "ui.h"
-
-/* Debug */
-#ifdef _DEBUG
-#include "debugproc.h"
-#endif
+#include "titlelogo.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -40,73 +18,61 @@
 // グローバル変数
 //*****************************************************************************
 
+//=============================================================================
+// コンストラクタ（初期化処理）
+//=============================================================================
+TitleLogo::TitleLogo(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// 設定データの読み込み
+	//Load();
+
+	// 各種ポインタを NULL で初期化
+	m_pTex = NULL;
+	m_pTex = new CXTexture[TITLEUI_LOGO_MAX];
+
+	m_pTex->Init(pDevice, (LPSTR)TITLEUI_LOGO_TEX_PATH, (LPSTR)TITLEUI_LOGO_FILE_PATH, TITLEUI_LOGO_MAX, 1, 1);
+}
+
+//=============================================================================
+// デストラクタ（終了処理）
+//=============================================================================
+TitleLogo::~TitleLogo(void)
+{
+	Release();
+}
+
+//=============================================================================
+// 解放処理
+//=============================================================================
+void TitleLogo::Release(void)
+{
+	SAFE_RELEASE(m_pTex);
+	SAFE_DELETE(m_pTex);
+}
 
 //=============================================================================
 // 更新処理
 //=============================================================================
-void TitleScene::Update(void)
+void TitleLogo::Update(void)
 {
-	ObjectManager::UpdateAll();
 #ifdef _DEBUG
-	//if (GetKeyboardTrigger(DIK_5))
-	//{
-	//	new Copyright;
-	//}
-	//if (GetKeyboardTrigger(DIK_6))
-	//{
-	//	Object *pTemp = Object::GetObjectPointer(Object::COPYRIGHT);
-	//	if (pTemp != NULL)
-	//	{
-	//		pTemp->Release();
-	//	}
-	//}
-	//if (GetKeyboardTrigger(DIK_7))
-	//{
-	//	new AirWaterFream;
-	//}
-	//if (GetKeyboardTrigger(DIK_8))
-	//{
-	//	Object *pTemp = Object::GetObjectPointer(Object::FRAME);
-	//	if (pTemp != NULL)
-	//	{
-	//		pTemp->Release();
-	//	}
-	//}
+	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
+	bool bGui = ImGui::TreeNode("TitleLogo");
+	if (bGui)
+	{
+		ImGui::TreePop();
+	}
 #endif
+
+	SAFE_UPDATE(m_pTex);
 }
 
 //=============================================================================
 // 描画処理
 //=============================================================================
-void TitleScene::Draw(void)
+void TitleLogo::Draw(void)
 {
-	ObjectManager::DrawAll();
-}
-
-//=============================================================================
-// コンストラクタ処理（初期化）
-//=============================================================================
-TitleScene::TitleScene(void)
-{
-	ObjectManager::CreateObject<DebugObject>();
-	ObjectManager::CreateObject<EffectManager>();
-	ObjectManager::CreateObject<PlayerManager>();
-	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<UiManager>();
-}
-
-//=============================================================================
-// デストラクタ処理（終了）
-//=============================================================================
-TitleScene::~TitleScene(void)
-{
-	ObjectManager::ReleaseAll();
-}
-
-//=============================================================================
-// タイトルデモのリスタートメソッド
-//=============================================================================
-void TitleScene::DemoRestart(void)
-{
-
+	SAFE_DRAW(m_pTex);
 }

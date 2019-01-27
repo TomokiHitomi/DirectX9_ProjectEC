@@ -12,6 +12,7 @@
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
+#define SHADER_FILE_XTEXTURE		("data/shader/xtexture.fx")
 #define SHADER_FILE_XMODEL			("data/shader/xmodel.fx")
 #define SHADER_FILE_SKINMESH		("data/shader/skinmesh.fx")
 #define SHADER_FILE_WING_FEATHER	("data/shader/wing_feather.fx")
@@ -46,6 +47,7 @@ class ShaderManager
 public:
 	enum FILE
 	{
+		XTEXTURE,
 		XMODEL,
 		SKINMESH,
 		WING_FEATHER,

@@ -1,20 +1,29 @@
 //=============================================================================
 //
-// ファイル処理 [file.h]
+// タイトルUI処理 [titleui.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _FILE_H_
-#define _FILE_H_
+#ifndef _TITLELOGO_H_
+#define _TITLELOGO_H_
 
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
 #include "main.h"
+#include "XTexture.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define TITLEUI_LOGO_TEX_PATH		("data/texture/titlelogo.png")
+#define TITLEUI_LOGO_FILE_PATH		("data/file/titlelogo.dat")
+
+#define TITLEUI_LOGO_MAX		(1)
+
+#define TITLEUI_LOGO_SIZE_X		(1024.0f)
+#define TITLEUI_LOGO_SIZE_Y		(256.0f)
+
 
 //*****************************************************************************
 // 構造体定義
@@ -23,51 +32,18 @@
 //*****************************************************************************
 // クラス定義
 //*****************************************************************************
-class File
+class TitleLogo
 {
 public:
-	// コンストラクタ（初期化処理）
-	File(void);
-	//デストラクタ（終了処理）
-	~File(void);
+	CXTexture* m_pTex;
+	TitleLogo();
+	~TitleLogo();
 
-	template <typename Data>
-	static bool Load(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "rb");
-
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 読み込み処理
-		fread(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
-
-	template <typename Data>
-	static bool Save(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "wb");
-
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 書き込み処理
-		fwrite(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
+	void Update(void);
+	void Draw(void);
+	void Release(void);
+private:
 };
-
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************

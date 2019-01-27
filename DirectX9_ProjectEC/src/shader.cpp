@@ -66,6 +66,7 @@ ShaderManager::~ShaderManager()
 //=============================================================================
 HRESULT ShaderManager::Load(void)
 {
+	pShader[XTEXTURE] = new Shader(SHADER_FILE_XTEXTURE);
 	pShader[XMODEL] = new Shader(SHADER_FILE_XMODEL);
 	pShader[SKINMESH] = new Shader(SHADER_FILE_SKINMESH);
 	pShader[WING_FEATHER] = new Shader(SHADER_FILE_WING_FEATHER);

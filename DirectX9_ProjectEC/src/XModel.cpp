@@ -56,11 +56,17 @@ HRESULT CXModel::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pMeshPass, LPSTR pTexPass
 		MessageBox(NULL, "Xƒtƒ@ƒCƒ‹‚Ì“Ç‚Ýž‚Ý‚ÉŽ¸”s‚µ‚Ü‚µ‚½", pMeshPass, MB_OK);
 		return E_FAIL;
 	}
-
+	
 	if (pTexPass == NULL)
 	{
+		int nMax = 0;
+		while (pMeshPass[nMax] != NULL)
+		{
+			nMax++;
+		}
+
 		int nSearch = 0;
-		for (int i = 256 - 1; i > 0; i--)
+		for (int i = nMax - 1; i > 0; i--)
 		{
 			if (pMeshPass[i] == '/')
 			{

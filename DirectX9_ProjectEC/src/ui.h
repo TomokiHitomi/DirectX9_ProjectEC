@@ -1,16 +1,16 @@
 //=============================================================================
 //
-// ファイル処理 [file.h]
+// UI処理 [ui.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _FILE_H_
-#define _FILE_H_
+#ifndef _UI_H_
+#define _UI_H_
 
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
-#include "main.h"
+#include "object.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -23,49 +23,37 @@
 //*****************************************************************************
 // クラス定義
 //*****************************************************************************
-class File
+class BaseUi
+{
+public:
+	//デストラクタ（終了処理）
+	virtual ~BaseUi(void) {}
+	// 更新処理
+	virtual void Update(void) = 0;
+	// 描画処理
+	virtual void Draw(void) = 0;
+	// 解放処理
+	virtual void Release(void) = 0;
+};
+
+class UiManager : public ObjectManager
 {
 public:
 	// コンストラクタ（初期化処理）
-	File(void);
+	UiManager(void);
 	//デストラクタ（終了処理）
-	~File(void);
+	~UiManager(void);
 
-	template <typename Data>
-	static bool Load(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "rb");
+	BaseUi* pUi;
 
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 読み込み処理
-		fread(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
-
-	template <typename Data>
-	static bool Save(Data* pData, const char* pFilePath, int nSize)
-	{
-		//バイナリファイルを開く
-		FILE *fp = fopen(pFilePath, "wb");
-
-		if (fp == NULL)
-		{//エラーが起きたらNULLを返す
-			return false;
-		}
-
-		// 書き込み処理
-		fwrite(pData, sizeof(Data) * nSize, 1, fp);
-
-		fclose(fp);
-		return true;
-	}
+	// 初期化処理
+	void Init(void);
+	// 終了処理
+	void Uninit(void);
+	// 更新処理
+	void Update(void);
+	// 描画処理
+	void Draw(void);
 };
 
 //*****************************************************************************

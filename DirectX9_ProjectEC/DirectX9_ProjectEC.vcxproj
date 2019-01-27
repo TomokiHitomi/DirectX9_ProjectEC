@@ -56,7 +56,10 @@
     <ClInclude Include="src\stage.h" />
     <ClInclude Include="src\sword.h" />
     <ClInclude Include="src\title.h" />
+    <ClInclude Include="src\titlelogo.h" />
     <ClInclude Include="src\tool.h" />
+    <ClInclude Include="src\ui.h" />
+    <ClInclude Include="src\titleui.h" />
     <ClInclude Include="src\wing.h" />
     <ClInclude Include="src\wing_feather.h" />
     <ClInclude Include="src\XModel.h" />
@@ -97,7 +100,10 @@
     <ClCompile Include="src\stage.cpp" />
     <ClCompile Include="src\sword.cpp" />
     <ClCompile Include="src\title.cpp" />
+    <ClCompile Include="src\titlelogo.cpp" />
     <ClCompile Include="src\tool.cpp" />
+    <ClCompile Include="src\ui.cpp" />
+    <ClCompile Include="src\titleui.cpp" />
     <ClCompile Include="src\wing.cpp" />
     <ClCompile Include="src\wing_feather.cpp" />
     <ClCompile Include="src\XModel.cpp" />
@@ -137,6 +143,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shader\xtexture.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
