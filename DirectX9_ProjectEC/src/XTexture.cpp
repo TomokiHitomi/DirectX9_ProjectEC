@@ -8,6 +8,7 @@
 //*****************************************************************************
 // インクルードファイル
 //*****************************************************************************
+#include "main.h"
 #include "XTexture.h"
 
 // デバッグ用
@@ -20,52 +21,46 @@
 //=============================================================================
 CXTexture::CXTexture(void)
 {
-	// テクスチャバッファの初期化
-	m_pD3DTexture = NULL;
-	m_pD3DTexture2 = NULL;
+	// ポインタを NULL で初期化
+	m_pTexture = NULL;	// テクスチャバッファ
+	m_pVertex = NULL;	// 頂点バッファ
+	m_pData = NULL;		// データ
 
-	data.vPos = D3DXVECTOR2(1920 / 2, 1080 / 2);
-	data.vSize = D3DXVECTOR2(1920 / 2, 1080 / 2);
-	data.nDivide.x = 1;
-	data.nDivide.y = 1;
-	data.xColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	data.nTexNum = 0;
+	// 使用フラグを false で初期化
+	m_bUse = false;
 }
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CXTexture::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPass)
+HRESULT CXTexture::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPass, int nNum)
 {
-	// テクスチャの読み込み
-	//if (FAILED(D3DXCreateTextureFromFile(
-	//	pDevice,				// デバイス
-	//	pTexPass,				// ファイル名
-	//	&m_pD3DTexture)))		// 読み込むメモリ（複数なら配列に）
-	//{
-	//	return E_FAIL;
-	//}
+	// 使用数が0以下の場合は初期化失敗
+	if (nNum <= 0) return E_FAIL;
 
+	// 使用数を保管
+	m_nNum = nNum;
+
+	// テクスチャの読み込み
 	if (FAILED(D3DXCreateTextureFromFile(
-		pDevice,				// デバイス
-		"data/texture/カービー.bmp",				// ファイル名
-		&m_pD3DTexture)))		// 読み込むメモリ（複数なら配列に）
+		pDevice,					// デバイス
+		pTexPass,					// ファイル名
+		&m_pTexture)))				// 読み込むメモリ（複数なら配列に）
 	{
 		return E_FAIL;
 	}
 
-
-	// テクスチャの読み込み
-	if (FAILED(D3DXCreateTextureFromFile(
-		pDevice,				// デバイス
-		"data/texture/すたふぃー.bmp",				// ファイル名
-		&m_pD3DTexture2)))		// 読み込むメモリ（複数なら配列に）
-	{
-		return E_FAIL;
-	}
+	// 各データを実体化＋初期化
+	m_pData = new XTextureData[m_nNum];
 
 	// 頂点の作成
-	MakeVertex();
+	if (FAILED(MakeVertex(pDevice)))
+	{
+		return E_FAIL;
+	}
+
+	// 使用フラグを true にする
+	m_bUse = true;
 }
 
 //=============================================================================
@@ -73,11 +68,8 @@ HRESULT CXTexture::Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPass)
 //=============================================================================
 void CXTexture::Release(void)
 {
-	if (m_pD3DTexture != NULL)
-	{// テクスチャの開放
-		m_pD3DTexture->Release();
-		m_pD3DTexture = NULL;
-	}
+	SAFE_RELEASE(m_pTexture);	// テクスチャの開放
+	SAFE_RELEASE(m_pVertex);	// 頂点バッファの開放
 }
 
 //=============================================================================
@@ -85,7 +77,10 @@ void CXTexture::Release(void)
 //=============================================================================
 void CXTexture::Update(void)
 {
-
+	if (m_bUse)
+	{
+		UpdateVertex();
+	}
 }
 
 //=============================================================================
@@ -93,158 +88,124 @@ void CXTexture::Update(void)
 //=============================================================================
 void CXTexture::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	if (m_bUse)
+	{
+		LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	pDevice->SetTextureStageState(0,
-		D3DTSS_TEXCOORDINDEX,		// ブレンド時に0番目のUV座標を参照する
-		1
-	);
+		// 頂点バッファをデバイスのデータストリームにバインド
+		pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_2D));
 
-	// テクスチャの設定
-	pDevice->SetTexture(0, m_pD3DTexture);
-	pDevice->SetTexture(1, m_pD3DTexture2);
+		// テクスチャの設定
+		pDevice->SetTexture(0, m_pTexture);
 
-	// テクスチャステージ0の設定
-	pDevice->SetTextureStageState(0,
-		D3DTSS_COLOROP,				// RGBのOPを設定
-		D3DTOP_SELECTARG2			// ARG2の入力をそのまま出力
-	);
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_2D);
 
-	pDevice->SetTextureStageState(0,
-		D3DTSS_COLORARG1,			// ARG1の設定
-		D3DTA_CURRENT				// ポリゴンの色を適用
-	);
-
-	pDevice->SetTextureStageState(0,
-		D3DTSS_COLORARG2,			// ARG2の設定
-		D3DTA_TEXTURE				// テクスチャ0番を入力
-	);
-
-	pDevice->SetTextureStageState(0,
-		D3DTSS_ALPHAOP,				// αのOP設定
-		D3DTOP_SELECTARG2			// ARG2のデータを出力
-	);
-
-
-	pDevice->SetTextureStageState(0,
-		D3DTSS_ALPHAARG2,			// αのARG2の設定
-		D3DTA_CURRENT				// ポリゴンの色を適用
-	);
-
-	// テクスチャステージ1の設定
-	pDevice->SetTextureStageState(1,
-		D3DTSS_COLOROP,				// RGBのOPを設定
-		D3DTOP_BLENDTEXTUREALPHA	// テクスチャ1のαを使ってブレンド
-	);
-
-	pDevice->SetTextureStageState(1,
-		D3DTSS_COLORARG1,			// RGBのOPを設定
-		D3DTA_TEXTURE				// テクスチャ1のテクスチャを入力
-	);
-
-	pDevice->SetTextureStageState(1,
-		D3DTSS_COLORARG2,			// ARG2の設定
-		D3DTA_CURRENT				// 前のステージを出力
-	);
-
-	pDevice->SetTextureStageState(1,
-		D3DTSS_ALPHAOP,				// αのOP設定
-		D3DTOP_SELECTARG2			// ARG2のデータを出力
-	);
-
-	pDevice->SetTextureStageState(1,
-		D3DTSS_ALPHAARG1,			// αのARG1の設定
-		D3DTA_CURRENT				// 前のステージを出力
-	);
-
-	pDevice->SetTextureStageState(1,
-		D3DTSS_ALPHAARG2,			// αのARG2の設定
-		D3DTA_TEXTURE				// テクスチャ1番を入力
-	);
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	// ポリゴンの描画
-	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, NUM_POLYGON, m_VertexWk, sizeof(VERTEX_2D));
-	
-
-	//pDevice->SetTextureStageState(1,
-	//	D3DTSS_COLOROP,				// RGBのOPを設定
-	//	D3DTOP_DISABLE				// 指定ステージ以降は無効
-	//);
-
-	//pDevice->SetTextureStageState(1,
-	//	D3DTSS_ALPHAOP,				// αのOP設定
-	//	D3DTOP_DISABLE				// 指定ステージ以降は無効
-	//);
-
-	//pDevice->SetTextureStageState(0,
-	//	D3DTSS_COLORARG1,			// ARG1の設定
-	//	D3DTA_TEXTURE				// テクスチャ0番を入力
-	//);
-
-	//pDevice->SetTextureStageState(0,
-	//	D3DTSS_COLORARG2,			// ARG2の設定
-	//	D3DTA_CURRENT				// ポリゴンの色を適用
-	//);
-
-	//pDevice->SetTextureStageState(0,
-	//	D3DTSS_TEXCOORDINDEX,		// ブレンド時に0番目のUV座標を参照する
-	//	0
-	//);
-
-
-	//pDevice->SetTextureStageState(1,
-	//	D3DTSS_TEXCOORDINDEX,		// ブレンド時に0番目のUV座標を参照する
-	//	1
-	//);
+		for (UINT i = 0; i < m_nNum; i++)
+		{
+			if (m_pData[i].bUse)
+			{
+				// ポリゴンの描画
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, (i * NUM_VERTEX), NUM_POLYGON);
+			}
+		}
+	}
 }
 
 //=============================================================================
 // 頂点の作成
 //=============================================================================
-HRESULT CXTexture::MakeVertex(void)
+HRESULT CXTexture::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 {
-	// 頂点座標の設定
-	m_VertexWk[0].vtx = D3DXVECTOR3(data.vPos.x - data.vSize.x, data.vPos.y - data.vSize.y, 0.0f);
-	m_VertexWk[1].vtx = D3DXVECTOR3(data.vPos.x + data.vSize.x, data.vPos.y - data.vSize.y, 0.0f);
-	m_VertexWk[2].vtx = D3DXVECTOR3(data.vPos.x - data.vSize.x, data.vPos.y + data.vSize.y, 0.0f);
-	m_VertexWk[3].vtx = D3DXVECTOR3(data.vPos.x + data.vSize.x, data.vPos.y + data.vSize.y, 0.0f);
+	// オブジェクトの頂点バッファを生成
+	if (FAILED(pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_2D) * (NUM_VERTEX * m_nNum),		// 頂点データ用に確保するバッファサイズ(バイト単位)
+		D3DUSAGE_WRITEONLY,								// 頂点バッファの使用法　
+		FVF_VERTEX_2D,									// 使用する頂点フォーマット
+		D3DPOOL_MANAGED,								// リソースのバッファを保持するメモリクラスを指定
+		&m_pVertex,										// 頂点バッファインターフェースへのポインタ
+		NULL)))											// NULLに設定
+	{
+		return E_FAIL;
+	}
 
-	// rhwの設定
-	m_VertexWk[0].rhw =
-	m_VertexWk[1].rhw =
-	m_VertexWk[2].rhw =
-	m_VertexWk[3].rhw = 1.0f;
-
-	// 反射光の設定
-	m_VertexWk[0].diffuse =
-	m_VertexWk[1].diffuse =
-	m_VertexWk[2].diffuse =
-	m_VertexWk[3].diffuse = data.xColor;
-
-	// テクスチャ座標の設定
-	int x = data.nTexNum % data.nDivide.x;
-	int y = data.nTexNum / data.nDivide.x;
-	float sizeX = 1.0f / data.nDivide.x;
-	float sizeY = 1.0f / data.nDivide.y;
-	m_VertexWk[0].tex = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY);
-	m_VertexWk[1].tex = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY);
-	m_VertexWk[2].tex = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY + sizeY);
-	m_VertexWk[3].tex = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY + sizeY);
 	return S_OK;
 }
 
+
 //=============================================================================
-// 頂点の作成
+// 頂点の更新
 //=============================================================================
-HRESULT CXTexture::SetVertex(void)
+HRESULT CXTexture::UpdateVertex(void)
 {
-	// 頂点座標の設定
-	m_VertexWk[0].vtx = D3DXVECTOR3(data.vPos.x - data.vSize.x, data.vPos.y - data.vSize.y, 0.0f);
-	m_VertexWk[1].vtx = D3DXVECTOR3(data.vPos.x + data.vSize.x, data.vPos.y - data.vSize.y, 0.0f);
-	m_VertexWk[2].vtx = D3DXVECTOR3(data.vPos.x - data.vSize.x, data.vPos.y + data.vSize.y, 0.0f);
-	m_VertexWk[3].vtx = D3DXVECTOR3(data.vPos.x + data.vSize.x, data.vPos.y + data.vSize.y, 0.0f);
+	{//頂点バッファの中身を埋める
+		VERTEX_2D *pVtx;
+
+		// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+		m_pVertex->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (UINT i = 0; i < m_nNum; i++, pVtx += 4)
+		{
+			if (m_pData[i].bUse)
+			{
+				// 角度を計算
+				m_pData[i].fBaseAngle = atan2f(m_pData[i].vSize.y, m_pData[i].vSize.x);
+				// 半径を計算
+				D3DXVECTOR2 temp = D3DXVECTOR2(m_pData[i].vSize.x, m_pData[i].vSize.y);
+				m_pData[i].fRadius = D3DXVec2Length(&temp);
+				// 半径にスケール値を乗算
+				m_pData[i].fRadius *= m_pData[i].fScl;
+
+				// 頂点座標の設定（回転対応）
+				pVtx[0].vtx.x = m_pData[i].vPos.x - cosf(m_pData[i].fBaseAngle - m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[0].vtx.y = m_pData[i].vPos.y - sinf(m_pData[i].fBaseAngle - m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[0].vtx.z = m_pData[i].vPos.z;
+				pVtx[1].vtx.x = m_pData[i].vPos.x + cosf(m_pData[i].fBaseAngle + m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[1].vtx.y = m_pData[i].vPos.y - sinf(m_pData[i].fBaseAngle + m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[1].vtx.z = m_pData[i].vPos.z;
+				pVtx[2].vtx.x = m_pData[i].vPos.x - cosf(m_pData[i].fBaseAngle + m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[2].vtx.y = m_pData[i].vPos.y + sinf(m_pData[i].fBaseAngle + m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[2].vtx.z = m_pData[i].vPos.z;
+				pVtx[3].vtx.x = m_pData[i].vPos.x + cosf(m_pData[i].fBaseAngle - m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[3].vtx.y = m_pData[i].vPos.y + sinf(m_pData[i].fBaseAngle - m_pData[i].fRot) * m_pData[i].fRadius;
+				pVtx[3].vtx.z = m_pData[i].vPos.z;
+
+				//pVtx[0].vtx = D3DXVECTOR3(m_pData[i].vPos.x - m_pData[i].vSize.x / 2, m_pData[i].vPos.y - m_pData[i].vSize.y / 2, 0.0f);
+				//pVtx[1].vtx = D3DXVECTOR3(m_pData[i].vPos.x + m_pData[i].vSize.x / 2, m_pData[i].vPos.y - m_pData[i].vSize.y / 2, 0.0f);
+				//pVtx[2].vtx = D3DXVECTOR3(m_pData[i].vPos.x - m_pData[i].vSize.x / 2, m_pData[i].vPos.y + m_pData[i].vSize.y / 2, 0.0f);
+				//pVtx[3].vtx = D3DXVECTOR3(m_pData[i].vPos.x + m_pData[i].vSize.x / 2, m_pData[i].vPos.y + m_pData[i].vSize.y / 2, 0.0f);
+
+				// rhwの設定
+				pVtx[0].rhw =
+				pVtx[1].rhw =
+				pVtx[2].rhw =
+				pVtx[3].rhw = 1.0f;
+
+				// 反射光の設定
+				pVtx[0].diffuse =
+				pVtx[1].diffuse =
+				pVtx[2].diffuse =
+				pVtx[3].diffuse = m_pData[i].xColor;
+
+				// テクスチャ座標の設定
+				int x = m_pData[i].nTexNum % m_pData[i].tDivide.x;
+				int y = m_pData[i].nTexNum / m_pData[i].tDivide.x;
+				float sizeX = 1.0f / m_pData[i].tDivide.x;
+				float sizeY = 1.0f / m_pData[i].tDivide.y;
+				pVtx[0].tex = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY);
+				pVtx[1].tex = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY);
+				pVtx[2].tex = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY + sizeY);
+				pVtx[3].tex = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY + sizeY);
+
+				//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+				//pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
+				//pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+				//pVtx[3].tex = D3DXVECTOR2(0.1f, 1.0f);
+			}
+		}
+
+		// 頂点データをアンロックする
+		m_pVertex->Unlock();
+	}
 	return S_OK;
 }

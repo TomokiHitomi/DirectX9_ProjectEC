@@ -35,7 +35,8 @@ public:
 		High,
 		Middle,
 		Low,
-		Lowest
+		Lowest,
+		Ui
 	};
 	// オブジェクトID
 	enum ObjectID

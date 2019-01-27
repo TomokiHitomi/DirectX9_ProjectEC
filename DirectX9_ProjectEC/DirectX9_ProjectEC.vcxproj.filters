@@ -90,25 +90,25 @@
       <Filter>debug</Filter>
     </ClInclude>
     <ClInclude Include="include\imconfig.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui_impl_dx9.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui_internal.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\stb_rect_pack.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\stb_textedit.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="include\stb_truetype.h">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClInclude>
     <ClInclude Include="src\file.h">
       <Filter>tool</Filter>
@@ -216,16 +216,16 @@
       <Filter>debug</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui_demo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui_impl_dx9.cpp">
-      <Filter>imgui</Filter>
+      <Filter>debug\imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\file.cpp">
       <Filter>tool</Filter>
@@ -289,9 +289,6 @@
     <Filter Include="shader\fx">
       <UniqueIdentifier>{a7f7d7ea-9e5b-4c2a-8e99-948054777d4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{63ce9fcf-9295-4d0a-92ca-e76d459a0e6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="object\model">
       <UniqueIdentifier>{0110203c-772a-4ffb-b633-f3382928d668}</UniqueIdentifier>
     </Filter>
@@ -300,6 +297,12 @@
     </Filter>
     <Filter Include="object\enemy">
       <UniqueIdentifier>{a6ff9f41-a4e4-40db-8720-3784d837cf78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debug\imgui">
+      <UniqueIdentifier>{63ce9fcf-9295-4d0a-92ca-e76d459a0e6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{fdf92dfc-68ca-4e00-9a93-b1105b7d43b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
