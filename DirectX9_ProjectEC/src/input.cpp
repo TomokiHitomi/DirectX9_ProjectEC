@@ -1055,57 +1055,6 @@ void SetXInputVibration(int padNo, int nFlag, WORD wVib)
 	}
 }
 
-bool InputPress(INPUT_CHECK eInput)
-{
-	int nKey = 0;
-	DWORD dwButton = 0, dwXButton = 0;
-
-	switch (eInput)
-	{
-	case INPUT_UP:
-		nKey = DIK_W;
-		dwButton |= BUTTON_UP;
-		dwXButton |= XBOTTON_DPAD_UP;
-		break;
-	case INPUT_DOWN:
-		nKey = DIK_S;
-		dwButton |= BUTTON_DOWN;
-		dwXButton |= XBOTTON_DPAD_DOWN;
-		break;
-	case INPUT_LEFT:
-		nKey = DIK_A;
-		dwButton |= BUTTON_LEFT;
-		dwXButton |= XBOTTON_DPAD_LEFT;
-		break;
-	case INPUT_RIGHT:
-		nKey = DIK_D;
-		dwButton |= BUTTON_RIGHT;
-		dwXButton |= XBOTTON_DPAD_RIGHT;
-		break;
-	case INPUT_UP_R:
-		nKey = DIK_UP;
-		break;
-	case INPUT_DOWN_R:
-		nKey = DIK_DOWN;
-		break;
-	case INPUT_LEFT_R:
-		nKey = DIK_LEFT;
-		break;
-	case INPUT_RIGHT_R:
-		nKey = DIK_RIGHT;
-		break;
-	}
-	
-	if ((g_keyState[nKey] & 0x80) ? true : false
-		|| (dwButton & padState[0])
-		|| (dwXButton & g_dwPadState[0]))
-	{
-		return true;
-	}
-	return false;
-}
-
-
 float GetButtonlZ(int padNo)
 {
 	if (padlZ < 0.0f) padlZ *= -1.0f;
@@ -1155,3 +1104,56 @@ D3DXVECTOR3 GetGyro(void)
 	return (vecGyro);
 }
 
+
+//=============================================================================
+// ƒQ[ƒ€‘€ì—p
+//=============================================================================
+bool InputPress(INPUT_CHECK eInput)
+{
+	int nKey = 0;
+	DWORD dwButton = 0, dwXButton = 0;
+
+	switch (eInput)
+	{
+	case INPUT_UP:
+		nKey = DIK_W;
+		dwButton |= BUTTON_UP;
+		dwXButton |= XBOTTON_DPAD_UP;
+		break;
+	case INPUT_DOWN:
+		nKey = DIK_S;
+		dwButton |= BUTTON_DOWN;
+		dwXButton |= XBOTTON_DPAD_DOWN;
+		break;
+	case INPUT_LEFT:
+		nKey = DIK_A;
+		dwButton |= BUTTON_LEFT;
+		dwXButton |= XBOTTON_DPAD_LEFT;
+		break;
+	case INPUT_RIGHT:
+		nKey = DIK_D;
+		dwButton |= BUTTON_RIGHT;
+		dwXButton |= XBOTTON_DPAD_RIGHT;
+		break;
+	case INPUT_UP_R:
+		nKey = DIK_UP;
+		break;
+	case INPUT_DOWN_R:
+		nKey = DIK_DOWN;
+		break;
+	case INPUT_LEFT_R:
+		nKey = DIK_LEFT;
+		break;
+	case INPUT_RIGHT_R:
+		nKey = DIK_RIGHT;
+		break;
+	}
+
+	if ((g_keyState[nKey] & 0x80) ? true : false
+		|| (dwButton & padState[0])
+		|| (dwXButton & g_dwPadState[0]))
+	{
+		return true;
+	}
+	return false;
+}

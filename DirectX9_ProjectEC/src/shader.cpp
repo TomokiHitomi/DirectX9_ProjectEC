@@ -73,6 +73,7 @@ HRESULT ShaderManager::Load(void)
 	pShader[CLOUD] = new Shader(SHADER_FILE_CLOUD);
 	pShader[OCTA] = new Shader(SHADER_FILE_OCTA);
 	pShader[DEBUGSPHERE] = new Shader(SHADER_FILE_DEBUGSPHERE);
+	pShader[BULLET] = new Shader(SHADER_FILE_BULLET);
 	return S_OK;
 }
 

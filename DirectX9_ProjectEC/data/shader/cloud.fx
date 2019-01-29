@@ -40,7 +40,7 @@ float		g_fMorph;
 float4		g_vMove;
 float4		g_vPos;		// 設置座標
 
-int			alphaRef = 0x08;
+
 
 
 texture tex;			// 使用するテクスチャ
@@ -126,6 +126,9 @@ technique Tec01		// テクスチャ描画
 	{
 		// 塗りつぶしモード = 面を塗りつぶす（標準）
 		FILLMODE = SOLID;
+
+		// アルファテスト = 無効（標準）
+		ALPHATESTENABLE = FALSE;
 
 		// アルファブレンド = 有効
 		ALPHABLENDENABLE = TRUE;

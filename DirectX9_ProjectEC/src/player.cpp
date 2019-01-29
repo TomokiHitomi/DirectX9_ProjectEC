@@ -33,15 +33,7 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-extern float fGyroX;
-extern float fGyroY;
-extern float fGyroZ;
-//D3DXVECTOR3 testpos,testrot;
-
 Player* PlayerManager::m_pPlayer[PLAYER_MAX] = {};
-
-int nTextIdx = 0;
-
 
 //=============================================================================
 // コンストラクタ（初期化処理）
@@ -49,9 +41,6 @@ int nTextIdx = 0;
 Player::Player(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	//// オブジェクトIDとプライオリティの設定処理
-	//SetIdAndPriority(ObjectID::PLAYER, Priority::Middle, Priority::Middle);
 
 	// ステータスの初期化処理
 	Init();
@@ -689,18 +678,18 @@ void Player::Fly(void)
 	m_cWing->SetAnim(WING_ANIM_FRY);
 
 	// ピッチ
-	if ((InputPress(INPUT_UP_R) && InputPress(INPUT_DOWN_R)) || (fGyroY < PLAYER_GYRO_MARGIN && fGyroY > -PLAYER_GYRO_MARGIN))
+	if (InputPress(INPUT_UP_R) && InputPress(INPUT_DOWN_R))
 	{	// 同時押しは慣性を止める
 		if (m_vRot.x > 0.0f)
 			m_vRot.x = max(m_vRot.x - PLAYER_ROT_SPEED_X, 0.0f);
 		else if (m_vRot.x < 0.0f)
 			m_vRot.x = min(m_vRot.x + PLAYER_ROT_SPEED_X, 0.0f);
 	}
-	else if (InputPress(INPUT_DOWN_R) || fGyroY > PLAYER_GYRO_MARGIN)
+	else if (InputPress(INPUT_DOWN_R))
 	{	// ピッチ角度を慣性で加算
 		m_vRot.x = min(m_vRot.x + PLAYER_ROT_SPEED_X, PLAYER_ROT_SPEED_MAX_X);
 	}
-	else if (InputPress(INPUT_UP_R) || fGyroY < -PLAYER_GYRO_MARGIN)
+	else if (InputPress(INPUT_UP_R))
 	{	// ピッチ角度を慣性で減算
 		m_vRot.x = max(m_vRot.x - PLAYER_ROT_SPEED_X, -PLAYER_ROT_SPEED_MAX_X);
 	}
@@ -713,18 +702,18 @@ void Player::Fly(void)
 	}
 
 	// ロール
-	if (InputPress(INPUT_LEFT_R) && InputPress(INPUT_RIGHT_R) || (fGyroZ < PLAYER_GYRO_MARGIN && fGyroZ > -PLAYER_GYRO_MARGIN))
+	if (InputPress(INPUT_LEFT_R) && InputPress(INPUT_RIGHT_R))
 	{	// 同時押しは慣性を止める
 		if (m_vRot.z > 0.0f)
 			m_vRot.z = max(m_vRot.z - PLAYER_ROT_SPEED_Z, 0.0f);
 		else if (m_vRot.z < 0.0f)
 			m_vRot.z = min(m_vRot.z + PLAYER_ROT_SPEED_Z, 0.0f);
 	}
-	else if (InputPress(INPUT_RIGHT_R) || fGyroZ < -PLAYER_GYRO_MARGIN)
+	else if (InputPress(INPUT_RIGHT_R))
 	{	// ロール角度を慣性で加算
 		m_vRot.z = min(m_vRot.z + PLAYER_ROT_SPEED_Z, PLAYER_ROT_SPEED_MAX_Z);
 	}
-	else if (InputPress(INPUT_LEFT_R) || fGyroZ > -PLAYER_GYRO_MARGIN)
+	else if (InputPress(INPUT_LEFT_R))
 	{	// ロール角度を慣性で減算
 		m_vRot.z = max(m_vRot.z - PLAYER_ROT_SPEED_Z, -PLAYER_ROT_SPEED_MAX_Z);
 	}

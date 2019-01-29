@@ -1,11 +1,11 @@
 //=============================================================================
 //
-// 八面体処理 [octa.h]
+// バレット処理 [bullet.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _OCTA_H_
-#define _OCTA_H_
+#ifndef _BULLET_H_
+#define _BULLET_H_
 
 /*******************************************************************************
 * インクルード
@@ -15,11 +15,10 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define OCTA_MAX			(50)
-#define	OCTA_MODEL			"data/model/octahedral.x"	// 読み込むモデル名
-#define OCTA_ROT_SPEED		(0.01f)
-
-//#define DEBUGSPHERE_COLOR	(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f))
+#define BULLET_MAX					(8192)
+#define BULLET_TEX					("data/texture/bullet.png")
+#define BULLET_TEXTURE_DIVIDE_X		(5)
+#define BULLET_TEXTURE_DIVIDE_Y		(3)
 
 //*****************************************************************************
 // 構造体定義
@@ -28,13 +27,13 @@
 //*****************************************************************************
 // クラス定義
 //*****************************************************************************
-class Octa
+class Bullet
 {
 public:
 	// コンストラクタ（初期化処理）
-	Octa(void);
+	Bullet(void);
 	//デストラクタ（終了処理）
-	~Octa(void);
+	~Bullet(void);
 
 	// 更新処理
 	void	Update(void);
@@ -47,16 +46,27 @@ public:
 	void SetColor(int nIdx, float fCol);
 	// 座標をセット
 	void SetPos(int nIdx, D3DXVECTOR3 vPos);
-	// 回転を加算
-	void AddRot(int nIdx, float fRot);
-	// 回転を取得
-	float GetRot(int nIdx);
 
 
 	// 解放
 	void Release(int nIdx);
 private:
+
+
 	LPD3DXEFFECT		pEffect;		// シェーダー関連
+	enum EH
+	{
+		EH_TEX,
+		EH_PROJ,
+		EH_VIEW,
+		EH_WORLD,
+		EH_COLORPALLET,
+		EH_MAX
+	};
+	D3DXHANDLE						hEffectHandle[EH_MAX];	// シェーダハンドル
+
+	LPDIRECT3DTEXTURE9				m_pTexture;	// テクスチャ
+
 	D3DXMATRIX			m_mtxWorld;		// ワールドマトリクス
 	UINT				m_nCount;
 	bool				m_bUse;			// 使用フラグ
@@ -66,11 +76,12 @@ private:
 	LPDIRECT3DVERTEXBUFFER9			m_pInstBuff;	// インスタンスバッファ
 	LPDIRECT3DINDEXBUFFER9			m_pIdxBuff;		// インデックスバッファ
 	LPDIRECT3DVERTEXDECLARATION9	m_pDecl;		// 頂点宣言
-	DWORD							m_dwVtxSize;	// 頂点サイズ
-	DWORD							m_dwNumVtx;		// 頂点数
-	DWORD							m_dwNumFace;	// 面数
-	//D3DXATTRIBUTERANGE*			m_pAttrTable;	// 属性テーブル
-	//DWORD							m_dwNumAttr;	// 属性テーブル数
+
+	typedef struct
+	{
+		D3DXVECTOR4 vtx;
+		D3DXVECTOR2 uv;
+	}VERTEX;
 
 	// VRAM用
 	typedef struct
@@ -78,8 +89,7 @@ private:
 		D3DXVECTOR3 vPos;		// ワールド座標
 		float		fSize;		// サイズ
 		float		fUse;		// 使用フラグ（シェーダ用）
-		float		fRot;		// 回転
-		float		fCol;		// 回転
+		float		fCol;		// カラーインデックス
 	}INSTANCE;
 
 	// RAM用
@@ -88,7 +98,7 @@ private:
 		bool bUse;				// 使用フラグ
 	}DATA;
 
-	DATA	m_tData[OCTA_MAX];
+	DATA	m_tData[BULLET_MAX];
 
 
 	// マトリクスの初期化
@@ -106,16 +116,16 @@ private:
 	// インスタンシングバッファにデータの代入
 	HRESULT SetInst(void);
 	// 頂点シェーダ宣言の作成
-	HRESULT CreateDecl(LPDIRECT3DDEVICE9 pDevice, LPD3DXMESH pMesh);
+	HRESULT CreateDecl(LPDIRECT3DDEVICE9 pDevice);
 };
 
-class OctaData
+class BulletData
 {
 public:
 	int		nIdx;
 	float	fSize;
 	bool	bUse;
-	OctaData()
+	BulletData()
 	{
 		nIdx = -1;
 		fSize = 0.0f;

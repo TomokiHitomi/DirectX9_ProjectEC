@@ -1,10 +1,10 @@
 //=============================================================================
 //
-// タイトルUI処理 [titleui.cpp]
+// タイトルメニュー処理 [titleui.cpp]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#include "titlelogo.h"
+#include "titlemenu.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -21,7 +21,7 @@
 //=============================================================================
 // コンストラクタ（初期化処理）
 //=============================================================================
-TitleLogo::TitleLogo(void)
+TitleMenu::TitleMenu(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -34,9 +34,9 @@ TitleLogo::TitleLogo(void)
 
 	m_pTex->Init(
 		pDevice,						// デバイス
-		(LPSTR)TITLEUI_LOGO_TEX_PATH, 	// テクスチャパス
-		(LPSTR)TITLEUI_LOGO_FILE_PATH, 	// ファイルパス
-		TITLEUI_LOGO_MAX, 				// 最大数
+		(LPSTR)TITLEUI_MENU_TEX_PATH,	// テクスチャパス
+		(LPSTR)TITLEUI_MENU_FILE_PATH,	// ファイルパス
+		TITLEUI_MENU_MAX,				// 最大数
 		1, 1							// テクスチャ分割数（X,Y）
 	);
 }
@@ -44,7 +44,7 @@ TitleLogo::TitleLogo(void)
 //=============================================================================
 // デストラクタ（終了処理）
 //=============================================================================
-TitleLogo::~TitleLogo(void)
+TitleMenu::~TitleMenu(void)
 {
 	Release();
 }
@@ -52,7 +52,7 @@ TitleLogo::~TitleLogo(void)
 //=============================================================================
 // 解放処理
 //=============================================================================
-void TitleLogo::Release(void)
+void TitleMenu::Release(void)
 {
 	SAFE_RELEASE(m_pTex);
 	SAFE_DELETE(m_pTex);
@@ -61,11 +61,11 @@ void TitleLogo::Release(void)
 //=============================================================================
 // 更新処理
 //=============================================================================
-void TitleLogo::Update(void)
+void TitleMenu::Update(void)
 {
 #ifdef _DEBUG
 	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
-	bool bGui = ImGui::TreeNode("TitleLogo");
+	bool bGui = ImGui::TreeNode("TitleMenu");
 	if (bGui)
 	{
 		ImGui::TreePop();
@@ -78,7 +78,7 @@ void TitleLogo::Update(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void TitleLogo::Draw(void)
+void TitleMenu::Draw(void)
 {
 	SAFE_DRAW(m_pTex);
 }

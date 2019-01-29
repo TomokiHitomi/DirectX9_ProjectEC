@@ -1,11 +1,11 @@
 //=============================================================================
 //
-// 八面体処理 [octa.cpp]
+// バレット処理 [bullet.cpp]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
 #include "main.h"
-#include "octa.h"
+#include "bullet.h"
 #include "shader.h"
 #include "light.h"
 #include "camera.h"
@@ -28,11 +28,19 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
+LPCTSTR g_lpBulletEH[] = {
+	"tex",
+	"proj",
+	"view",
+	"world",
+	"colorpallet"
+};
+
 
 //=============================================================================
 // コンストラクタ（初期化処理）
 //=============================================================================
-Octa::Octa(void)
+Bullet::Bullet(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -43,12 +51,11 @@ Octa::Octa(void)
 	InitInst();
 
 	// 管理用データの初期化
-	for (UINT i = 0; i < OCTA_MAX; i++)
+	for (UINT i = 0; i < BULLET_MAX; i++)
 	{
 		m_tData[i].vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_tData[i].fSize = 0.0f;
 		m_tData[i].fUse = 0.0f;
-		m_tData[i].fRot = ((rand() % 618) * 0.01f);
 		m_tData[i].fCol = 0.0f;
 
 		m_tData[i].bUse = false;
@@ -58,35 +65,69 @@ Octa::Octa(void)
 	m_bUse = true;
 	m_nCount = 0;
 
+	// テクスチャの読み込み
+	if (FAILED(D3DXCreateTextureFromFile(pDevice,
+		BULLET_TEX,
+		&m_pTexture)))
+	{
+		// エラー
+		MessageBox(NULL, "テクスチャの読み込みに失敗しました", BULLET_TEX, MB_OK);
+		//return S_FALSE;
+	}
+
 	// シェーダポインタの初期化・取得
 	pEffect = NULL;
-	pEffect = ShaderManager::GetEffect(ShaderManager::OCTA);
+	pEffect = ShaderManager::GetEffect(ShaderManager::BULLET);
+
+	for (UINT i = 0; i < EH_MAX; i++)
+	{
+		// シェーダのハンドルを初期化
+		hEffectHandle[i] = NULL;
+		// シェーダのハンドルを取得
+		hEffectHandle[i] = pEffect->GetParameterByName(NULL, g_lpBulletEH[i]);
+		// シェーダのハンドル取得のエラーチェック
+		if (hEffectHandle[i] == NULL) MessageBox(NULL, "シェーダハンドルの取得失敗", g_lpBulletEH[i], MB_OK);
+	}
 
 	// メッシュの生成
 	CreateMesh(pDevice);
 }
 
 //=============================================================================
+// デストラクタ（終了処理）
+//=============================================================================
+Bullet::~Bullet(void)
+{
+	SAFE_RELEASE(m_pTexture);		// テクスチャ
+	SAFE_RELEASE(m_pVtxBuff);
+	SAFE_RELEASE(m_pInstBuff);
+	SAFE_RELEASE(m_pIdxBuff);
+	SAFE_RELEASE(m_pDecl);
+
+	//SAFE_DELETE_ARRAY(m_pAttrTable);
+}
+
+//=============================================================================
 // 更新処理
 //=============================================================================
-void Octa::Update(void)
+void Bullet::Update(void)
 {
 	SetInst();
 #ifdef _DEBUG
 	ImGui::SetNextTreeNodeOpen(false, ImGuiSetCond_Once);
-	bool bGui = ImGui::TreeNode("Octa");
+	bool bGui = ImGui::TreeNode("Bullet");
 	if (bGui)
 	{
 		ImGui::Text("Count [%d]\n", m_nCount);
 
-		// 管理用データの初期化
-		for (UINT i = 0; i <= m_nCount; i++)
-		{
-			ImGui::Text("No[%2d] Pos [%6.0f.%6.0f,%6.0f] Size[%3.0f] Rot[%3.2f] Use[%d]\n",
-				i,m_tData[i].vPos.x, m_tData[i].vPos.y, m_tData[i].vPos.z,
-				m_tData[i].fSize, m_tData[i].fRot, m_tData[i].bUse
-			);
-		}
+		//// 管理用データの初期化
+		//for (UINT i = 0; i <= m_nCount; i++)
+		//{
+		//	ImGui::Text("No[%2d] Pos [%6.0f.%6.0f,%6.0f] Size[%3.0f] Rot[%3.2f] Use[%d]\n",
+		//		i,m_tData[i].vPos.x, m_tData[i].vPos.y, m_tData[i].vPos.z,
+		//		m_tData[i].fSize, m_tData[i].fRot, m_tData[i].bUse
+		//	);
+		//}
 		ImGui::TreePop();
 	}
 #endif
@@ -95,16 +136,36 @@ void Octa::Update(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void Octa::Draw(void)
+void Bullet::Draw(void)
 {
 	if (m_nCount > 0)
 	{
+		D3DXMATRIX mtxWorld, mtxView, mtxProjection;
+
+		// デバイスの取得
 		LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-		// ビュー・プロジェクション行列を取得
-		D3DXMATRIX mtxView, mtxProjection;
-		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+		// UpがYのビュー行列を取得
+		mtxView = CameraManager::GetCameraNow()->GetMtxViewUpY();
+		// プロジェクション行列を取得
 		pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+		// ワールドマトリクスの初期化
+		D3DXMatrixIdentity(&mtxWorld);
+
+		// ビュー行列の逆行列を格納（ビルボード化）
+		mtxWorld._11 = mtxView._11;
+		mtxWorld._12 = mtxView._21;
+		mtxWorld._13 = mtxView._31;
+		mtxWorld._21 = mtxView._12;
+		mtxWorld._22 = mtxView._22;
+		mtxWorld._23 = mtxView._32;
+		mtxWorld._31 = mtxView._13;
+		mtxWorld._32 = mtxView._23;
+		mtxWorld._33 = mtxView._33;
+
+		// ビュー行列を再取得
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 		// インスタンス宣言
 		pDevice->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | m_nCount);
@@ -112,7 +173,7 @@ void Octa::Draw(void)
 
 		// 頂点とインデックスを設定
 		pDevice->SetVertexDeclaration(m_pDecl);
-		pDevice->SetStreamSource(0, m_pVtxBuff, 0, (UINT)m_dwVtxSize);			// 頂点バッファ
+		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX));			// 頂点バッファ
 		pDevice->SetStreamSource(1, m_pInstBuff, 0, sizeof(INSTANCE));	// インスタンスバッファ
 		pDevice->SetIndices(m_pIdxBuff);								// インデックスバッファ
 
@@ -124,34 +185,24 @@ void Octa::Draw(void)
 			//return S_FALSE;
 		}
 
-		// 必要な行列情報をセット
-		pEffect->SetMatrix("proj", &mtxProjection);
-		pEffect->SetMatrix("view", &mtxView);
-		pEffect->SetMatrix("world", &m_mtxWorld);
+		// テクスチャをセット
+		SHR(pEffect->SetTexture(hEffectHandle[EH_TEX], m_pTexture), g_lpBulletEH[EH_TEX]);
 
-		// カメラ情報を取得
-		Camera* pCamera = CameraManager::GetCameraNow();
-		D3DXVECTOR4 eyeTmp = D3DXVECTOR4(pCamera->GetEye(), 0.0f);
-		// カメラ視点をセット
-		if (FAILED(pEffect->SetVector("eye", &eyeTmp)))
-		{
-			// エラー
-			MessageBox(NULL, "カメラEye情報のセットに失敗しました。", "eye", MB_OK);
-		}
-		// ライト情報を取得
-		Light* pLight = LightManager::GetLightAdr(LightManager::Main);
-		// ライト情報をセット
-		if (FAILED(pEffect->SetValue("lt", &pLight->value, sizeof(Light::LIGHTVALUE))))
-		{
-			// エラー
-			MessageBox(NULL, "ライト情報のセットに失敗しました。", "lt", MB_OK);
-		}
+		// テクスチャの分割数をセット
+		//pEffect->SetFloat(hEffectHandle[EH_DIVIDE_X], (FLOAT)CLOUD_TEXTURE_DIVIDE_X);
+		//pEffect->SetFloat(hEffectHandle[EH_DIVIDE_Y], (FLOAT)CLOUD_TEXTURE_DIVIDE_Y);
+
+		// 必要な行列情報をセット
+		SHR(pEffect->SetMatrix(hEffectHandle[EH_PROJ], &mtxProjection), g_lpBulletEH[EH_PROJ]);
+		SHR(pEffect->SetMatrix(hEffectHandle[EH_VIEW], &mtxView), g_lpBulletEH[EH_VIEW]);
+		SHR(pEffect->SetMatrix(hEffectHandle[EH_WORLD], &mtxWorld), g_lpBulletEH[EH_WORLD]);
 
 		// カラーパレットをセット
-		pEffect->SetVectorArray(
-			"colorpallet",
+		SHR(pEffect->SetVectorArray(
+			hEffectHandle[EH_COLORPALLET],
 			Color::xColor,
-			COLOR_PALLET_MAX);
+			COLOR_PALLET_MAX),
+			g_lpBulletEH[EH_COLORPALLET]);
 
 		// 結果を確定させる
 		pEffect->CommitChanges();
@@ -165,11 +216,12 @@ void Octa::Draw(void)
 			pEffect->BeginPass(i);
 
 			// 描画
-			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_dwNumVtx, 0, m_dwNumFace);
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
 
 			// シェーダーパスを終了
 			pEffect->EndPass();
 		}
+
 		// シェーダーを終了
 		pEffect->End();
 
@@ -186,10 +238,10 @@ void Octa::Draw(void)
 //=============================================================================
 // 使用状態にする
 //=============================================================================
-int Octa::Set(float fSize)
+int Bullet::Set(float fSize)
 {
 	// 管理用データの初期化
-	for (UINT i = 0; i < OCTA_MAX; i++)
+	for (UINT i = 0; i < BULLET_MAX; i++)
 	{
 		if (!m_tData[i].bUse)
 		{
@@ -205,7 +257,7 @@ int Octa::Set(float fSize)
 //=============================================================================
 // カラーをセット
 //=============================================================================
-void Octa::SetColor(int nIdx, float fCol)
+void Bullet::SetColor(int nIdx, float fCol)
 {
 	if (nIdx < 0)return;
 	m_tData[nIdx].fCol = fCol;
@@ -215,7 +267,7 @@ void Octa::SetColor(int nIdx, float fCol)
 //=============================================================================
 // 座標をセット
 //=============================================================================
-void Octa::SetPos(int nIdx, D3DXVECTOR3 vPos)
+void Bullet::SetPos(int nIdx, D3DXVECTOR3 vPos)
 {
 	if (nIdx < 0)return;
 	m_tData[nIdx].vPos = vPos;
@@ -223,28 +275,9 @@ void Octa::SetPos(int nIdx, D3DXVECTOR3 vPos)
 }
 
 //=============================================================================
-// 回転を加算
-//=============================================================================
-void Octa::AddRot(int nIdx, float fRot)
-{
-	if (nIdx < 0)return;
-	m_tData[nIdx].fRot += fRot;
-	return;
-}
-
-//=============================================================================
-// 回転を取得
-//=============================================================================
-float Octa::GetRot(int nIdx)
-{
-	if (nIdx < 0) return 0.0f;
-	return m_tData[nIdx].fRot;
-}
-
-//=============================================================================
 // 解放
 //=============================================================================
-void Octa::Release(int nIdx)
+void Bullet::Release(int nIdx)
 {
 	if (nIdx < 0)return;
 	m_tData[nIdx].fUse = 0.0f;
@@ -255,26 +288,19 @@ void Octa::Release(int nIdx)
 //=============================================================================
 // インスタンシング用データの初期化
 //=============================================================================
-HRESULT Octa::InitInst(void)
+HRESULT Bullet::InitInst(void)
 {
 	m_pVtxBuff = NULL;	// 頂点バッファ
 	m_pInstBuff = NULL;	// インスタンシングバッファ
 	m_pIdxBuff = NULL;	// インデックスバッファ
 	m_pDecl = NULL;		// 頂点宣言
-
-	m_dwVtxSize = 0;
-	m_dwNumVtx = 0;
-	m_dwNumFace = 0;
-
-	//m_pAttrTable = NULL;
-	//m_dwNumAttr = 0;
 	return S_OK;
 }
 
 //=============================================================================
 // マトリクスの初期化
 //=============================================================================
-HRESULT Octa::InitMatrix(void)
+HRESULT Bullet::InitMatrix(void)
 {
 	// マトリクスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -284,79 +310,115 @@ HRESULT Octa::InitMatrix(void)
 //=============================================================================
 // メッシュの生成
 //=============================================================================
-HRESULT Octa::CreateMesh(LPDIRECT3DDEVICE9 pDevice)
+HRESULT Bullet::CreateMesh(LPDIRECT3DDEVICE9 pDevice)
 {
-	// メッシュ情報へのポインタ
-	LPD3DXMESH pMesh = NULL;
-	LPD3DXMESH pNewMesh = NULL;
+	/***** 頂点バッファ設定 *****/
 
-	// モデルデータ読み込み
-	if (FAILED(D3DXLoadMeshFromX(
-		OCTA_MODEL,				// モデルデータ
-		D3DXMESH_SYSTEMMEM,		// 使用するメモリのオプション
-		pDevice,				// デバイス
-		NULL,					// 未使用
-		NULL,				// マテリアルデータ
-		NULL,					// 未使用
-		NULL,				// D3DXMATERIAL構造体の数
-		&pMesh)))				// メッシュデータへのポインタ
+	// 頂点バッファ生成
+	if (FAILED(pDevice->CreateVertexBuffer(
+		sizeof(VERTEX) * NUM_VERTEX,	// 頂点データ用に確保するバッファサイズ(バイト単位)
+		0,									// 頂点バッファの使用法　
+		0,									// 使用する頂点フォーマット
+		D3DPOOL_MANAGED,					// リソースのバッファを保持するメモリクラスを指定
+		&m_pVtxBuff,							// 頂点バッファインターフェースへのポインタ
+		NULL)))								// NULLに設定
 	{
-		MessageBox(NULL, "Xファイルの読み込みに失敗しました", OCTA_MODEL, MB_OK);
 		return E_FAIL;
 	}
 
-	// 頂点座標のみのメッシュをコピー（法線が不要）
-	pMesh->CloneMeshFVF(pMesh->GetOptions(), D3DFVF_XYZ | D3DFVF_NORMAL, pDevice, &pNewMesh);
-	// メッシュを解放
-	pMesh->Release();
+	{//頂点バッファの中身を埋める
+		VERTEX *pVtx;
 
-	// メッシュ情報の取得
-	GetMeshData(pNewMesh);
+		// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	// 頂点シェーダ宣言の作成
-	CreateDecl(pDevice, pNewMesh);
+		// 頂点座標の設定
+		pVtx[0].vtx = D3DXVECTOR4(-1.0f, 1.0f, 0.0f, 1.0f);
+		pVtx[1].vtx = D3DXVECTOR4(1.0f, 1.0f, 0.0f, 1.0f);
+		pVtx[2].vtx = D3DXVECTOR4(-1.0f, -1.0f, 0.0f, 1.0f);
+		pVtx[3].vtx = D3DXVECTOR4(1.0f, -1.0f, 0.0f, 1.0f);
+
+		// テクスチャ座標の設定
+		int x = 0 % BULLET_TEXTURE_DIVIDE_X;
+		int y = 0 / BULLET_TEXTURE_DIVIDE_X;
+		float sizeX = 1.0f / BULLET_TEXTURE_DIVIDE_X;
+		float sizeY = 1.0f / BULLET_TEXTURE_DIVIDE_Y;
+
+		pVtx[0].uv = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY);
+		pVtx[1].uv = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY);
+		pVtx[2].uv = D3DXVECTOR2((float)(x)* sizeX, (float)(y)* sizeY + sizeY);
+		pVtx[3].uv = D3DXVECTOR2((float)(x)* sizeX + sizeX, (float)(y)* sizeY + sizeY);
+
+		//// 頂点カラーの設定
+		//pVtx[0].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		//pVtx[1].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		//pVtx[2].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		//pVtx[3].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+		// 頂点データをアンロックする
+		m_pVtxBuff->Unlock();
+	}
+
+
+	/***** インデックスバッファ設定 *****/
+
+	WORD wIndex[6] = { 0, 1, 2, 2, 1, 3 };
+
+	// 座標バッファ生成
+	if (FAILED(pDevice->CreateIndexBuffer(
+		sizeof(wIndex),						// 頂点データ用に確保するバッファサイズ(バイト単位)
+		0,									// 頂点バッファの使用法　
+		D3DFMT_INDEX16,						// 使用する頂点フォーマット
+		D3DPOOL_MANAGED,					// リソースのバッファを保持するメモリクラスを指定
+		&m_pIdxBuff,							// 頂点バッファインターフェースへのポインタ
+		NULL)))								// NULLに設定
+	{
+		return E_FAIL;
+	}
+
+	{// 座標バッファの中身を埋める
+		WORD *pIdx;
+
+		// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+		m_pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
+
+		// 頂点座標の設定
+		for (unsigned int i = 0; i < 6; i++, pIdx++)
+		{
+			*pIdx = wIndex[i];
+		}
+
+		// 頂点データをアンロックする
+		m_pIdxBuff->Unlock();
+	}
+
 
 	// インスタンシングバッファ生成 + データの代入
 	if (FAILED(CreateInst(pDevice)))
 	{
-		MessageBox(NULL, "インスタンシング用バッファの生成に失敗", "Octa", MB_OK);
+		MessageBox(NULL, "インスタンシング用バッファの生成に失敗", "Bullet", MB_OK);
 		//return E_FAIL;
 	}
-	return S_OK;
-}
 
-//=============================================================================
-// メッシュ情報の取得
-//=============================================================================
-HRESULT Octa::GetMeshData(LPD3DXMESH pMesh)
-{
-	// メッシュの頂点バッファ・インデックスバッファを取得
-	pMesh->GetVertexBuffer(&m_pVtxBuff);
-	pMesh->GetIndexBuffer(&m_pIdxBuff);
+	// 頂点宣言を作成
+	if (FAILED(CreateDecl(pDevice)))
+	{
+		MessageBox(NULL, "頂点宣言の作成に失敗", "Bullet", MB_OK);
+		//return E_FAIL;
+	}
 
-	// 頂点サイズ・頂点数・面数を取得
-	m_dwVtxSize = pMesh->GetNumBytesPerVertex();
-	m_dwNumVtx = pMesh->GetNumVertices();
-	m_dwNumFace = pMesh->GetNumFaces();
-
-	///// メッシュの属性テーブルを取得
-	//// メッシュの属性テーブル数を取得
-	//pNewMesh->GetAttributeTable(NULL, &m_dwNumAttr);
-	//// 属性テーブルの生成
-	//m_pAttrTable = new D3DXATTRIBUTERANGE[m_dwNumAttr];
-	//// メッシュの属性テーブルを取得
-	//pNewMesh->GetAttributeTable(m_pAttrTable, &m_dwNumAttr);
+	
 	return S_OK;
 }
 
 //=============================================================================
 // インスタンシングバッファ生成 + データの代入
 //=============================================================================
-HRESULT Octa::CreateInst(LPDIRECT3DDEVICE9 pDevice)
+HRESULT Bullet::CreateInst(LPDIRECT3DDEVICE9 pDevice)
 {
 	// インスタンシングバッファ生成
 	if (FAILED(pDevice->CreateVertexBuffer(
-		sizeof(INSTANCE) * OCTA_MAX,	// 頂点データ用に確保するバッファサイズ(バイト単位)
+		sizeof(INSTANCE) * BULLET_MAX,	// 頂点データ用に確保するバッファサイズ(バイト単位)
 		0,									// 頂点バッファの使用法　
 		0,									// 使用する頂点フォーマット
 		D3DPOOL_MANAGED,					// リソースのバッファを保持するメモリクラスを指定
@@ -374,7 +436,7 @@ HRESULT Octa::CreateInst(LPDIRECT3DDEVICE9 pDevice)
 //=============================================================================
 // インスタンシングバッファにデータの代入
 //=============================================================================
-HRESULT Octa::SetInst(void)
+HRESULT Bullet::SetInst(void)
 {
 	INSTANCE *pInst;
 
@@ -382,12 +444,11 @@ HRESULT Octa::SetInst(void)
 	m_pInstBuff->Lock(0, 0, (void**)&pInst, 0);
 
 	// 座標の設定
-	for (UINT i = 0; i < OCTA_MAX; i++)
+	for (UINT i = 0; i < BULLET_MAX; i++)
 	{
 		pInst->vPos = m_tData[i].vPos;
 		pInst->fSize = m_tData[i].fSize;
 		pInst->fUse = m_tData[i].fUse;
-		pInst->fRot = m_tData[i].fRot;
 		pInst->fCol = m_tData[i].fCol;
 		pInst++;
 		if (m_tData[i].bUse) m_nCount = i + 1;
@@ -401,38 +462,21 @@ HRESULT Octa::SetInst(void)
 //=============================================================================
 // 頂点シェーダ宣言の作成
 //=============================================================================
-HRESULT Octa::CreateDecl(LPDIRECT3DDEVICE9 pDevice, LPD3DXMESH pMesh)
+HRESULT Bullet::CreateDecl(LPDIRECT3DDEVICE9 pDevice)
 {
-	// メッシュの入力頂点データの定義を取得
-	D3DVERTEXELEMENT9 declMesh[8];
-	pMesh->GetDeclaration(declMesh);
-
 	// インスタンシングデータと合わせて再定義
 	D3DVERTEXELEMENT9 declElems[] = {
-		declMesh[0],		// POSITION
-		declMesh[1],		// NORMAL
-		{ 1, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },		// ワールド位置
-		{ 1, 12, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },		// サイズ
-		{ 1, 16, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },		// 使用フラグ
-		{ 1, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },		// 回転
-		{ 1, 24, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 4 },	// カラーインデックス
+		{ 0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },		// VTX
+		{ 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },		// UV
+
+		{ 1, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },		// ワールド位置
+		{ 1, 12, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },		// サイズ
+		{ 1, 16, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },		// 使用フラグ
+		{ 1, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 4 },		// カラーインデックス
 		D3DDECL_END()
 	};
 
 	// 頂点要素から頂点シェーダ宣言を作成
 	pDevice->CreateVertexDeclaration(declElems, &m_pDecl);
 	return S_OK;
-}
-
-//=============================================================================
-// デストラクタ（終了処理）
-//=============================================================================
-Octa::~Octa(void)
-{
-	SAFE_RELEASE(m_pVtxBuff);
-	SAFE_RELEASE(m_pInstBuff);
-	SAFE_RELEASE(m_pIdxBuff);
-	SAFE_RELEASE(m_pDecl);
-
-	//SAFE_DELETE_ARRAY(m_pAttrTable);
 }

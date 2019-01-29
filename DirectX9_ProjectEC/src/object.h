@@ -54,6 +54,7 @@ public:
 		PLAYERMANAGER,
 		ENEMYMANAGER,
 		DEBUGOBJECT,
+		//BULLETMANAGER,
 		UI
 	};
 
@@ -137,9 +138,10 @@ public:
 
 	// オブジェクトの作成処理
 	template <typename Type>
-	static void CreateObject(void)
+	static Type* CreateObject(void)
 	{
-		new Type;
+		Type* pType = new Type;
+		return pType;
 	}
 };
 

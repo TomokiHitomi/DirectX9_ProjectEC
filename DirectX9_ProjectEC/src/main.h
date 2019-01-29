@@ -53,7 +53,7 @@
 // 起動時のコメント
 #define START_UP_COMMENT	("本ゲームは1920x1080解像度で起動します。\nフルスクリーンモードで起動しますか？")
 
-#define SCREEN_SCALE	(2.0f)
+#define SCREEN_SCALE	(1.5f)
 #define SCREEN_WIDTH	(1280 * SCREEN_SCALE)		// ウインドウの幅
 #define SCREEN_HEIGHT	(720 * SCREEN_SCALE)		// ウインドウの高さ
 #define SCREEN_CENTER_X	(SCREEN_WIDTH / 2)			// ウインドウ中央X

@@ -19,6 +19,7 @@
 #define SHADER_FILE_CLOUD			("data/shader/cloud.fx")
 #define SHADER_FILE_OCTA			("data/shader/octa.fx")
 #define SHADER_FILE_DEBUGSPHERE		("data/shader/debugsphere.fx")
+#define SHADER_FILE_BULLET			("data/shader/bullet.fx")
 
 #define SHR(p,n) { if(FAILED(p)) { MessageBox(NULL, "シェーダへのデータ転送に失敗", n , MB_OK); } }
 
@@ -54,6 +55,7 @@ public:
 		CLOUD,
 		OCTA,
 		DEBUGSPHERE,
+		BULLET,
 		FILE_MAX
 	};
 private:

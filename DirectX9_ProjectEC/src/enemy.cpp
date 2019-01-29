@@ -8,6 +8,7 @@
 #include "enemy.h"
 #include "game.h"
 #include "calculate.h"
+#include "tool.h"
 
 // デバッグ用
 #ifdef _DEBUG
@@ -58,7 +59,7 @@ void Enemy::Start(void)
 	m_cOctaData.bUse = true;
 	m_cOctaData.fSize = m_cProp.fSize;
 	m_cOctaData.nIdx = pOcta->Set(m_cOctaData.fSize);
-	pOcta->SetColor(m_cOctaData.nIdx, SetColorPallet(COLOR_PALLET_MAGENTA));
+	pOcta->SetColor(m_cOctaData.nIdx, m_cProp.fCol);
 
 #ifdef _DEBUG
 	m_cDebug.bUse = true;
@@ -82,6 +83,47 @@ void Enemy::Update(void)
 	}
 	DebugObject::pSphere->SetPos(m_cDebug.nIdx, m_cProp.vPos);
 #endif
+
+	m_cProp.nCount++;
+	if (m_cProp.nCount > ENEMY_BULLET_START)
+	{
+		if (m_cProp.nCount % ENEMY_BULLET_RELOAD == 0)
+		{
+			float fRot = pOcta->GetRot(m_cOctaData.nIdx);
+			D3DXVECTOR3 vMove;
+			vMove = D3DXVECTOR3(sinf(fRot), 0.0f, cosf(fRot));
+			m_pBullet->Set(
+				m_cProp.vPos + vMove * m_cProp.fSize,
+				vMove,
+				m_cProp.fCol,
+				3.0f,
+				10.0f);
+
+			//vMove = D3DXVECTOR3(sinf(fRot + D3DX_PI), 0.0f, cosf(fRot + D3DX_PI));
+			//m_pBullet->Set(
+			//	m_cProp.vPos + vMove * m_cProp.fSize,
+			//	vMove,
+			//	m_cProp.fCol,
+			//	3.0f,
+			//	10.0f);
+
+			//vMove = D3DXVECTOR3(sinf(fRot + D3DX_PI * 0.5f), 0.0f, cosf(fRot + D3DX_PI * 0.5f));
+			//m_pBullet->Set(
+			//	m_cProp.vPos + vMove * m_cProp.fSize,
+			//	vMove,
+			//	m_cProp.fCol,
+			//	3.0f,
+			//	10.0f);
+
+			//vMove = D3DXVECTOR3(sinf(fRot + D3DX_PI * 1.5f), 0.0f, cosf(fRot + D3DX_PI * 1.5f));
+			//m_pBullet->Set(
+			//	m_cProp.vPos + vMove * m_cProp.fSize,
+			//	vMove,
+			//	m_cProp.fCol,
+			//	3.0f,
+			//	10.0f);
+		}
+	}
 }
 
 //=============================================================================
@@ -152,6 +194,10 @@ EnemyManager::EnemyManager(void)
 	pOcta = NULL;
 	pOcta = new Octa;
 
+	m_pBullet = NULL;
+	m_pBullet = new BulletManager;
+	//m_pBullet = ObjectManager::CreateObject<BulletManager>();
+
 	// 読込処理
 	Load();
 }
@@ -163,6 +209,7 @@ EnemyManager::~EnemyManager(void)
 {
 	Uninit();
 	SAFE_DELETE(pOcta);
+	SAFE_DELETE(m_pBullet);
 }
 
 //=============================================================================
@@ -194,14 +241,14 @@ void EnemyManager::Uninit(void)
 //=============================================================================
 bool EnemyManager::Create(Enemy** ppEnemy, int* pData)
 {
-	if (pData[0] < 0)
+	if (pData[DATA_WAVE] < 0)
 		return false;
 
 	//EnemyNormal* pTest = new EnemyNormal;
 	//delete pTest;
 
 	// 仮に[1]がタイプだったとしたら
-	switch (pData[1])
+	switch (pData[DATA_TYPE])
 	{
 	case ENEMY_NORMAL:
 		*ppEnemy = new Enemy;
@@ -211,11 +258,13 @@ bool EnemyManager::Create(Enemy** ppEnemy, int* pData)
 		break;
 	}
 
-	(*ppEnemy)->m_cProp.nWave = pData[0];
-	(*ppEnemy)->m_cProp.vPos = D3DXVECTOR3(pData[2], pData[3], pData[4]);
-	(*ppEnemy)->m_cProp.fSize = pData[5];
+	(*ppEnemy)->m_cProp.nWave = pData[DATA_WAVE];
+	(*ppEnemy)->m_cProp.vPos = D3DXVECTOR3(pData[DATA_POSX], pData[DATA_POSY], pData[DATA_POSZ]);
+	(*ppEnemy)->m_cProp.fSize = pData[DATA_SIZE];
+	(*ppEnemy)->m_cProp.fCol = pData[DATA_COL];
 
 	(*ppEnemy)->pOcta = pOcta;
+	(*ppEnemy)->m_pBullet = m_pBullet;
 	return true;
 }
 
@@ -305,6 +354,7 @@ void EnemyManager::Update(void)
 #endif
 
 	SAFE_UPDATE(pOcta);
+	SAFE_UPDATE(m_pBullet);
 }
 
 //=============================================================================
@@ -320,4 +370,5 @@ void EnemyManager::Draw(void)
 	//	pList = pList->m_pNext;
 	//}
 	SAFE_DRAW(pOcta);
+	SAFE_DRAW(m_pBullet);
 }

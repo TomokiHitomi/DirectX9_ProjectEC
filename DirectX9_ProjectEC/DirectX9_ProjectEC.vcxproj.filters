@@ -119,9 +119,6 @@
     <ClInclude Include="src\enemy.h">
       <Filter>object\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="src\octa.h">
-      <Filter>object\enemy</Filter>
-    </ClInclude>
     <ClInclude Include="src\tool.h">
       <Filter>tool</Filter>
     </ClInclude>
@@ -133,6 +130,18 @@
     </ClInclude>
     <ClInclude Include="src\titlelogo.h">
       <Filter>ui\title</Filter>
+    </ClInclude>
+    <ClInclude Include="src\titlemenu.h">
+      <Filter>ui\title</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bulletmanager.h">
+      <Filter>object\enemy\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="src\octa.h">
+      <Filter>object\enemy\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bullet.h">
+      <Filter>object\enemy\bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +254,6 @@
     <ClCompile Include="src\enemy.cpp">
       <Filter>object\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\octa.cpp">
-      <Filter>object\enemy</Filter>
-    </ClCompile>
     <ClCompile Include="src\tool.cpp">
       <Filter>tool</Filter>
     </ClCompile>
@@ -259,6 +265,18 @@
     </ClCompile>
     <ClCompile Include="src\titlelogo.cpp">
       <Filter>ui\title</Filter>
+    </ClCompile>
+    <ClCompile Include="src\titlemenu.cpp">
+      <Filter>ui\title</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bulletmanager.cpp">
+      <Filter>object\enemy\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="src\octa.cpp">
+      <Filter>object\enemy\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bullet.cpp">
+      <Filter>object\enemy\bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +343,12 @@
     <Filter Include="ui\title">
       <UniqueIdentifier>{9b278cc9-bc30-433a-b57e-bd32f1da0a23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="object\enemy\model">
+      <UniqueIdentifier>{795a5ebf-9898-4099-b108-255b32fc0893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\enemy\bullet">
+      <UniqueIdentifier>{faae5c19-c17c-49a9-8087-1cd3c045c640}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\SHADER\cloud.fx">
@@ -346,6 +370,9 @@
       <Filter>shader\fx</Filter>
     </FxCompile>
     <FxCompile Include="data\shader\xtexture.fx">
+      <Filter>shader\fx</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shader\bullet.fx">
       <Filter>shader\fx</Filter>
     </FxCompile>
   </ItemGroup>

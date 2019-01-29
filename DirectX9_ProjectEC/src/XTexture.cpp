@@ -177,7 +177,8 @@ void CXTexture::Update(void)
 			cNum[1] = 'o';
 			cNum[2] = '.';
 			cNum[3] = (int)'0' + i;
-			cNum[4] = NULL;
+			cNum[4] = ' ';
+			cNum[5] = NULL;
 
 			strcat_s(cNum, sizeof(cNum) - strlen(cNum) - strlen(m_pDataPath) - 1, m_pDataPath);
 

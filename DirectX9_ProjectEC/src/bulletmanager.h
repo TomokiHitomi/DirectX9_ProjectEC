@@ -1,60 +1,81 @@
 //=============================================================================
 //
-// ツール処理 [tool.h]
+// バレットマネージャー処理 [bulletmanager.h]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
-#ifndef _TOOL_H_
-#define _TOOL_H_
+#ifndef _BULLETMANAGER_H_
+#define _BULLETMANAGER_H_
 
 /*******************************************************************************
 * インクルード
 *******************************************************************************/
-#include "main.h"
+#include "debugobject.h"
+#include "bullet.h"
+//#include "object.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-
-//*****************************************************************************
-// 列挙型定義
-//*****************************************************************************
-enum
-{
-	COLOR_PALLET_WHITE,
-	COLOR_PALLET_RED,
-	COLOR_PALLET_YELLOW,
-	COLOR_PALLET_GREEN,
-	COLOR_PALLET_CYAN,
-	COLOR_PALLET_BLUE,
-	COLOR_PALLET_MAGENTA,
-	COLOR_PALLET_BROWN,
-	COLOR_PALLET_LIGHTGREEN,
-	COLOR_PALLET_ORANGE,
-	COLOR_PALLET_BLACK,
-	COLOR_PALLET_LIGHTBLUE,
-	COLOR_PALLET_GRAY,
-	COLOR_PALLET_MAX
-};
-
-//*****************************************************************************
-// クラス定義
-//*****************************************************************************
-class Color
-{
-public:
-	static D3DXVECTOR4 xColor[COLOR_PALLET_MAX];
-	Color();
-};
+//#define BULLET_MAX			(8192)
+#define BULLET_COUNT_MAX	(800)
 
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
 
 //*****************************************************************************
+// クラス定義
+//*****************************************************************************
+class BulletManager/* : public ObjectManager*/
+{
+public:
+	// コンストラクタ（初期化処理）
+	BulletManager(void);
+	//デストラクタ（終了処理）
+	~BulletManager(void);
+
+	// 更新処理
+	virtual void Update(void);
+	// 描画処理
+	virtual void Draw(void);
+	// 設置処理
+	virtual void Set(D3DXVECTOR3 vPos, D3DXVECTOR3 vMove, float fCol, float fMoveSpeed, float fSize);
+	// 削除処理
+	virtual void Delete(int nNum);
+	// 削除処理
+	virtual void Release(void);
+
+
+	typedef struct BulletProp
+	{
+		D3DXVECTOR3 vPos;
+		D3DXVECTOR3 vMove;
+		float		fCol;
+		float		fMoveSpeed;
+		float		fSize;
+		int			nCount;
+		bool		bUse;
+		BulletData	cBullet;
+#ifdef _DEBUG
+		DebugObjectData cDebug;
+#endif
+	};
+
+	BulletProp tProp[BULLET_MAX];
+
+	Bullet*		m_pBullet;
+
+	//typedef struct BulletData
+	//{
+	//	float fMoveSpeed;
+	//};
+	//
+	//BulletData tData;
+};
+
+//*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-D3DXCOLOR SetColorPallet(int nColor);
-D3DXCOLOR SetColorPalletRandom(void);
 
 #endif
