@@ -40,7 +40,7 @@ texture		tex;			// 使用するテクスチャ
 static const int COLOR_MAX = 16;
 float4		colorpallet[COLOR_MAX];
 
-int			alphaRef = 130;
+int			alphaRef = 1;
 
 //*****************************************************************************
 // サンプラー
@@ -128,9 +128,9 @@ technique Tec01		// テクスチャ描画
 		FILLMODE = SOLID;
 
 		// アルファテスト = 有効
-		ALPHATESTENABLE = TRUE;
-		ALPHAREF = alphaRef;
-		ALPHAFUNC = GREATEREQUAL;
+		//ALPHATESTENABLE = TRUE;
+		//ALPHAREF = alphaRef;
+		//ALPHAFUNC = GREATEREQUAL;
 
 		// アルファブレンド = 有効
 		ALPHABLENDENABLE = TRUE;
@@ -144,10 +144,26 @@ technique Tec01		// テクスチャ描画
 		// 既存ブレンド = 係数( 1 - As, 1 - As, 1 - As, 1 - As)
 		DESTBLEND = INVSRCALPHA;
 
-		// 深度バッファへの書き込み = 無効
-		ZWRITEENABLE = TRUE;
+
+		//SEPARATEALPHABLENDENABLE = TRUE;
+		//BLENDOPALPHA = ADD;
+		//SRCBLENDALPHA = SRCALPHA;
+		//DESTBLENDALPHA = ONE;
+
+		// 深度バッファへの書き込み = 有効
+		ZWRITEENABLE = FALSE;
 
 		VertexShader = compile vs_3_0 vs_main();
 		PixelShader = compile ps_3_0 ps_nomal();
+
+		//// 新規ブレンド = 係数(As, As, As, As)
+		//SRCBLEND = ZERO;
+		//// 既存ブレンド = 係数( 1 - As, 1 - As, 1 - As, 1 - As)
+		//DESTBLEND = ONE;
+
+		//// 深度バッファへの書き込み = 有効
+		//ZWRITEENABLE = TRUE;
+
+		//PixelShader = compile ps_3_0 ps_nomal();
 	}
 }

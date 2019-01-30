@@ -87,7 +87,7 @@ void SceneManager::ChangeScene(SCENE scene)
 void SceneManager::Init(HINSTANCE hInst, HWND hWnd)
 {
 	// 初期のシーンをTITLEに設定
-	m_eScene = TITLE;
+	m_eScene = GAME;
 
 	LightManager::Init();	// ライト（シェーダ用）
 	InitLight();			// ライト

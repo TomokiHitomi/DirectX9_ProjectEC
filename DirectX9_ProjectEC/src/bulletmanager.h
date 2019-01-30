@@ -12,6 +12,7 @@
 *******************************************************************************/
 #include "debugobject.h"
 #include "bullet.h"
+#include "bulleteffect.h"
 //#include "object.h"
 
 //*****************************************************************************
@@ -64,7 +65,8 @@ public:
 
 	BulletProp tProp[BULLET_MAX];
 
-	Bullet*		m_pBullet;
+	Bullet*			m_pBullet;
+	BulletEffect*	m_pBulletEffect;
 
 	//typedef struct BulletData
 	//{

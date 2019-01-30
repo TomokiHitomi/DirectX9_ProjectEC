@@ -91,12 +91,12 @@ void Enemy::Update(void)
 		{
 			float fRot = pOcta->GetRot(m_cOctaData.nIdx);
 			D3DXVECTOR3 vMove;
-			vMove = D3DXVECTOR3(sinf(fRot), 0.0f, cosf(fRot));
+			vMove = D3DXVECTOR3(sinf(fRot), sinf(fRot), cosf(fRot));
 			m_pBullet->Set(
 				m_cProp.vPos + vMove * m_cProp.fSize,
 				vMove,
 				m_cProp.fCol,
-				3.0f,
+				7.0f,
 				10.0f);
 
 			//vMove = D3DXVECTOR3(sinf(fRot + D3DX_PI), 0.0f, cosf(fRot + D3DX_PI));
@@ -186,7 +186,7 @@ void EnemyNormal::Draw(void)
 EnemyManager::EnemyManager(void)
 {
 	// オブジェクトIDとプライオリティの設定処理
-	SetIdAndPriority(ObjectID::ENEMYMANAGER, Priority::Middle, Priority::Middle);
+	SetIdAndPriority(ObjectID::ENEMYMANAGER, Priority::Middle, Priority::Lowest);
 
 	// ルートポインタを初期化
 	m_pRoot = NULL;

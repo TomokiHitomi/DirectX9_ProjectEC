@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -27,6 +27,7 @@
     <ClInclude Include="include\stb_textedit.h" />
     <ClInclude Include="include\stb_truetype.h" />
     <ClInclude Include="src\bullet.h" />
+    <ClInclude Include="src\bulleteffect.h" />
     <ClInclude Include="src\bulletmanager.h" />
     <ClInclude Include="src\calculate.h" />
     <ClInclude Include="src\camera.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="include\imgui_draw.cpp" />
     <ClCompile Include="include\imgui_impl_dx9.cpp" />
     <ClCompile Include="src\bullet.cpp" />
+    <ClCompile Include="src\bulleteffect.cpp" />
     <ClCompile Include="src\bulletmanager.cpp" />
     <ClCompile Include="src\calculate.cpp" />
     <ClCompile Include="src\camera.cpp" />

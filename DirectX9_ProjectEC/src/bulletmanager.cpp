@@ -49,6 +49,9 @@ BulletManager::BulletManager(void)
 
 	m_pBullet = NULL;
 	m_pBullet = new Bullet;
+
+	m_pBulletEffect = NULL;
+	m_pBulletEffect = new BulletEffect;
 }
 
 //=============================================================================
@@ -63,6 +66,7 @@ BulletManager::~BulletManager(void)
 #endif
 	}
 	SAFE_DELETE(m_pBullet);
+	SAFE_DELETE(m_pBulletEffect);
 }
 
 //=============================================================================
@@ -108,16 +112,20 @@ void BulletManager::Update(void)
 		if (tProp[i].bUse)
 		{
 			tProp[i].vPos += tProp[i].vMove * tProp[i].fMoveSpeed;
+
 			tProp[i].nCount++;
 
 			if (tProp[i].nCount > BULLET_COUNT_MAX) Delete(i);
 			m_pBullet->SetPos(tProp[i].cBullet.nIdx, tProp[i].vPos);
+
+			m_pBulletEffect->Set(tProp[i].vPos, tProp[i].fSize, tProp[i].fCol, 15);
 #ifdef _DEBUG
 			DebugObject::pSphere->SetPos(tProp[i].cDebug.nIdx, tProp[i].vPos);
 #endif
 		}
 	}
 	SAFE_UPDATE(m_pBullet);
+	SAFE_UPDATE(m_pBulletEffect);
 }
 
 //=============================================================================
@@ -125,6 +133,8 @@ void BulletManager::Update(void)
 //=============================================================================
 void BulletManager::Draw(void)
 {
+
+	SAFE_DRAW(m_pBulletEffect);
 	SAFE_DRAW(m_pBullet);
 }
 
