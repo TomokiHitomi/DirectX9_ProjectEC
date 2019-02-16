@@ -100,7 +100,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// DirectXの初期化(ウィンドウを作成してから行う)
 	bool flag = true; // フルスクリーンモードで初期化
-	if (MessageBox(hWnd, START_UP_COMMENT, "起動確認", MB_YESNO) == IDYES)
+	if (MessageBox(hWnd, START_UP_COMMENT, "起動確認",
+		MB_YESNO | MB_TOPMOST | MB_ICONQUESTION) == IDYES)
 	{
 		flag = false;
 	}

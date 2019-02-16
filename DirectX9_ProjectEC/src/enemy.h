@@ -13,6 +13,7 @@
 #include "object.h"
 #include "debugobject.h"
 #include "octa.h"
+#include "bulletmanager.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -20,6 +21,12 @@
 //#define MODEL_PLAYER			("data/model/haku/haku.X")
 //#define MODEL_WING				("data/model/wing/wing.X")
 #define ENEMY_FILE				("data/file/enemy.dat")
+#define ENEMY_BULLET_START		(100)
+#define ENEMY_BULLET_RELOAD		(7)
+
+//*****************************************************************************
+// 列挙型定義
+//*****************************************************************************
 
 //*****************************************************************************
 // 構造体定義
@@ -53,12 +60,16 @@ public:
 		int				nWave;	// 出現ウェーブ
 		D3DXVECTOR3		vPos;	// 座標
 		float			fSize;	// サイズ
+		float			fCol;	// カラー
+		int				nCount;	// 生存カウント
 		bool			bUse;	// 使用フラグ
 		Prop()
 		{
 			nWave = -1;
 			vPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			fSize = 0.0f;
+			fCol = 0.0f;
+			nCount = 0;
 			bUse = false;
 		}
 	};
@@ -66,6 +77,8 @@ public:
 	Prop		m_cProp;
 	Octa*		pOcta;
 	OctaData	m_cOctaData;
+
+	BulletManager* m_pBullet;
 #ifdef _DEBUG
 	DebugObjectData m_cDebug;
 #endif
@@ -122,10 +135,23 @@ public:
  
 	bool Create(Enemy** ppEnemy, int* pData);
 	Octa* pOcta;
+	BulletManager* m_pBullet;
 
 #ifdef _DEBUG
 	static bool s_bDebug;
 #endif
+private:
+	enum Data
+	{
+		DATA_WAVE,
+		DATA_TYPE,
+		DATA_POSX,
+		DATA_POSY,
+		DATA_POSZ,
+		DATA_SIZE,
+		DATA_COL,
+		DATA_MAX
+	};
 };
 
 //*****************************************************************************

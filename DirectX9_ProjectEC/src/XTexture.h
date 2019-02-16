@@ -15,6 +15,8 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define XTEXTURE_INIT_SIZE		(100.0f)
+
 
 //*****************************************************************************
 // 構造体定義
@@ -26,43 +28,86 @@
 class CXTexture
 {
 private:
-	LPDIRECT3DTEXTURE9	m_pD3DTexture;		// テクスチャへのポインタ
-	LPDIRECT3DTEXTURE9	m_pD3DTexture2;		// テクスチャへのポインタ
-	VERTEX_2D	m_VertexWk[NUM_VERTEX];		// 2D頂点情報
+	LPDIRECT3DTEXTURE9			m_pTexture;		// テクスチャへのポインタ
+	LPDIRECT3DVERTEXBUFFER9		m_pVertex;		// 頂点バッファへのポインタ
+
+#ifdef _DEBUG
+	LPSTR						m_pDataPath;		// テクスチャパス
+	bool						m_bEdit;
+#endif
+
+	// シェーダ関連
+	LPD3DXEFFECT				m_pEffect;
+
+	class Divide
+	{
+	public:
+		int x, y;
+		Divide()
+		{
+			x = 1;
+			y = 1;
+		}
+	};
+
+	Divide						m_cDivide;		// テクスチャの分割数
+	int							m_nNum;			// インスタンス数
+	bool						m_bUse;			// 全体の使用フラグ
 
 	typedef struct XTextureData
 	{
-		typedef struct Divide
-		{
-			int x, y;
-		};
-		D3DXVECTOR2		vPos;
-		D3DXVECTOR2		vSize;
-		Divide			nDivide;
-		D3DXCOLOR		xColor;
-		int				nTexNum;
+	public:
+		D3DXVECTOR3		vPos;					// スクリーン座標
+		D3DXVECTOR2		vSize;					// サイズ
+		D3DXCOLOR		xColor;					// カラー
+		int				nTexNum;				// テクスチャナンバー（UV分割）
+		float			fBaseAngle;				// 標準角度（回転用）
+		float			fRadius;				// 半径（回転用）
+		float			fScl;					// スケール
+		float			fRot;					// ロット
+		bool			bUse;					// 単体の使用フラグ
+		//XTextureData()
+		//{
+		//	// 各データの初期化
+		//	vPos = D3DXVECTOR3(SCREEN_CENTER_X, SCREEN_CENTER_Y, 0.0f);
+		//	vSize = D3DXVECTOR2(XTEXTURE_INIT_SIZE, XTEXTURE_INIT_SIZE);
+		//	xColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		//	nTexNum = 0;
+		//	fBaseAngle = 0.0f;
+		//	fRadius = 0.0f;
+		//	fScl = 1.0f;
+		//	fRot = 0.0f;
+		//	bUse = true;
+		//}
 	};
 
+	// 頂点の更新
+	HRESULT UpdateVertex(void);
+
 	// 頂点の作成
-	HRESULT MakeVertex(void);
+	HRESULT MakeVertex(LPDIRECT3DDEVICE9 pDevice);
+	
 
 public:
-	XTextureData data;
+	// データのポインタ
+	XTextureData* m_pData;
+
+#ifdef _DEBUG
+	XTextureData*				m_pDataInit;
+#endif
 
 	// コンストラクタ
 	CXTexture();
 	// デストラクタ
-	~CXTexture() { Release(); }
+	~CXTexture();
 
-	// スキンメッシュ内部処理
-	HRESULT Init(LPDIRECT3DDEVICE9, LPSTR);
+	// 初期化処理
+	HRESULT Init(LPDIRECT3DDEVICE9 pDevice, LPSTR pTexPath, LPSTR pDataPath, int nNum, int nDivideX, int nDivideY);
 	// 解放処理
-	void Release();
+	void Release(void);
 	// 更新処理
 	void Update(void);
 	// 描画処理
 	void Draw(void);
-	// 頂点の作成
-	HRESULT SetVertex(void);
 };
 #endif

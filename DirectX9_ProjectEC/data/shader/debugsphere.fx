@@ -76,6 +76,9 @@ technique Tec01
 		// 塗りつぶしモード = ワイヤーフレーム
 		FILLMODE = WIREFRAME;
 
+		// アルファテスト = 無効（標準）
+		ALPHATESTENABLE = FALSE;
+
 		// アルファブレンド = 無効（標準）
 		ALPHABLENDENABLE = FALSE;
 

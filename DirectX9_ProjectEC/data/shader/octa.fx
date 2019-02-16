@@ -8,8 +8,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define FX_OCTA_AMBIENT	(0.4f)
-#define FX_OCTA_POWER	(5.0f)
+#define FX_OCTA_AMBIENT		(0.5f)
+//#define FX_OCTA_SPECULAR	(1.0f)
+#define FX_OCTA_POWER		(10.0f)
 
 //*****************************************************************************
 // 構造体定義
@@ -23,7 +24,7 @@ struct VS_IN		// 頂点シェーダの引数
 	float	size		: TEXCOORD1;
 	float	use			: TEXCOORD2;
 	float	rot			: TEXCOORD3;
-	float4	col			: COLOR0;
+	float	col			: TEXCOORD4;
 };
 
 struct VS_OUT		// 頂点シェーダの戻り値かつピクセルシェーダーの引数
@@ -52,6 +53,9 @@ float4x4	view;		// ビューマトリクス
 float4x4	proj;		// プロジェクションマトリクス
 float4		eye;		// 視点座標
 LIGHT		lt;			// ライト
+
+static const int COLOR_MAX = 16;
+float4		colorpallet[COLOR_MAX];
 
 //*****************************************************************************
 // サンプラー
@@ -132,12 +136,14 @@ VS_OUT vs_main(VS_IN In)
 	// 光ベクトルと視線とのハーフベクトルを求める
 	H = normalize(L + V);
 
+	float4 outcol = colorpallet[In.col];
+
 	// 光源計算を行って出力カラーを決める
-	Out.col = In.col * FX_OCTA_AMBIENT +
-		lt.dif * In.col *
+	Out.col = outcol * FX_OCTA_AMBIENT +
+		lt.dif * outcol *
 		max(0.0f, dot(N, L));	// 0.0未満の場合は0.0に
 
-	Out.col.a = In.col.a * In.use;
+	Out.col.a = outcol.a * In.use;
 
 	// スペキュラーによる反射色を計算　g_powerが大きいほど鋭く光る
 	Out.spc = lt.spc *
@@ -173,6 +179,9 @@ technique Tec01
 	{
 		// 塗りつぶしモード = 面を塗りつぶす（標準）
 		FILLMODE = SOLID;
+
+		// アルファテスト = 無効（標準）
+		ALPHATESTENABLE = FALSE;
 
 		// アルファブレンド = 無効（標準
 		ALPHABLENDENABLE = FALSE;

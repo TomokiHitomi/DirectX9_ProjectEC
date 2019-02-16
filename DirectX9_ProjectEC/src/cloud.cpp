@@ -10,7 +10,7 @@
 #include "calculate.h"
 #include "camera.h"
 #include "shader.h"
-#include "player.h"
+#include "playermanager.h"
 
 // デバッグ用
 #ifdef _DEBUG

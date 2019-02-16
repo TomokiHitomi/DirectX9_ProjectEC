@@ -66,12 +66,14 @@ ShaderManager::~ShaderManager()
 //=============================================================================
 HRESULT ShaderManager::Load(void)
 {
+	pShader[XTEXTURE] = new Shader(SHADER_FILE_XTEXTURE);
 	pShader[XMODEL] = new Shader(SHADER_FILE_XMODEL);
 	pShader[SKINMESH] = new Shader(SHADER_FILE_SKINMESH);
 	pShader[WING_FEATHER] = new Shader(SHADER_FILE_WING_FEATHER);
 	pShader[CLOUD] = new Shader(SHADER_FILE_CLOUD);
 	pShader[OCTA] = new Shader(SHADER_FILE_OCTA);
 	pShader[DEBUGSPHERE] = new Shader(SHADER_FILE_DEBUGSPHERE);
+	pShader[BULLET] = new Shader(SHADER_FILE_BULLET);
 	return S_OK;
 }
 

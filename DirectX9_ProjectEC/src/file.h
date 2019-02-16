@@ -31,15 +31,40 @@ public:
 	//デストラクタ（終了処理）
 	~File(void);
 
-	static void PD3DXVECTOR3(FILE* fp, D3DXVECTOR3 vVec)
+	template <typename Data>
+	static bool Load(Data* pData, const char* pFilePath, int nSize)
 	{
-		fprintf_s(fp, "%f%f%f", vVec.x, vVec.y, vVec.z);
+		//バイナリファイルを開く
+		FILE *fp = fopen(pFilePath, "rb");
+
+		if (fp == NULL)
+		{//エラーが起きたらNULLを返す
+			return false;
+		}
+
+		// 読み込み処理
+		fread(pData, sizeof(Data) * nSize, 1, fp);
+
+		fclose(fp);
+		return true;
 	}
-	static D3DXVECTOR3 SD3DXVECTOR3(FILE* fp)
+
+	template <typename Data>
+	static bool Save(Data* pData, const char* pFilePath, int nSize)
 	{
-		D3DXVECTOR3 temp;
-		fscanf_s(fp, "%f%f%f", temp.x, temp.y, temp.z);
-		return temp;
+		//バイナリファイルを開く
+		FILE *fp = fopen(pFilePath, "wb");
+
+		if (fp == NULL)
+		{//エラーが起きたらNULLを返す
+			return false;
+		}
+
+		// 書き込み処理
+		fwrite(pData, sizeof(Data) * nSize, 1, fp);
+
+		fclose(fp);
+		return true;
 	}
 };
 

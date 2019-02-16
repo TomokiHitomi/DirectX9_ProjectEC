@@ -92,6 +92,9 @@ technique Tec01		// テクスチャ描画
 		// 塗りつぶしモード = 面を塗りつぶす（標準）
 		FILLMODE = SOLID;
 
+		// アルファテスト = 無効（標準）
+		ALPHATESTENABLE = FALSE;
+
 		// アルファブレンド = 有効
 		ALPHABLENDENABLE = TRUE;
 

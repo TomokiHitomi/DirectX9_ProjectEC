@@ -31,8 +31,8 @@
 #define SWORD_POS_Y_GUARD			(35.0f)
 
 #define SWORD_SPEED_MIN				(8.0f)
-#define SWORD_SPEED_MAX				(8.0f)
-#define SWORD_SPEED_RETRUN			(8.0f)
+#define SWORD_SPEED_MAX				(20.0f)
+#define SWORD_SPEED_RETRUN			(20.0f)
 #define SWORD_SPEED_ADD				(5)
 
 

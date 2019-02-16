@@ -44,11 +44,13 @@ public:
 	// 使用状態にする
 	int Set(float fSize);
 	// カラーをセット
-	void SetColor(int nIdx, D3DCOLOR xColor);
+	void SetColor(int nIdx, float fCol);
 	// 座標をセット
 	void SetPos(int nIdx, D3DXVECTOR3 vPos);
 	// 回転を加算
 	void AddRot(int nIdx, float fRot);
+	// 回転を取得
+	float GetRot(int nIdx);
 
 
 	// 解放
@@ -77,7 +79,7 @@ private:
 		float		fSize;		// サイズ
 		float		fUse;		// 使用フラグ（シェーダ用）
 		float		fRot;		// 回転
-		D3DCOLOR	vColor;		// カラー
+		float		fCol;		// 回転
 	}INSTANCE;
 
 	// RAM用

@@ -9,7 +9,7 @@
 #include "calculate.h"
 #include "input.h"
 #include "camera.h"
-#include "player.h"
+#include "playermanager.h"
 #include "collision.h"
 
 // デバッグ用
@@ -418,7 +418,7 @@ void Sword::Add(void)
 		if (!m_cSword[i].bUse)
 		{
 			m_cSword[i].bUse = true;
-			m_cSword[i].fAngle = m_fRot;
+			m_cSword[i].fAngle = m_fRot - D3DX_PI * 0.5f;
 			m_nCnt++;
 			m_nCntMax++;
 #ifdef _DEBUG

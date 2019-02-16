@@ -7,7 +7,7 @@
 #include "main.h"
 #include "skydome.h"
 #include "calculate.h"
-#include "player.h"
+#include "playermanager.h"
 
 // デバッグ用
 #ifdef _DEBUG

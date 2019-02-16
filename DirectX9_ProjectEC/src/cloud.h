@@ -116,7 +116,7 @@ public:
 	// ï`âÊèàóù
 	void	Draw(void);
 	// ê›íuèàóù
-	//void	Set(D3DXVECTOR3 pos);
+	//void	Set(D3DXVECTOR3 vPos) { m_vPos = D3DXVECTOR4(vPos, 0.0f); }
 };
 
 //*****************************************************************************

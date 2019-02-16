@@ -15,12 +15,13 @@
 #include "object.h"
 #include "SkinMeshX.h"
 #include "light.h"
-#include "player.h"
+#include "playermanager.h"
 #include "skydome.h"
 #include "stencil.h"
 #include "effect.h"
 #include "stage.h"
 #include "debugobject.h"
+#include "ui.h"
 
 /* Debug */
 #ifdef _DEBUG
@@ -88,9 +89,10 @@ void TitleScene::Draw(void)
 TitleScene::TitleScene(void)
 {
 	ObjectManager::CreateObject<DebugObject>();
+	ObjectManager::CreateObject<EffectManager>();
 	ObjectManager::CreateObject<PlayerManager>();
 	ObjectManager::CreateObject<Stage>();
-	ObjectManager::CreateObject<EffectManager>();
+	ObjectManager::CreateObject<UiManager>();
 }
 
 //=============================================================================

@@ -276,6 +276,9 @@ technique t0
 		// 塗りつぶしモード = 面を塗りつぶす（標準）
 		FILLMODE = SOLID;
 
+		// アルファテスト = 無効（標準）
+		ALPHATESTENABLE = FALSE;
+
 		// アルファブレンド = 無効（標準
 		ALPHABLENDENABLE = FALSE;
 		//// アルファブレンドオプション = 転送元 + 転送先（標準）

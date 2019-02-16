@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// 八面体処理 [debugsphere.cpp]
+// 八面体処理 [octa.cpp]
 // Author : GP12A295 25 人見友基
 //
 //=============================================================================
@@ -10,6 +10,7 @@
 #include "light.h"
 #include "camera.h"
 #include "calculate.h"
+#include "tool.h"
 
 // デバッグ用
 #ifdef _DEBUG
@@ -48,7 +49,7 @@ Octa::Octa(void)
 		m_tData[i].fSize = 0.0f;
 		m_tData[i].fUse = 0.0f;
 		m_tData[i].fRot = ((rand() % 618) * 0.01f);
-		m_tData[i].vColor = SetColorPalletRandom();
+		m_tData[i].fCol = 0.0f;
 
 		m_tData[i].bUse = false;
 	}
@@ -146,6 +147,12 @@ void Octa::Draw(void)
 			MessageBox(NULL, "ライト情報のセットに失敗しました。", "lt", MB_OK);
 		}
 
+		// カラーパレットをセット
+		pEffect->SetVectorArray(
+			"colorpallet",
+			Color::xColor,
+			COLOR_PALLET_MAX);
+
 		// 結果を確定させる
 		pEffect->CommitChanges();
 
@@ -198,10 +205,10 @@ int Octa::Set(float fSize)
 //=============================================================================
 // カラーをセット
 //=============================================================================
-void Octa::SetColor(int nIdx, D3DCOLOR xColor)
+void Octa::SetColor(int nIdx, float fCol)
 {
 	if (nIdx < 0)return;
-	m_tData[nIdx].vColor = xColor;
+	m_tData[nIdx].fCol = fCol;
 	return;
 }
 
@@ -223,6 +230,15 @@ void Octa::AddRot(int nIdx, float fRot)
 	if (nIdx < 0)return;
 	m_tData[nIdx].fRot += fRot;
 	return;
+}
+
+//=============================================================================
+// 回転を取得
+//=============================================================================
+float Octa::GetRot(int nIdx)
+{
+	if (nIdx < 0) return 0.0f;
+	return m_tData[nIdx].fRot;
 }
 
 //=============================================================================
@@ -372,7 +388,7 @@ HRESULT Octa::SetInst(void)
 		pInst->fSize = m_tData[i].fSize;
 		pInst->fUse = m_tData[i].fUse;
 		pInst->fRot = m_tData[i].fRot;
-		pInst->vColor = m_tData[i].vColor;
+		pInst->fCol = m_tData[i].fCol;
 		pInst++;
 		if (m_tData[i].bUse) m_nCount = i + 1;
 	}
@@ -398,8 +414,8 @@ HRESULT Octa::CreateDecl(LPDIRECT3DDEVICE9 pDevice, LPD3DXMESH pMesh)
 		{ 1, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },		// ワールド位置
 		{ 1, 12, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },		// サイズ
 		{ 1, 16, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },		// 使用フラグ
-		{ 1, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },		// 頂点カラー
-		{ 1, 24, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },		// 頂点カラー
+		{ 1, 20, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },		// 回転
+		{ 1, 24, D3DDECLTYPE_FLOAT1, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 4 },	// カラーインデックス
 		D3DDECL_END()
 	};
 

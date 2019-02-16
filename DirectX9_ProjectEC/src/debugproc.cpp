@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "calculate.h"
 #include "debugobject.h"
+#include "tool.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`

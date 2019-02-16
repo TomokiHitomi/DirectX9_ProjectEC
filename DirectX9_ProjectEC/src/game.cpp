@@ -13,7 +13,7 @@
 
 /* ゲームで必要なインクルード */
 #include "fade.h"
-#include "player.h"
+#include "playermanager.h"
 #include "enemy.h"
 #include "stage.h"
 #include "effect.h"

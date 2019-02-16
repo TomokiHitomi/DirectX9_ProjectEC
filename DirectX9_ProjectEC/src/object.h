@@ -35,7 +35,8 @@ public:
 		High,
 		Middle,
 		Low,
-		Lowest
+		Lowest,
+		Ui
 	};
 	// オブジェクトID
 	enum ObjectID
@@ -52,7 +53,9 @@ public:
 		CLOUD,
 		PLAYERMANAGER,
 		ENEMYMANAGER,
-		DEBUGOBJECT
+		DEBUGOBJECT,
+		//BULLETMANAGER,
+		UI
 	};
 
 private:
@@ -135,9 +138,10 @@ public:
 
 	// オブジェクトの作成処理
 	template <typename Type>
-	static void CreateObject(void)
+	static Type* CreateObject(void)
 	{
-		new Type;
+		Type* pType = new Type;
+		return pType;
 	}
 };
 

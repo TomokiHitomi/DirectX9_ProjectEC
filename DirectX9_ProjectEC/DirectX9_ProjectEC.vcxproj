@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -26,6 +26,9 @@
     <ClInclude Include="include\stb_rect_pack.h" />
     <ClInclude Include="include\stb_textedit.h" />
     <ClInclude Include="include\stb_truetype.h" />
+    <ClInclude Include="src\bullet.h" />
+    <ClInclude Include="src\bulleteffect.h" />
+    <ClInclude Include="src\bulletmanager.h" />
     <ClInclude Include="src\calculate.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\cloud.h" />
@@ -47,6 +50,7 @@
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\octa.h" />
     <ClInclude Include="src\player.h" />
+    <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\result.h" />
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\shader.h" />
@@ -56,7 +60,11 @@
     <ClInclude Include="src\stage.h" />
     <ClInclude Include="src\sword.h" />
     <ClInclude Include="src\title.h" />
+    <ClInclude Include="src\titlelogo.h" />
+    <ClInclude Include="src\titlemenu.h" />
     <ClInclude Include="src\tool.h" />
+    <ClInclude Include="src\ui.h" />
+    <ClInclude Include="src\titleui.h" />
     <ClInclude Include="src\wing.h" />
     <ClInclude Include="src\wing_feather.h" />
     <ClInclude Include="src\XModel.h" />
@@ -67,6 +75,9 @@
     <ClCompile Include="include\imgui_demo.cpp" />
     <ClCompile Include="include\imgui_draw.cpp" />
     <ClCompile Include="include\imgui_impl_dx9.cpp" />
+    <ClCompile Include="src\bullet.cpp" />
+    <ClCompile Include="src\bulleteffect.cpp" />
+    <ClCompile Include="src\bulletmanager.cpp" />
     <ClCompile Include="src\calculate.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\cloud.cpp" />
@@ -88,6 +99,8 @@
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\octa.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\playerfunc.cpp" />
+    <ClCompile Include="src\playermanager.cpp" />
     <ClCompile Include="src\result.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shader.cpp" />
@@ -97,13 +110,21 @@
     <ClCompile Include="src\stage.cpp" />
     <ClCompile Include="src\sword.cpp" />
     <ClCompile Include="src\title.cpp" />
+    <ClCompile Include="src\titlelogo.cpp" />
+    <ClCompile Include="src\titlemenu.cpp" />
     <ClCompile Include="src\tool.cpp" />
+    <ClCompile Include="src\ui.cpp" />
+    <ClCompile Include="src\titleui.cpp" />
     <ClCompile Include="src\wing.cpp" />
     <ClCompile Include="src\wing_feather.cpp" />
     <ClCompile Include="src\XModel.cpp" />
     <ClCompile Include="src\XTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="data\shader\bullet.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="data\SHADER\cloud.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -137,6 +158,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shader\xtexture.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
